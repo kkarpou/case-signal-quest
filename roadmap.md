@@ -6,3 +6,4 @@
 - [x] Verify metadata, accessibility, mobile/desktop layouts, and full playthrough
 - [x] Fit every CASE 01 act within one viewport without page scrolling
 - [x] Verify screen fit at 390×844, 1068×639, and 1280×720
+- [ ] Increase text sizes where space permits while keeping every box within the viewport
