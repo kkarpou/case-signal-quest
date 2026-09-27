@@ -137,6 +137,7 @@
 .game-screen .dialogue { margin-top: 0.75rem; }
 .game-screen .evidence-card, .game-screen .feedback-card { padding: 0.875rem; }
 .game-screen .feedback-card > div.mt-5 { margin-top: 0.625rem; padding-top: 0.625rem; }
+.network-map { max-height: 18rem; }
 
 @media (min-width: 1024px) {
   .decision-question-complete { display: block; }
@@ -154,6 +155,7 @@
   .game-screen .dialogue p { margin-top: 0.25rem; font-size: 0.75rem; line-height: 1.05rem; }
   .game-screen .dialogue > div:first-child { width: 2.25rem; height: 2.25rem; }
   .cold-open-layout article img { max-height: 11rem; }
+  .cold-open-layout { gap: 0.75rem; }
   .checkpoint-grid { margin-top: 0.625rem; }
   .feedback-card { font-size: 0.75rem; }
   .feedback-card p { line-height: 1.1rem; }
@@ -164,6 +166,7 @@
 @media (max-width: 639px) {
   .bg-hero-overlay { background: linear-gradient(0deg, oklch(0.1 0.01 188 / 0.96), oklch(0.1 0.01 188 / 0.72) 62%, oklch(0.1 0.01 188 / 0.28)); }
   .game-screen { padding-top: 0.75rem; }
+  .decision-evidence { display: none; }
   .cold-open-layout { gap: 0.625rem; }
   .cold-open-layout h1 { font-size: 2.25rem; }
   .cold-open-layout > div > p { margin-top: 0.4rem; font-size: 0.875rem; line-height: 1.2rem; }
@@ -177,6 +180,9 @@
   .checkpoint-grid ul { margin-top: 0; }
   .report-layout, .cliffhanger-layout { gap: 0.625rem; }
   .cliffhanger-layout { margin-top: 0.4rem; }
+  .report-layout > div:first-child .stamp { display: none; }
+  .report-layout > div:first-child h1 { margin-top: 0; font-size: 1.5rem; }
+  .report-layout > div:first-child > div { margin-top: 0.35rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {

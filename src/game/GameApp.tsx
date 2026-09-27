@@ -291,7 +291,7 @@ function DecisionScreen({ decision, selected, showWhy, showHint, revising, choic
         {!selected && <button onClick={onHint} className="hint-button mt-3 inline-flex min-h-11 items-center gap-2 text-sm font-black text-signal underline decoration-2 underline-offset-4 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring"><CircleHelp size={18} />ΥΠΟΔΕΙΞΗ <span className="hidden font-normal text-muted-foreground sm:inline">(H)</span></button>}
         {showHint && !selected && <div className="hint-panel mt-2 border-l-4 border-signal bg-accent p-3 text-sm"><strong>ΚΟΙΤΑ ΠΙΟ ΚΟΝΤΑ:</strong> {decision.hint}</div>}
       </div>
-      <aside className="min-w-0">{selected && choice ? <Feedback decision={decision} choice={choice} showWhy={showWhy} onWhy={onWhy} /> : <EvidenceSidecar act={decision.act} />}</aside>
+      <aside className={selected ? "decision-sidecar min-w-0" : "decision-sidecar decision-evidence min-w-0"}>{selected && choice ? <Feedback decision={decision} choice={choice} showWhy={showWhy} onWhy={onWhy} /> : <EvidenceSidecar act={decision.act} />}</aside>
     </div>
     {selected && <BottomActions>{decision.critical && <GameButton variant="secondary" onClick={onRevise} icon={<RotateCcw size={18} />}>ΑΝΑΘΕΩΡΗΣΗ</GameButton>}<GameButton variant="secondary" onClick={onWhy} icon={<CircleHelp size={18} />}>ΓΙΑΤΙ;</GameButton><GameButton onClick={onNext} icon={<ArrowRight size={18} />}>ΣΥΝΕΧΕΙΑ</GameButton></BottomActions>}
   </ScreenFrame>;
@@ -341,7 +341,7 @@ function TimelineVisual() {
 
 function NetworkVisual() {
   const nodes = [[50,50],[14,20],[18,70],[85,18],[88,72],[50,10],[52,90],[28,42],[74,46],[34,82],[68,80],[25,12],[78,10]];
-  return <article className="evidence-card"><div className="flex items-center justify-between"><Network className="text-signal" /><span className="stamp-muted">612 ΚΟΜΒΟΙ</span></div><h2 className="mt-4 text-2xl font-black">CASCADE MAP</h2><svg className="mt-5 aspect-square w-full" viewBox="0 0 100 100" role="img" aria-label="Δίκτυο με έναν κεντρικό κόμβο και ακτινωτές αναμεταδόσεις">{nodes.slice(1).map((node, index) => <line key={`l-${index}`} x1="50" y1="50" x2={node[0]} y2={node[1]} className="stroke-border" strokeWidth="1" />)}{nodes.map((node, index) => <circle key={`n-${index}`} cx={node[0]} cy={node[1]} r={index === 0 ? 8 : index % 3 === 0 ? 4 : 2.5} className={index === 0 ? "fill-alert" : "fill-signal"} />)}</svg><p className="text-center text-xs font-black text-muted-foreground">ΕΝΑΣ ΚΕΝΤΡΙΚΟΣ ΠΟΜΠΟΣ · ΠΟΛΛΕΣ ΑΚΤΙΝΕΣ</p></article>;
+  return <article className="evidence-card"><div className="flex items-center justify-between"><Network className="text-signal" /><span className="stamp-muted">612 ΚΟΜΒΟΙ</span></div><h2 className="mt-2 text-xl font-black">CASCADE MAP</h2><svg className="network-map mx-auto mt-2 aspect-square w-full" viewBox="0 0 100 100" role="img" aria-label="Δίκτυο με έναν κεντρικό κόμβο και ακτινωτές αναμεταδόσεις">{nodes.slice(1).map((node, index) => <line key={`l-${index}`} x1="50" y1="50" x2={node[0]} y2={node[1]} className="stroke-border" strokeWidth="1" />)}{nodes.map((node, index) => <circle key={`n-${index}`} cx={node[0]} cy={node[1]} r={index === 0 ? 8 : index % 3 === 0 ? 4 : 2.5} className={index === 0 ? "fill-alert" : "fill-signal"} />)}</svg><p className="text-center text-xs font-black text-muted-foreground">ΕΝΑΣ ΚΕΝΤΡΙΚΟΣ ΠΟΜΠΟΣ · ΠΟΛΛΕΣ ΑΚΤΙΝΕΣ</p></article>;
 }
 
 function Report({ state, onNext }: { state: GameState; onNext: () => void }) {
