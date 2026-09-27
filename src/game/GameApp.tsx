@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode, type RefObject } from "react";
 import { ArrowLeft, ArrowRight, BarChart3, Check, ChevronDown, CircleHelp, FileSearch, Fingerprint, Globe2, LockKeyhole, Moon, Network, Play, Radio, RotateCcw, Search, ShieldCheck, Sun, TimerReset, TriangleAlert } from "lucide-react";
 import { GameButton } from "../components/GameButton";
 import keyArt from "../assets/signal-files-keyart.jpg";
@@ -173,7 +173,7 @@ export function GameApp() {
             state={state} decision={activeDecision} selected={selected} showWhy={showWhy} showHint={showHint} revising={revising}
             choiceRegionRef={choiceRegionRef} onChoose={choose} onNext={next} onWhy={() => setShowWhy((value) => !value)}
             onHint={() => setShowHint((value) => !value)} onRevise={() => { setSelected(null); setRevising(true); setShowWhy(false); }}
-            onHub={() => setView("hub")} onComplete={() => setState((current) => ({ ...current, completed: true }))}
+            onHub={() => setView("hub")}
           />
         )}
       </main>
@@ -241,8 +241,8 @@ function Hub({ state, onPlay, onReset }: { state: GameState; onPlay: () => void;
 
 function CaseScreen(props: {
   state: GameState; decision?: Decision; selected: string | null; showWhy: boolean; showHint: boolean; revising: boolean;
-  choiceRegionRef: React.RefObject<HTMLDivElement | null>; onChoose: (decision: Decision, choiceId: string) => void; onNext: () => void;
-  onWhy: () => void; onHint: () => void; onRevise: () => void; onHub: () => void; onComplete: () => void;
+  choiceRegionRef: RefObject<HTMLDivElement | null>; onChoose: (decision: Decision, choiceId: string) => void; onNext: () => void;
+  onWhy: () => void; onHint: () => void; onRevise: () => void; onHub: () => void;
 }) {
   const { state, decision, selected } = props;
   const act = state.currentAct;
@@ -251,19 +251,19 @@ function CaseScreen(props: {
   if (act === 3) return <EvidenceReveal onNext={props.onNext} />;
   if (act === 5) return <Checkpoint onNext={props.onNext} />;
   if (act === 14) return <Report state={state} onNext={props.onNext} />;
-  return <Cliffhanger state={state} onHub={props.onHub} onComplete={props.onComplete} />;
+  return <Cliffhanger onHub={props.onHub} />;
 }
 
-function ScreenFrame({ children, label }: { children: React.ReactNode; label: string }) {
+function ScreenFrame({ children, label }: { children: ReactNode; label: string }) {
   return <section className="mx-auto min-h-[calc(100svh-4.25rem)] max-w-6xl px-4 pb-32 pt-8 sm:px-6 sm:pt-12"><span className="kicker">{label}</span>{children}</section>;
 }
 
-function Dialogue({ who, children }: { who: keyof typeof team; children: React.ReactNode }) {
+function Dialogue({ who, children }: { who: keyof typeof team; children: ReactNode }) {
   const member = team[who];
   return <div className="dialogue mt-6 grid grid-cols-[auto_minmax(0,1fr)] gap-3"><div className={`grid size-12 shrink-0 place-items-center rounded-full border-2 border-foreground font-black ${member.tone}`}>{member.initials}</div><div className="min-w-0"><div className="flex flex-wrap items-baseline gap-x-2"><strong className="text-sm">{member.name}</strong><span className="text-[10px] font-bold uppercase text-muted-foreground">{member.role}</span></div><p className="mt-2 text-sm leading-relaxed sm:text-base">{children}</p></div></div>;
 }
 
-function BottomActions({ children }: { children: React.ReactNode }) {
+function BottomActions({ children }: { children: ReactNode }) {
   return <div className="fixed inset-x-0 bottom-0 z-30 border-t-2 border-border bg-background/95 p-3 backdrop-blur"><div className="mx-auto flex max-w-4xl flex-wrap justify-end gap-2">{children}</div></div>;
 }
 
@@ -279,7 +279,7 @@ function ColdOpen({ onNext }: { onNext: () => void }) {
 }
 
 function DecisionScreen({ decision, selected, showWhy, showHint, revising, choiceRegionRef, onChoose, onNext, onWhy, onHint, onRevise }: {
-  decision: Decision; selected: string | null; showWhy: boolean; showHint: boolean; revising: boolean; choiceRegionRef: React.RefObject<HTMLDivElement | null>;
+  decision: Decision; selected: string | null; showWhy: boolean; showHint: boolean; revising: boolean; choiceRegionRef: RefObject<HTMLDivElement | null>;
   onChoose: (decision: Decision, choiceId: string) => void; onNext: () => void; onWhy: () => void; onHint: () => void; onRevise: () => void;
 }) {
   const choice = decision.choices.find((item) => item.id === selected);
@@ -318,7 +318,7 @@ function Feedback({ decision, choice, showWhy, onWhy }: { decision: Decision; ch
   </article>;
 }
 
-function FeedbackRow({ title, text, icon, strong }: { title: string; text: string; icon: React.ReactNode; strong?: boolean }) {
+function FeedbackRow({ title, text, icon, strong }: { title: string; text: string; icon: ReactNode; strong?: boolean }) {
   return <div className="mt-5 grid grid-cols-[auto_minmax(0,1fr)] gap-3 border-t border-border pt-4 first:border-0"><span className="text-signal">{icon}</span><div><h3 className="text-[11px] font-black uppercase text-muted-foreground">{title}</h3><p className={`mt-1 text-sm leading-relaxed ${strong ? "font-black text-signal" : ""}`}>{text}</p></div></div>;
 }
 
@@ -351,8 +351,7 @@ function Report({ state, onNext }: { state: GameState; onNext: () => void }) {
   return <ScreenFrame label="CASE REPORT · 01"><div className="mt-3 grid gap-8 lg:grid-cols-[0.8fr_1.2fr]"><div><span className="stamp">ΦΑΚΕΛΟΣ ΟΛΟΚΛΗΡΩΘΗΚΕ</span><h1 className="mt-5 font-display text-5xl font-black uppercase leading-none">ΚΑΘΑΡΟ ΣΗΜΑ.<br />ΠΡΟΣΕΚΤΙΚΟ ΣΥΜΠΕΡΑΣΜΑ.</h1><div className="mt-6 border-l-4 border-signal pl-4"><p className="text-xl font-black">«Δεν υπάρχουν στοιχεία συντονισμένης χειραγώγησης στο παρατηρούμενο dataset.»</p></div><Dialogue who="lead">Δεν σε βαθμολογούμε για το πόσο δραματική ήταν η απάντηση. Σε αξιολογούμε για το αν κάθε λέξη της χωρά μέσα στα στοιχεία.</Dialogue></div><div><article className="evidence-card"><div className="flex items-center justify-between"><h2 className="font-display text-2xl font-black">ΠΡΟΦΙΛ ΔΕΞΙΟΤΗΤΩΝ</h2><span className="text-xs font-black text-muted-foreground">{correct}/{decisions.length} ΙΣΧΥΡΕΣ ΚΡΙΣΕΙΣ</span></div><div className="mt-7 space-y-5">{(Object.entries(state.skillScores) as [SkillKey, number][]).map(([key, value]) => <div key={key}><div className="mb-2 flex justify-between gap-3 text-sm font-black"><span>{skillLabels[key]}</span><span>{value}</span></div><div className="h-3 border border-border bg-muted"><div className="h-full bg-signal" style={{ width: `${value}%` }} /></div></div>)}</div></article><article className="mt-4 grid gap-4 sm:grid-cols-2"><div className="border-2 border-signal bg-card p-4"><span className="text-xs font-black text-signal">ΙΣΧΥΡΟΤΕΡΟ ΣΗΜΕΙΟ</span><h3 className="mt-2 font-black">{skillLabels[strongest[0]]}</h3><p className="mt-2 text-sm text-muted-foreground">Κράτησες τη σκέψη σου κοντά στα παρατηρήσιμα δεδομένα.</p></div><div className="border-2 border-warning bg-card p-4"><span className="text-xs font-black text-warning">ΕΠΟΜΕΝΗ ΕΣΤΙΑΣΗ</span><h3 className="mt-2 font-black">{skillLabels[needsWork[0]]}</h3><p className="mt-2 text-sm text-muted-foreground">Στην επόμενη υπόθεση, ζήτα ένα ακόμη τεκμήριο πριν ανεβάσεις τη βεβαιότητα.</p></div></article>{state.revisedDecisions.length > 0 && <p className="mt-4 text-sm font-semibold text-signal">Αναθεώρησες {state.revisedDecisions.length} {state.revisedDecisions.length === 1 ? "κρίση" : "κρίσεις"}. Η αναθεώρηση με βάση τα στοιχεία είναι δεξιότητα, όχι αποτυχία.</p>}</div></div><BottomActions><GameButton onClick={onNext} icon={<Radio size={18} />}>ΚΛΕΙΣΙΜΟ ΦΑΚΕΛΟΥ</GameButton></BottomActions></ScreenFrame>;
 }
 
-function Cliffhanger({ state, onHub, onComplete }: { state: GameState; onHub: () => void; onComplete: () => void }) {
-  useEffect(() => { onComplete(); }, [onComplete]);
+function Cliffhanger({ onHub }: { onHub: () => void }) {
   const posts = ["Το φως έσβησε στις 22:14. Κανείς δεν μιλά.", "Το φως έσβησε στις 22:14. Κανείς δεν μιλά.", "Το φως έσβησε στις 22:14. Κανείς δεν μιλά."];
   return <ScreenFrame label="INCOMING SIGNAL"><div className="mx-auto mt-8 max-w-3xl"><Dialogue who="leo">Πρέπει να δεις αυτό.</Dialogue><div className="mt-8 border-2 border-alert bg-card p-5 shadow-editorial sm:p-8"><div className="flex items-center justify-between gap-4"><div><span className="stamp-warning">ΝΕΟ ΜΟΤΙΒΟ</span><h1 className="mt-4 font-display text-4xl font-black uppercase">23 ΛΟΓΑΡΙΑΣΜΟΙ</h1></div><Radio className="animate-pulse text-alert" size={36} /></div><p className="mt-2 text-lg font-bold">Σχεδόν ίδιο κείμενο. Μέσα σε 11 δευτερόλεπτα.</p><div className="mt-7 space-y-2">{posts.map((post, index) => <div key={index} className="grid grid-cols-[auto_1fr_auto] items-center gap-3 border border-border bg-background p-3 text-xs"><span className="grid size-8 place-items-center rounded-full bg-muted font-black">{index + 1}</span><span>{post}</span><span className="font-black text-alert">22:14:{String(3 + index * 4).padStart(2, "0")}</span></div>)}</div></div><div className="mt-8 text-center"><span className="kicker">NEXT FILE</span><h2 className="mt-2 font-display text-5xl font-black uppercase">CASE 02<br />THE ECHO</h2><p className="mx-auto mt-4 max-w-md text-muted-foreground">Το μοτίβο είναι ισχυρότερο. Αλλά θυμήσου: μοτίβο ≠ συντονισμός.</p></div></div><BottomActions><GameButton variant="secondary" onClick={onHub} icon={<ArrowLeft size={18} />}>SEASON HUB</GameButton></BottomActions></ScreenFrame>;
 }
