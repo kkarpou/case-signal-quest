@@ -148,7 +148,7 @@ export function GameApp() {
   if (!hydrated) return <div className="grid min-h-screen place-items-center bg-background"><span className="stamp">ΦΟΡΤΩΣΗ ΑΡΧΕΙΩΝ…</span></div>;
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className={view === "case" ? "h-svh overflow-hidden bg-background text-foreground" : "min-h-screen bg-background text-foreground"}>
       <header className="sticky top-0 z-40 border-b-2 border-border bg-background/95 backdrop-blur">
         <div className="mx-auto grid min-h-16 max-w-7xl grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 sm:px-6">
           <button onClick={() => setView("hub")} className="min-w-0 text-left focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring" aria-label="Επιστροφή στο Season Hub">
@@ -165,7 +165,7 @@ export function GameApp() {
         {view === "case" && <div className="h-1 bg-muted"><div className="h-full bg-signal transition-all" style={{ width: `${((state.currentAct + 1) / TOTAL_ACTS) * 100}%` }} /></div>}
       </header>
 
-      <main>
+      <main className={view === "case" ? "h-[calc(100svh-4.25rem)] overflow-hidden" : ""}>
         {view === "hub" ? (
           <Hub state={state} onPlay={() => setView("case")} onReset={reset} />
         ) : (
@@ -255,7 +255,7 @@ function CaseScreen(props: {
 }
 
 function ScreenFrame({ children, label }: { children: ReactNode; label: string }) {
-  return <section className="mx-auto min-h-[calc(100svh-4.25rem)] max-w-6xl px-4 pb-32 pt-8 sm:px-6 sm:pt-12"><span className="kicker">{label}</span>{children}</section>;
+  return <section className="game-screen mx-auto h-full max-w-6xl overflow-hidden px-4 pb-20 pt-5 sm:px-6 sm:pb-20 sm:pt-6"><span className="kicker">{label}</span>{children}</section>;
 }
 
 function Dialogue({ who, children }: { who: keyof typeof team; children: ReactNode }) {
@@ -284,12 +284,12 @@ function DecisionScreen({ decision, selected, showWhy, showHint, revising, choic
 }) {
   const choice = decision.choices.find((item) => item.id === selected);
   return <ScreenFrame label={decision.eyebrow}>
-    <div className="mt-3 grid gap-7 lg:grid-cols-[minmax(0,1fr)_minmax(340px,0.72fr)]">
-      <div><h1 className="font-display text-4xl font-black uppercase leading-none sm:text-5xl">{decision.title}</h1><p className="mt-5 max-w-2xl text-lg font-semibold leading-relaxed">{decision.prompt}</p>
+    <div className="decision-layout mt-2 grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.72fr)]">
+      <div><h1 className="screen-title font-display text-3xl font-black uppercase leading-none sm:text-5xl">{decision.title}</h1><p className="screen-prompt mt-3 max-w-2xl text-base font-semibold leading-relaxed sm:text-lg">{decision.prompt}</p>
         {revising && <div className="mt-5 border-l-4 border-warning bg-warning/10 p-4 text-sm"><strong>ΑΝΑΘΕΩΡΗΣΗ</strong><p className="mt-1 text-muted-foreground">Διάλεξε ξανά. Η αλλαγή συμπεράσματος όταν αλλάζει η αξιολόγηση είναι αναλυτική δύναμη.</p></div>}
-        {!selected && <div ref={choiceRegionRef} className="mt-7 grid gap-3" role="group" aria-label={decision.prompt}>{decision.choices.map((item, index) => <GameButton key={item.id} data-choice variant="option" className="min-h-16 justify-start normal-case" onClick={() => onChoose(decision, item.id)} autoFocus={index === 0}><span className="grid size-7 shrink-0 place-items-center rounded-full border border-current text-xs">{String.fromCharCode(65 + index)}</span><span>{item.label}</span></GameButton>)}</div>}
-        {!selected && <button onClick={onHint} className="mt-5 inline-flex min-h-11 items-center gap-2 text-sm font-black text-signal underline decoration-2 underline-offset-4 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring"><CircleHelp size={18} />ΥΠΟΔΕΙΞΗ <span className="hidden font-normal text-muted-foreground sm:inline">(H)</span></button>}
-        {showHint && !selected && <div className="mt-3 border-l-4 border-signal bg-accent p-4 text-sm"><strong>ΚΟΙΤΑ ΠΙΟ ΚΟΝΤΑ:</strong> {decision.hint}</div>}
+        {!selected && <div ref={choiceRegionRef} className="choice-grid mt-4 grid gap-2" role="group" aria-label={decision.prompt}>{decision.choices.map((item, index) => <GameButton key={item.id} data-choice variant="option" className="choice-button min-h-13 justify-start py-2 normal-case" onClick={() => onChoose(decision, item.id)} autoFocus={index === 0}><span className="grid size-7 shrink-0 place-items-center rounded-full border border-current text-xs">{String.fromCharCode(65 + index)}</span><span>{item.label}</span></GameButton>)}</div>}
+        {!selected && <button onClick={onHint} className="hint-button mt-3 inline-flex min-h-11 items-center gap-2 text-sm font-black text-signal underline decoration-2 underline-offset-4 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring"><CircleHelp size={18} />ΥΠΟΔΕΙΞΗ <span className="hidden font-normal text-muted-foreground sm:inline">(H)</span></button>}
+        {showHint && !selected && <div className="hint-panel mt-2 border-l-4 border-signal bg-accent p-3 text-sm"><strong>ΚΟΙΤΑ ΠΙΟ ΚΟΝΤΑ:</strong> {decision.hint}</div>}
       </div>
       <aside className="min-w-0">{selected && choice ? <Feedback decision={decision} choice={choice} showWhy={showWhy} onWhy={onWhy} /> : <EvidenceSidecar act={decision.act} />}</aside>
     </div>
