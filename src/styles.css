@@ -154,13 +154,18 @@
   .game-screen .dialogue { padding: 0.625rem; }
   .game-screen .dialogue p { margin-top: 0.25rem; font-size: 0.75rem; line-height: 1.05rem; }
   .game-screen .dialogue > div:first-child { width: 2.25rem; height: 2.25rem; }
-  .cold-open-layout article img { max-height: 11rem; }
+  .cold-open-layout article img { max-height: 9.5rem; }
   .cold-open-layout { gap: 0.75rem; }
   .checkpoint-grid { margin-top: 0.625rem; }
   .feedback-card { font-size: 0.75rem; }
   .feedback-card p { line-height: 1.1rem; }
   .report-dialogue { display: none; }
   .score-bars { margin-top: 0.625rem; row-gap: 0.4rem; }
+  .report-layout > div:first-child h1 { margin-top: 0.5rem; font-size: 2rem; }
+  .report-layout > div:first-child > div { margin-top: 0.5rem; }
+  .report-notes { margin-top: 0.5rem; gap: 0.5rem; }
+  .report-notes > div { padding: 0.5rem; }
+  .report-notes p { display: none; }
 }
 
 @media (max-width: 639px) {
