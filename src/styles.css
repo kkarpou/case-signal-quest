@@ -154,7 +154,7 @@
   .game-screen .dialogue { padding: 0.625rem; }
   .game-screen .dialogue p { margin-top: 0.25rem; font-size: 0.75rem; line-height: 1.05rem; }
   .game-screen .dialogue > div:first-child { width: 2.25rem; height: 2.25rem; }
-  .cold-open-layout article img { max-height: 9.5rem; }
+  .cold-open-layout article img { max-height: 8.5rem; }
   .cold-open-layout { gap: 0.75rem; }
   .checkpoint-grid { margin-top: 0.625rem; }
   .feedback-card { font-size: 0.75rem; }
