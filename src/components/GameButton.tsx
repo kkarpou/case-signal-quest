@@ -1,0 +1,33 @@
+import type { ButtonHTMLAttributes, ReactNode } from "react";
+import { cn } from "../lib/utils";
+
+type Variant = "primary" | "secondary" | "ghost" | "danger" | "option";
+
+type GameButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+  variant?: Variant;
+  icon?: ReactNode;
+};
+
+const variants: Record<Variant, string> = {
+  primary: "border-primary bg-primary text-primary-foreground hover:bg-primary/90",
+  secondary: "border-border bg-secondary text-secondary-foreground hover:bg-accent",
+  ghost: "border-transparent bg-transparent text-foreground hover:bg-accent",
+  danger: "border-destructive bg-destructive text-destructive-foreground hover:bg-destructive/90",
+  option: "border-border bg-card text-card-foreground hover:border-signal hover:bg-accent text-left",
+};
+
+export function GameButton({ variant = "primary", icon, className, children, ...props }: GameButtonProps) {
+  return (
+    <button
+      className={cn(
+        "inline-flex min-h-12 items-center justify-center gap-2 rounded-md border-2 px-5 py-3 text-sm font-black uppercase transition-all focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
+        variants[variant],
+        className,
+      )}
+      {...props}
+    >
+      {icon}
+      {children}
+    </button>
+  );
+}
