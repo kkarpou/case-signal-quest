@@ -453,3 +453,19 @@
 /* Dialog close buttons sit on paper, so they use paper ink, not app chrome colors */
 .dialog-close { background: color-mix(in oklab, var(--paper-ink) 8%, var(--paper)); color: var(--paper-ink); border-color: var(--paper-ink); }
 .dialog-close:hover, .dialog-close:focus-visible { background: var(--paper-ink); color: var(--paper); border-color: var(--paper-ink); }
+
+/* Σύνοψη ομάδας: σταθερή στήλη ονόματος ώστε να διαβάζεται ολόκληρο το κείμενο */
+.report-team-summary li { display: grid; align-items: baseline; }
+@media (max-width: 680px) {
+  .report-layout > div:first-child h1 { font-size: 1.5rem; }
+  .report-dialogue { display: none; }
+  .report-finding { padding: .55rem; }
+  .final-assessment { padding: .5rem; }
+  .final-assessment p { font-size: .9rem; line-height: 1.2rem; }
+  .report-profile { padding: .5rem; }
+  .skill-sheet .score-bars { margin-top: .35rem; row-gap: .25rem; }
+  .skill-sheet .score-bars > div > div:first-child { margin-bottom: .12rem; font-size: .72rem; }
+  .skill-sheet .skill-track { height: .35rem; }
+  .report-notes > div { padding: .4rem; }
+  .report-team-summary li { grid-template-columns: 5.6rem minmax(0,1fr); font-size: 10px; }
+}
