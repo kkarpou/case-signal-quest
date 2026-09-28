@@ -9,7 +9,7 @@
 
 export const el = {
   meta: {
-    title: "THE SIGNAL FILES — CASE 01: THE VIRAL LIE",
+    title: "THE SIGNAL FILES — ΥΠΟΘΕΣΗ 01: THE VIRAL LIE",
     description: "Διερεύνησε μια viral ψευδή ιστορία και μάθε να ξεχωρίζεις τη διάδοση από τον συντονισμό.",
     ogDescription: "Ένα διαδραστικό παιχνίδι έρευνας για την πειθαρχία τεκμηρίων και την παραπληροφόρηση.",
     numberLocale: "el-GR",
@@ -19,12 +19,12 @@ export const el = {
     brand: "THE SIGNAL FILES",
     unit: "ΜΟΝΑΔΑ ΑΚΕΡΑΙΟΤΗΤΑΣ ΠΛΗΡΟΦΟΡΙΑΣ",
     backToHub: "Επιστροφή στο Season Hub",
-    statusCase: "CASE ACTIVE",
+    statusCase: "ΥΠΟΘΕΣΗ ΕΝΕΡΓΗ",
     statusSeason: "SEASON 01",
     themeToLight: "Ενεργοποίηση φωτεινού θέματος",
     themeToDark: "Ενεργοποίηση σκοτεινού θέματος",
     loading: "ΦΟΡΤΩΣΗ ΑΡΧΕΙΩΝ…",
-    resetConfirm: "Να διαγραφεί όλη η πρόοδος του CASE 01;",
+    resetConfirm: "Να διαγραφεί όλη η πρόοδος της ΥΠΟΘΕΣΗΣ 01;",
   },
 
   team: {
@@ -46,7 +46,7 @@ export const el = {
     seasonStamp: "SEASON 01 · ΦΑΚΕΛΟΙ ΠΛΗΡΟΦΟΡΙΑΣ",
     title: "THE SIGNAL FILES",
     tagline: "Ερεύνησε το περιεχόμενο. Χαρτογράφησε τη διάδοση. Μίλα μόνο μέχρι εκεί που φτάνουν τα στοιχεία.",
-    caseTab: "CASE 01 · ΔΙΑΘΕΣΙΜΟ",
+    caseTab: "ΥΠΟΘΕΣΗ 01 · ΔΙΑΘΕΣΙΜΟ",
     caseImageAlt: "Εικονογραφημένος φάκελος έρευνας με σταθμό, κινητό και δίκτυο διάδοσης",
     caseImageMark: "ΜΗ ΕΠΑΛΗΘΕΥΜΕΝΟ",
     caseImageRef: "REF 01-A · 19″",
@@ -63,11 +63,11 @@ export const el = {
     futureCasesTitle: "Μελλοντικές υποθέσεις",
     nextCaseMark: "ΕΠΟΜΕΝΟΣ ΦΑΚΕΛΟΣ",
     futureCases: [
-      { number: "CASE 02", title: "THE ECHO", subtitle: "23 λογαριασμοί. Ένα κείμενο. Λίγα δευτερόλεπτα." },
-      { number: "CASE 03", title: "THE SOURCE", subtitle: "Η πηγή φαίνεται αξιόπιστη. Μέχρι να κοιτάξεις πιο κοντά." },
-      { number: "CASE 04", title: "THE CUT", subtitle: "Τι αλλάζει όταν λείπουν δώδεκα κρίσιμα δευτερόλεπτα;" },
-      { number: "CASE 05", title: "THE CROWD", subtitle: "Η πλειοψηφία μιλά. Είναι όμως πραγματική;" },
-      { number: "CASE 06", title: "THE ATTRIBUTION", subtitle: "Το δυσκολότερο ερώτημα: ποιος ευθύνεται;" },
+      { number: "ΥΠΟΘΕΣΗ 02", title: "THE ECHO", subtitle: "23 λογαριασμοί. Ένα κείμενο. Λίγα δευτερόλεπτα." },
+      { number: "ΥΠΟΘΕΣΗ 03", title: "THE SOURCE", subtitle: "Η πηγή φαίνεται αξιόπιστη. Μέχρι να κοιτάξεις πιο κοντά." },
+      { number: "ΥΠΟΘΕΣΗ 04", title: "THE CUT", subtitle: "Τι αλλάζει όταν λείπουν δώδεκα κρίσιμα δευτερόλεπτα;" },
+      { number: "ΥΠΟΘΕΣΗ 05", title: "THE CROWD", subtitle: "Η πλειοψηφία μιλά. Είναι όμως πραγματική;" },
+      { number: "ΥΠΟΘΕΣΗ 06", title: "THE ATTRIBUTION", subtitle: "Το δυσκολότερο ερώτημα: ποιος ευθύνεται;" },
     ],
     teamImageAlt: "Εικονογραφημένη ομάδα τεσσάρων αναλυτών",
     teamLabel: "Η ΟΜΑΔΑ ΣΟΥ",
@@ -76,7 +76,7 @@ export const el = {
   },
 
   coldOpen: {
-    label: "CASE 01 · COLD OPEN",
+    label: "ΥΠΟΘΕΣΗ 01 · COLD OPEN",
     title: "THE VIRAL LIE",
     intro: "19 δευτερόλεπτα. Ένας φωτισμένος σταθμός. Μια λεζάντα που ουρλιάζει «ΕΚΡΗΞΗ ΤΩΡΑ».",
     leadLine: "Έχουμε αναφορές πανικού στον Κεντρικό Σταθμό της Νεάπολης. Οι υπηρεσίες δεν επιβεβαιώνουν έκρηξη. Θέλω συμπέρασμα που να αντέχει — όχι το γρηγορότερο.",
@@ -104,7 +104,7 @@ export const el = {
   feedback: {
     strong: "ΙΣΧΥΡΗ ΚΡΙΣΗ",
     premature: "ΠΡΟΩΡΟ ΣΥΜΠΕΡΑΣΜΑ",
-    caseId: "CASE 01 / REVIEW",
+    caseId: "ΥΠΟΘΕΣΗ 01 / REVIEW",
     yourChoice: "Η επιλογή σου",
     evidence: "Τι δείχνουν τα στοιχεία",
     cannot: "Τι ΔΕΝ μπορούμε ακόμη να συμπεράνουμε",
@@ -187,8 +187,8 @@ export const el = {
   },
 
   report: {
-    label: "CASE REPORT · 01",
-    spine: "CASE 01 · FINAL",
+    label: "ΥΠΟΘΕΣΗ REPORT · 01",
+    spine: "ΥΠΟΘΕΣΗ 01 · FINAL",
     stamp: "ΦΑΚΕΛΟΣ ΟΛΟΚΛΗΡΩΘΗΚΕ",
     titleLine1: "ΚΑΘΑΡΟ ΣΗΜΑ.",
     titleLine2: "ΠΡΟΣΕΚΤΙΚΟ ΣΥΜΠΕΡΑΣΜΑ.",
@@ -213,7 +213,7 @@ export const el = {
     subtitle: "Σχεδόν ίδιο κείμενο. Μέσα σε 11 δευτερόλεπτα.",
     post: "Το φως έσβησε στις 22:14. Κανείς δεν μιλά.",
     nextLabel: "NEXT FILE",
-    nextLine1: "CASE 02",
+    nextLine1: "ΥΠΟΘΕΣΗ 02",
     nextLine2: "THE ECHO",
     nextText: "Το μοτίβο είναι ισχυρότερο. Αλλά θυμήσου: μοτίβο ≠ συντονισμός.",
     action: "SEASON HUB",
