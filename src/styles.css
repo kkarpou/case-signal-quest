@@ -486,7 +486,8 @@
   .report-profile .score-bars { margin-top: .3rem; }
   .report-profile .score-bars > * + * { margin-top: .2rem; }
   .report-profile .score-bars > div > div:first-child { margin-bottom: .1rem; font-size: .7rem; }
-  .report-finding { padding: .5rem .55rem !important; }
+  .report-finding { padding: .45rem .5rem !important; }
+  .report-profile { padding: .4rem .5rem !important; }
   .report-team-summary li { line-height: .95rem; }
   .report-team-summary { margin-top: .4rem !important; padding-top: .3rem !important; }
   .report-team-summary li { grid-template-columns: 5.6rem minmax(0,1fr); font-size: 10px; }
