@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode, type RefObject } from "react";
-import { ArrowLeft, ArrowRight, BarChart3, Check, ChevronDown, CircleHelp, FileSearch, Fingerprint, Globe2, LockKeyhole, Moon, Network, Play, Radio, RotateCcw, Search, ShieldCheck, Sun, TimerReset, TriangleAlert } from "lucide-react";
+import { ArrowLeft, ArrowRight, BarChart3, BookOpen, Check, ChevronDown, CircleHelp, FileSearch, Fingerprint, Globe2, LockKeyhole, Moon, Network, Play, Radio, RotateCcw, Search, ShieldCheck, Sun, TimerReset, TriangleAlert } from "lucide-react";
 import { GameButton } from "../components/GameButton";
 import keyArt from "../assets/signal-files-keyart.jpg";
 import teamArt from "../assets/signal-team.jpg";
@@ -56,6 +56,7 @@ export function GameApp() {
   const [showWhy, setShowWhy] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const [revising, setRevising] = useState(false);
+  const [glossaryOpen, setGlossaryOpen] = useState(false);
   const choiceRegionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -91,6 +92,7 @@ export function GameApp() {
   useEffect(() => {
     if (view !== "case") return;
     const onKeyDown = (event: KeyboardEvent) => {
+      if (glossaryOpen) return;
       if (event.key.toLowerCase() === "h" && activeDecision && !selected) {
         event.preventDefault(); setShowHint((value) => !value);
       }
@@ -109,7 +111,18 @@ export function GameApp() {
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [view, activeDecision, selected]);
+  }, [view, activeDecision, selected, glossaryOpen]);
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key.toLowerCase() === "g" && !event.metaKey && !event.ctrlKey && !event.altKey) {
+        event.preventDefault();
+        setGlossaryOpen((value) => !value);
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
 
   const choose = (decision: Decision, choiceId: string) => {
     const previous = state.decisions[decision.id];
@@ -159,6 +172,10 @@ export function GameApp() {
           <div className="flex shrink-0 items-center gap-1">
             <span className="status-stamp hidden sm:inline-flex">{view === "case" ? S.app.statusCase : S.app.statusSeason}</span>
             {view === "case" && <span className="act-counter border-r border-border px-2 font-mono text-xs font-black text-signal">{String(state.currentAct + 1).padStart(2, "0")} / {TOTAL_ACTS}</span>}
+            <GameButton variant="ghost" className="min-h-11 min-w-11 gap-1.5 px-2" onClick={() => setGlossaryOpen(true)} aria-label={S.glossary.open} aria-haspopup="dialog" aria-expanded={glossaryOpen}>
+              <BookOpen size={20} aria-hidden="true" />
+              <span className="hidden font-mono text-[11px] font-black uppercase lg:inline">{S.glossary.short}</span>
+            </GameButton>
             <GameButton variant="ghost" className="min-h-11 min-w-11 px-2" onClick={() => setTheme(theme === "dark" ? "light" : "dark")} aria-label={theme === "dark" ? S.app.themeToLight : S.app.themeToDark}>
               {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
             </GameButton>
@@ -179,6 +196,7 @@ export function GameApp() {
           />
         )}
       </main>
+      <Glossary open={glossaryOpen} onClose={() => setGlossaryOpen(false)} />
     </div>
   );
 }
