@@ -28,10 +28,10 @@ export const el = {
   },
 
   team: {
-    lead: { name: "UNIT LEAD", role: "Επικεφαλής μονάδας", initials: "UL" },
-    mara: { name: "MARA", role: "Ανάλυση πηγών & περιεχομένου", initials: "MA" },
-    leo: { name: "LEO", role: "Ανάλυση δικτύων", initials: "LE" },
-    noor: { name: "NOOR", role: "Κοινωνία πολιτών & απόκριση", initials: "NO" },
+    lead: { name: "UNIT LEAD", role: "Επικεφαλής μονάδας", initials: "UL", focus: "Κρίνει τι αντέχει να ειπωθεί δημόσια και πού σταματά το συμπέρασμα." },
+    mara: { name: "MARA", role: "Ανάλυση πηγών & περιεχομένου", initials: "MA", focus: "Ελέγχει την προέλευση: από πού ήρθε το υλικό και πότε τραβήχτηκε." },
+    leo: { name: "LEO", role: "Ανάλυση δικτύων", initials: "LE", focus: "Διαβάζει τη διάδοση: ποιος αναμετέδωσε, πότε και με τι μοτίβο." },
+    noor: { name: "NOOR", role: "Κοινωνία πολιτών & απόκριση", initials: "NO", focus: "Ζυγίζει τη δημόσια απόκριση χωρίς να ενισχύσει τη φήμη." },
   },
 
   skills: {
@@ -73,6 +73,12 @@ export const el = {
     teamLabel: "Η ΟΜΑΔΑ ΣΟΥ",
     teamTitle: "Τέσσερις οπτικές. Ένα όριο: τα στοιχεία.",
     teamText: "Η MARA ελέγχει την προέλευση. Ο LEO διαβάζει τα δίκτυα. Η NOOR ζυγίζει την απόκριση. Η Unit Lead ζητά συμπεράσματα που μπορούν να υπερασπιστούν.",
+    teamRoster: [
+      { initials: "MA", name: "MARA", job: "Πηγές & περιεχόμενο", does: "Από πού ήρθε το υλικό;" },
+      { initials: "LE", name: "LEO", job: "Δίκτυα & διάδοση", does: "Πώς εξαπλώθηκε;" },
+      { initials: "NO", name: "NOOR", job: "Απόκριση & κοινό", does: "Τι λέμε δημόσια;" },
+      { initials: "UL", name: "UNIT LEAD", job: "Πειθαρχία τεκμηρίων", does: "Αντέχει το συμπέρασμα;" },
+    ],
   },
 
   coldOpen: {
@@ -99,6 +105,7 @@ export const el = {
     revise: "ΑΝΑΘΕΩΡΗΣΗ",
     why: "ΓΙΑΤΙ;",
     next: "ΣΥΝΕΧΕΙΑ",
+    analystLabel: "ΕΠΙΚΕΦΑΛΗΣ ΒΗΜΑΤΟΣ",
   },
 
   feedback: {

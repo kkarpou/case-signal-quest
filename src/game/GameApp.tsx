@@ -45,6 +45,12 @@ const team = {
   noor: { ...S.team.noor, tone: "bg-alert text-alert-foreground" },
 };
 
+// Ποιο μέλος της ομάδας «οδηγεί» κάθε απόφαση (μόνο εμφάνιση, καμία επίδραση στη λογική).
+const decisionAnalyst: Record<string, keyof typeof team> = {
+  classification: "lead", sourceLab: "mara", proven: "mara", spike: "leo", network: "leo",
+  foreign: "leo", direction: "leo", response: "noor", final: "lead", confidence: "lead", lesson: "lead",
+};
+
 function clamp(value: number) { return Math.max(0, Math.min(100, value)); }
 
 export function GameApp() {
@@ -226,8 +232,8 @@ function Hub({ state, onPlay, onReset }: { state: GameState; onPlay: () => void;
         </article>
 
         <div className="wall-lower grid min-h-0 flex-1 gap-3 lg:grid-cols-[1.35fr_0.65fr]">
-          <section className="future-file-stack min-h-0" aria-labelledby="future-cases-title"><h2 id="future-cases-title" className="sr-only">{H.futureCasesTitle}</h2>{H.futureCases.map(({ number, title, subtitle }, index) => <article key={number} className={`sealed-file sealed-file-${index + 1} border-2 border-border bg-card p-2`}><div className="flex items-center justify-between gap-2"><div className="min-w-0"><p className="font-mono text-[10px] font-black text-muted-foreground">{number}</p><h3 className="truncate font-display text-base font-black uppercase sm:text-lg">{title}</h3></div><LockKeyhole className="shrink-0" size={16} aria-hidden="true" /></div><p className="mt-0.5 line-clamp-1 text-[11px] text-muted-foreground">{subtitle}</p>{index === 0 && <span className="next-case-mark">{H.nextCaseMark}</span>}</article>)}</section>
-          <aside className="team-pin relative hidden min-h-0 border-2 border-border bg-card p-2 lg:block"><img src={teamArt} loading="lazy" alt={H.teamImageAlt} width={1536} height={1024} className="h-20 w-full object-cover" /><span className="team-pin-label">{H.teamLabel}</span><h2 className="mt-2 font-display text-lg font-black uppercase leading-tight">{H.teamTitle}</h2><p className="mt-1 line-clamp-3 text-[11px] leading-snug text-muted-foreground">{H.teamText}</p></aside>
+          <section className="future-file-stack min-h-0" aria-labelledby="future-cases-title"><h2 id="future-cases-title" className="sr-only">{H.futureCasesTitle}</h2>{H.futureCases.map(({ number, title, subtitle }, index) => <article key={number} className={`sealed-file sealed-file-${index + 1} border-2 border-border bg-card p-2`}><div className="flex items-center justify-between gap-2"><div className="min-w-0"><p className="font-mono text-[10px] font-black text-muted-foreground">{number}</p><h3 className="truncate font-display text-base font-black uppercase sm:text-lg">{title}</h3></div><LockKeyhole className="shrink-0" size={16} aria-hidden="true" /></div><div className="mt-0.5 flex items-center gap-2">{index === 0 && <span className="next-case-mark">{H.nextCaseMark}</span>}<p className="min-w-0 truncate text-[11px] text-muted-foreground">{subtitle}</p></div></article>)}</section>
+          <aside className="team-pin relative hidden min-h-0 overflow-hidden border-2 border-border bg-card p-2 lg:flex lg:flex-col"><img src={teamArt} loading="lazy" alt={H.teamImageAlt} width={1536} height={1024} className="h-14 w-full shrink-0 object-cover" /><span className="team-pin-label">{H.teamLabel}</span><h2 className="mt-1.5 shrink-0 font-display text-base font-black uppercase leading-tight">{H.teamTitle}</h2><ul className="team-roster mt-1.5 min-h-0 flex-1 space-y-1 overflow-hidden">{H.teamRoster.map((member) => <li key={member.initials} className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-2"><span className="roster-initials grid size-6 shrink-0 place-items-center border-2 border-current font-mono text-[10px] font-black">{member.initials}</span><span className="min-w-0"><strong className="block truncate text-[11px] font-black uppercase leading-tight">{member.job}</strong><span className="block truncate text-[10px] leading-tight text-muted-foreground">{member.name} · {member.does}</span></span></li>)}</ul></aside>
         </div>
       </section>
     </div>
@@ -258,6 +264,13 @@ function Dialogue({ who, children }: { who: keyof typeof team; children: ReactNo
   return <div className={`dialogue dialogue-${who} mt-6 grid grid-cols-[auto_minmax(0,1fr)] gap-3`} data-speaker={who}><div className="portrait-cutout" data-character={who}><img src={teamArt} alt="" aria-hidden="true" /><span>{member.initials}</span></div><div className="min-w-0"><div className="flex flex-wrap items-baseline gap-x-2"><strong className="text-sm">{member.name}</strong><span className="font-mono text-[10px] font-bold uppercase text-muted-foreground">{member.role}</span></div><p className="mt-2 text-sm leading-relaxed sm:text-base">{children}</p></div></div>;
 }
 
+function AnalystTag({ id }: { id: string }) {
+  const who = decisionAnalyst[id];
+  if (!who) return null;
+  const member = team[who];
+  return <div className="analyst-tag" data-character={who}><span className="analyst-tag-initials">{member.initials}</span><span className="min-w-0"><span className="analyst-tag-label">{S.decisionUi.analystLabel}</span><strong className="analyst-tag-name">{member.name} · {member.role}</strong><span className="analyst-tag-focus">{member.focus}</span></span></div>;
+}
+
 function BottomActions({ children }: { children: ReactNode }) {
   return <div className="bottom-actions fixed inset-x-0 bottom-0 z-30 border-t-2 border-border bg-background/95 p-3"><div className="mx-auto flex max-w-4xl flex-wrap justify-end gap-2">{children}</div></div>;
 }
@@ -280,7 +293,7 @@ function DecisionScreen({ decision, selected, showWhy, showHint, revising, choic
   const choice = decision.choices.find((item) => item.id === selected);
   return <ScreenFrame label={decision.eyebrow}>
     <div className={`decision-layout scene-decision scene-act-${decision.act} mt-2 grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.72fr)]`}>
-      <div className={selected ? "decision-question decision-question-complete" : "decision-question"}><div className="question-sheet"><span className="paper-clip" aria-hidden="true" /><h1 className="screen-title font-display text-3xl font-black uppercase leading-none sm:text-5xl">{decision.title}</h1><p className="screen-prompt mt-3 max-w-2xl text-base font-semibold leading-relaxed sm:text-lg">{decision.prompt}</p></div>
+      <div className={selected ? "decision-question decision-question-complete" : "decision-question"}><div className="question-sheet"><span className="paper-clip" aria-hidden="true" /><AnalystTag id={decision.id} /><h1 className="screen-title font-display text-3xl font-black uppercase leading-none sm:text-5xl">{decision.title}</h1><p className="screen-prompt mt-3 max-w-2xl text-base font-semibold leading-relaxed sm:text-lg">{decision.prompt}</p></div>
         {revising && <div className="mt-5 border-l-4 border-warning bg-warning/10 p-4 text-sm"><strong>{S.decisionUi.revisingTitle}</strong><p className="mt-1 text-muted-foreground">{S.decisionUi.revisingText}</p></div>}
         {!selected && <div className="mobile-evidence"><EvidenceSidecar act={decision.act} /></div>}
         {!selected && <div ref={choiceRegionRef} className="choice-grid mt-4 grid gap-2" role="group" aria-label={decision.prompt}>{decision.choices.map((item, index) => <GameButton key={item.id} data-choice variant="option" className="choice-button min-h-13 justify-start py-2 normal-case" onClick={() => onChoose(decision, item.id)} autoFocus={index === 0}><span className="choice-letter grid size-8 shrink-0 place-items-center border-2 border-current text-xs">{String.fromCharCode(65 + index)}</span><span>{item.label}</span></GameButton>)}</div>}
