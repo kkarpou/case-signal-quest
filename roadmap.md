@@ -18,3 +18,5 @@
 - [x] Verify the full next-pass redesign at 390×844, 1068×639, and 1280×720
 - [x] Correct case labels to feminine (ΥΠΟΘΕΣΗ 01 · ΑΝΟΙΚΤΗ, ΚΛΕΙΔΩΜΕΝΗ)
 - [x] Add accessible in-game glossary with CASE 01 examples (dialog, keyboard, focus trap)
+- [x] Add accessible team cards with role, specialty, and CASE 01 examples to the Hub
+- [x] Add "who guided what" team summary to the final report
