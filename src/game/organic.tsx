@@ -23,6 +23,7 @@ function MarginaliaTerm({ label, up }: { label: string; up?: boolean | undefined
   const wrapRef = useRef<HTMLSpanElement>(null);
   useEffect(() => {
     if (!open) return;
+    wrapRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
     const onPointerDown = (event: MouseEvent) => {
       if (!wrapRef.current?.contains(event.target as Node)) setOpen(false);
     };
