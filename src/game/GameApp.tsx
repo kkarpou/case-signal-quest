@@ -68,6 +68,7 @@ export function GameApp() {
   const [showHint, setShowHint] = useState(false);
   const [revising, setRevising] = useState(false);
   const [glossaryOpen, setGlossaryOpen] = useState(false);
+  const [memberOpen, setMemberOpen] = useState<string | null>(null);
   const choiceRegionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -126,6 +127,7 @@ export function GameApp() {
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
+      if (memberOpen) return;
       if (event.key.toLowerCase() === "g" && !event.metaKey && !event.ctrlKey && !event.altKey) {
         event.preventDefault();
         setGlossaryOpen((value) => !value);
@@ -133,7 +135,7 @@ export function GameApp() {
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, []);
+  }, [memberOpen]);
 
   const choose = (decision: Decision, choiceId: string) => {
     const previous = state.decisions[decision.id];
@@ -197,7 +199,7 @@ export function GameApp() {
 
       <main className={view === "case" ? "h-[calc(100svh-4.25rem)] overflow-hidden" : "h-[calc(100svh-4rem)] overflow-hidden"}>
         {view === "hub" ? (
-          <Hub state={state} onPlay={() => setView("case")} onReset={reset} />
+          <Hub state={state} onPlay={() => setView("case")} onReset={reset} onOpenMember={setMemberOpen} />
         ) : (
           <CaseScreen
             state={state} {...(activeDecision ? { decision: activeDecision } : {})} selected={selected} showWhy={showWhy} showHint={showHint} revising={revising}
@@ -208,11 +210,12 @@ export function GameApp() {
         )}
       </main>
       <Glossary open={glossaryOpen} onClose={() => setGlossaryOpen(false)} />
+      <MemberDialog initials={memberOpen} onClose={() => setMemberOpen(null)} />
     </div>
   );
 }
 
-function Hub({ state, onPlay, onReset }: { state: GameState; onPlay: () => void; onReset: () => void }) {
+function Hub({ state, onPlay, onReset, onOpenMember }: { state: GameState; onPlay: () => void; onReset: () => void; onOpenMember: (initials: string) => void }) {
   const hasProgress = state.currentAct > 0 || Object.keys(state.decisions).length > 0;
   const H = S.hub;
   return (
