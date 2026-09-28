@@ -29,3 +29,4 @@
 - [ ] Επέκταση γλωσσαρίου (lateral reading, παρονομαστής, ποσοστιαίες μονάδες, μεροληψία επιλογής, πλαστοπροσωπία, συνθετικό vs ψευδές, απόδοση)
 - [ ] Έλεγχος ροής, αποθήκευσης, αριθμητικών και κινητού για τις νέες υποθέσεις
 - [x] Show the team member's photo in the analyst tag on decision screens
+- [x] Show the full team-summary text in the case report (no truncation)
