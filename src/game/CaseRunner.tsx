@@ -132,7 +132,7 @@ export function CaseRunner({ def, progress, onProgress, onHub }: {
 
   if (scene.kind === "report") {
     const entries = Object.entries(progress.skillScores) as [SkillKey, number][];
-    return <Frame label={S.report.label}>
+    return <Frame label={`${def.number} · ${S.report.label}`}>
       <article className="report-layout dossier-report closed-dossier mt-2">
         <div className="dossier-spine" aria-hidden="true">{def.number}</div>
         <div className="report-finding">
@@ -145,8 +145,8 @@ export function CaseRunner({ def, progress, onProgress, onHub }: {
           </section>
         </div>
         <div className="report-profile">
-          <section className="skill-sheet"><h2 className="font-display text-lg font-black lg:text-2xl">{S.report.profileTitle}</h2>
-            <div className="score-bars mt-3 space-y-2 lg:mt-5 lg:space-y-4">{entries.map(([key, value]) => <div key={key}><div className="mb-1 flex justify-between gap-3 text-xs font-black lg:mb-2 lg:text-sm"><span>{skillLabels[key]}</span><span>{value}</span></div><div className="skill-track h-2 border border-border bg-muted lg:h-3"><div className="h-full bg-signal" style={{ width: `${value}%` }} /></div></div>)}</div>
+          <section className="skill-sheet"><h2 className="font-display text-base font-black lg:text-2xl">{S.report.profileTitle}</h2>
+            <div className="score-bars mt-2 space-y-1 lg:mt-5 lg:space-y-4">{entries.map(([key, value]) => <div key={key}><div className="mb-1 flex justify-between gap-3 text-xs font-black lg:mb-2 lg:text-sm"><span>{skillLabels[key]}</span><span>{value}</span></div><div className="skill-track h-2 border border-border bg-muted lg:h-3"><div className="h-full bg-signal" style={{ width: `${value}%` }} /></div></div>)}</div>
           </section>
           {progress.revisedDecisions.length > 0 && <p className="revision-note mt-2 text-xs font-semibold text-signal lg:mt-3">{S.report.revisions(progress.revisedDecisions.length)}</p>}
         </div>
