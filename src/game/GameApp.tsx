@@ -84,6 +84,7 @@ export function GameApp() {
       try { setState({ ...initialState, ...JSON.parse(stored) }); } catch { window.localStorage.removeItem(STORAGE_KEY); }
     }
     if (storedTheme === "light") setTheme("light");
+    setCase02Progress(loadProgress(case02.storageKey));
     setHydrated(true);
   }, []);
 
