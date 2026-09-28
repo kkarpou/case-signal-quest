@@ -360,6 +360,12 @@
   .skill-sheet .skill-track { height: .38rem; }
   .report-notes { margin-top: .35rem; }
   .report-notes > div { padding: .4rem; }
+  .closed-dossier { gap: 0; }
+  .closed-dossier .dossier-spine { padding-block: .25rem; }
+  .closed-dossier .report-finding { padding: .45rem; }
+  .closed-dossier .report-profile { padding: .4rem; }
+  .closed-dossier .report-dialogue .dialogue { margin-top: .35rem; }
+  .closed-dossier .report-notes h3 { font-size: .72rem; line-height: .9rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
