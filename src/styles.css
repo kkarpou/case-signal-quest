@@ -399,3 +399,8 @@
 .glossary-panel .tape-top { width: 7rem; }
 .glossary-term dt { letter-spacing: .02em; }
 @media (min-width: 640px) { .glossary-panel { max-height: calc(100svh - 3rem); } }
+
+/* Team cards (Hub) & report team summary */
+.team-card { transition: border-color .15s ease; }
+.team-card:focus-within, .team-card:hover { border-color: var(--signal); }
+.report-team-summary li { grid-template-columns: 6.5rem minmax(0,1fr); }
