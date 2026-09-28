@@ -65,6 +65,7 @@
   --ring: oklch(0.72 0.13 190);
   --signal: oklch(0.72 0.13 190);
   --signal-foreground: oklch(0.14 0.018 188);
+  --go: oklch(0.75 0.145 168);
   --warning: oklch(0.78 0.15 82);
   --warning-foreground: oklch(0.18 0.025 65);
   --alert: oklch(0.61 0.16 29);
@@ -103,6 +104,7 @@
   --ring: oklch(0.47 0.105 190);
   --signal: oklch(0.47 0.105 190);
   --signal-foreground: oklch(0.98 0.012 82);
+  --go: oklch(0.45 0.115 168);
   --warning: oklch(0.69 0.14 76);
   --warning-foreground: oklch(0.17 0.025 65);
   --alert: oklch(0.52 0.16 29);
@@ -328,8 +330,8 @@
 @keyframes spike-pulse { 50% { filter: brightness(1.35); transform: scaleY(1.04); transform-origin: bottom; } }
 @keyframes signal-pulse { 50% { transform: scale(1.12); opacity: .65; } }
 @keyframes recommended-action-pulse {
-  0%, 100% { border-color: color-mix(in oklab, var(--signal) 70%, var(--primary)); box-shadow: 0 0 0 0 color-mix(in oklab, var(--signal) 20%, transparent); }
-  50% { border-color: var(--signal); box-shadow: 0 0 0 5px color-mix(in oklab, var(--signal) 32%, transparent); }
+  0%, 100% { border-color: color-mix(in oklab, var(--go) 70%, var(--primary)); box-shadow: 0 0 0 0 color-mix(in oklab, var(--go) 20%, transparent); }
+  50% { border-color: var(--go); box-shadow: 0 0 0 5px color-mix(in oklab, var(--go) 32%, transparent); }
 }
 
 .glossary-en { color: color-mix(in oklab, var(--paper-ink) 72%, var(--signal)); letter-spacing: .01em; }
@@ -519,4 +521,186 @@
   .report-notes { margin-top: .4rem; gap: .4rem; }
   .report-margin-note h3 { font-size: .78rem; }
   .revision-note { margin-top: .4rem; padding: .3rem .45rem; font-size: 10px; }
+}
+
+/* ===== Organic marginalia & in-world notifications ===== */
+.feedback-card { position: relative; }
+
+.marginalia-wrap { position: relative; display: inline; }
+
+.marginalia-term {
+  display: inline;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-decoration: underline dashed color-mix(in oklab, var(--signal) 75%, var(--paper-ink)) 2px;
+  text-underline-offset: 3px;
+  cursor: help;
+}
+.marginalia-term:hover,
+.marginalia-term:focus-visible {
+  background: color-mix(in oklab, var(--warning) 22%, transparent);
+  outline: 2px solid color-mix(in oklab, var(--signal) 60%, var(--paper-ink));
+  outline-offset: 2px;
+}
+
+.marginalia-note {
+  position: absolute;
+  z-index: 40;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  display: block;
+  width: min(17rem, 82vw);
+  padding: 0.7rem 0.8rem 0.6rem;
+  transform: rotate(-0.7deg);
+  background: color-mix(in oklab, var(--warning) 16%, var(--paper));
+  color: var(--paper-ink);
+  border: 1px solid color-mix(in oklab, var(--paper-ink) 45%, transparent);
+  border-top-width: 3px;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.35);
+  font-size: 0.72rem;
+  line-height: 1.4;
+  animation: marginalia-in 0.16s ease-out both;
+}
+.marginalia-note::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 1rem;
+  width: 2.4rem;
+  height: 13px;
+  transform: rotate(-3deg);
+  background: color-mix(in oklab, var(--muted-foreground) 55%, transparent);
+  opacity: 0.5;
+}
+.marginalia-note-term {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.marginalia-note-body { display: block; margin-top: 0.25rem; }
+.marginalia-note-link {
+  display: inline-block;
+  margin-top: 0.45rem;
+  padding: 0.22rem 0.5rem;
+  border: 2px solid color-mix(in oklab, var(--signal) 60%, var(--paper-ink));
+  background: none;
+  color: color-mix(in oklab, var(--signal) 45%, var(--paper-ink));
+  font-size: 0.64rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.marginalia-note-link:hover,
+.marginalia-note-link:focus-visible {
+  background: color-mix(in oklab, var(--signal) 60%, var(--paper-ink));
+  color: var(--paper);
+}
+
+@keyframes marginalia-in {
+  from { opacity: 0; translate: 0 -4px; }
+  to { opacity: 1; translate: 0 0; }
+}
+
+.fax-ribbon {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  overflow: hidden;
+  margin: 0 0 0.4rem;
+  padding: 0.35rem 0.65rem;
+  border: 1px solid color-mix(in oklab, var(--paper-ink) 30%, transparent);
+  border-top-width: 3px;
+  background: color-mix(in oklab, var(--warning) 12%, var(--paper));
+  color: var(--paper-ink);
+}
+.fax-ribbon-label {
+  flex: none;
+  font-size: 0.6rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  color: color-mix(in oklab, var(--alert) 55%, var(--paper-ink));
+}
+.fax-ribbon-text {
+  min-width: 0;
+  font-family: ui-monospace, "IBM Plex Mono", monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  white-space: nowrap;
+  animation: fax-type 2.2s steps(28, end) both;
+}
+@keyframes fax-type {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+
+.folder-stamp {
+  position: absolute;
+  top: 0.7rem;
+  right: 1rem;
+  z-index: 5;
+  padding: 0.3rem 0.6rem;
+  transform: rotate(6deg);
+  border: 3px solid color-mix(in oklab, var(--signal) 55%, var(--paper-ink));
+  color: color-mix(in oklab, var(--signal) 45%, var(--paper-ink));
+  font-family: var(--font-display, inherit);
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  pointer-events: none;
+  animation: folder-stamp-in 0.2s ease-out both;
+}
+@keyframes folder-stamp-in {
+  from { opacity: 0; transform: rotate(6deg) scale(1.7); }
+  to { opacity: 1; transform: rotate(6deg) scale(1); }
+}
+
+.desk-memo {
+  position: relative;
+  margin-top: 0.9rem;
+  padding: 0.6rem 0.75rem 0.6rem 1.4rem;
+  background: color-mix(in oklab, var(--warning) 20%, var(--paper));
+  color: var(--paper-ink);
+  border: 1px solid color-mix(in oklab, var(--paper-ink) 40%, transparent);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+.desk-memo::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0.45rem;
+  width: 9px;
+  height: 9px;
+  border-radius: 9999px;
+  transform: translateY(-50%);
+  background: color-mix(in oklab, var(--alert) 80%, var(--paper-ink));
+}
+.desk-memo-label {
+  display: block;
+  margin-bottom: 0.2rem;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.6rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--alert) 60%, var(--paper-ink));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fax-ribbon-text,
+  .folder-stamp,
+  .marginalia-note {
+    animation: none;
+  }
+}
+.marginalia-up .marginalia-note {
+  top: auto;
+  bottom: calc(100% + 0.5rem);
 }

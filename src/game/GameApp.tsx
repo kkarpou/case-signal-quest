@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode, type RefObject } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode, type RefObject } from "react";
 import { ArrowLeft, ArrowRight, BarChart3, Check, ChevronDown, CircleHelp, FileSearch, Fingerprint, Globe2, LockKeyhole, Moon, Network, Play, Radio, RotateCcw, Search, ShieldCheck, Sun, TimerReset, TriangleAlert } from "lucide-react";
 import { GameButton } from "../components/GameButton";
 import keyArt from "../assets/signal-files-keyart.jpg";
@@ -10,6 +10,7 @@ import teamNoorArt from "../assets/team-noor.jpg";
 import { strings as S } from "./strings";
 import { decisionByAct, decisions, skillLabels, type Decision, type SkillKey } from "./game-data";
 import { CaseRunner, initialProgress, loadProgress, type CaseProgress } from "./CaseRunner";
+import { FaxOnMount, FolderStamp, GlossaryLinkContext, MarginaliaText } from "./organic";
 import { case02 } from "./cases/case02";
 import { case03 } from "./cases/case03";
 const playableCases: CaseDef[] = [case02, case03];
@@ -61,6 +62,11 @@ const decisionAnalyst: Record<string, keyof typeof team> = {
   foreign: "leo", direction: "leo", response: "noor", final: "lead", confidence: "lead", lesson: "lead",
 };
 
+const faxByAct: Record<number, string> = {
+  3: S.evidenceReveal.title, 6: S.timeline.title, 7: S.network.title,
+  8: S.evidence.foreign.site, 9: S.evidence.direction.title,
+};
+
 function clamp(value: number) { return Math.max(0, Math.min(100, value)); }
 
 export function GameApp() {
@@ -78,6 +84,7 @@ export function GameApp() {
   const [glossaryOpen, setGlossaryOpen] = useState(false);
   const [memberOpen, setMemberOpen] = useState<string | null>(null);
   const choiceRegionRef = useRef<HTMLDivElement>(null);
+  const openGlossary = useCallback(() => setGlossaryOpen(true), []);
 
   useEffect(() => {
     const stored = window.localStorage.getItem(STORAGE_KEY);
@@ -204,6 +211,7 @@ export function GameApp() {
   if (!hydrated) return <div className="grid min-h-screen place-items-center bg-background"><span className="stamp">{S.app.loading}</span></div>;
 
   return (
+    <GlossaryLinkContext.Provider value={openGlossary}>
     <div className="h-svh overflow-hidden bg-background text-foreground">
       <header className="case-masthead sticky top-0 z-40 border-b-2 border-border bg-background/95">
         <div className="mx-auto grid min-h-16 max-w-7xl grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 sm:px-6">
@@ -246,6 +254,7 @@ export function GameApp() {
       <Glossary open={glossaryOpen} onClose={() => setGlossaryOpen(false)} />
       <MemberDialog initials={memberOpen} onClose={() => setMemberOpen(null)} />
     </div>
+    </GlossaryLinkContext.Provider>
   );
 }
 
@@ -349,8 +358,8 @@ function CaseScreen(props: {
   return <Cliffhanger onHub={props.onHub} />;
 }
 
-function ScreenFrame({ children, label }: { children: ReactNode; label: string }) {
-  return <section className="game-screen case-board mx-auto h-full max-w-6xl overflow-hidden px-4 pb-20 pt-4 sm:px-6 sm:pb-20 sm:pt-5"><div className="act-ruler"><span className="kicker">{label}</span><span className="ruler-line" aria-hidden="true" /></div>{children}</section>;
+function ScreenFrame({ children, label, ribbon }: { children: ReactNode; label: string; ribbon?: ReactNode }) {
+  return <section className="game-screen case-board mx-auto h-full max-w-6xl overflow-y-auto overflow-x-hidden px-4 pb-20 pt-4 sm:px-6 sm:pb-20 sm:pt-5"><div className="act-ruler"><span className="kicker">{label}</span><span className="ruler-line" aria-hidden="true" /></div>{ribbon}{children}</section>;
 }
 
 function Dialogue({ who, children }: { who: keyof typeof team; children: ReactNode }) {
@@ -385,16 +394,24 @@ function DecisionScreen({ decision, selected, showWhy, showHint, revising, choic
   onChoose: (decision: Decision, choiceId: string) => void; onNext: () => void; onWhy: () => void; onHint: () => void; onRevise: () => void;
 }) {
   const choice = decision.choices.find((item) => item.id === selected);
-  return <ScreenFrame label={decision.eyebrow}>
+  const [stamped, setStamped] = useState(false);
+  useEffect(() => {
+    if (!selected) return;
+    setStamped(true);
+    const timer = window.setTimeout(() => setStamped(false), 2800);
+    return () => window.clearTimeout(timer);
+  }, [selected, decision.id]);
+  const faxMessage = faxByAct[decision.act];
+  return <ScreenFrame label={decision.eyebrow} ribbon={faxMessage ? <FaxOnMount key={decision.act} message={faxMessage} /> : null}>
     <div className={`decision-layout scene-decision scene-act-${decision.act} mt-2 grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.72fr)]`}>
-      <div className={selected ? "decision-question decision-question-complete" : "decision-question"}><div className="question-sheet"><span className="paper-clip" aria-hidden="true" /><AnalystTag id={decision.id} /><h1 className="screen-title font-display text-3xl font-black uppercase leading-none sm:text-5xl">{decision.title}</h1><p className="screen-prompt mt-3 max-w-2xl text-base font-semibold leading-relaxed sm:text-lg">{decision.prompt}</p></div>
+      <div className={selected ? "decision-question decision-question-complete" : "decision-question"}><div className="question-sheet"><span className="paper-clip" aria-hidden="true" /><AnalystTag id={decision.id} /><h1 className="screen-title font-display text-3xl font-black uppercase leading-none sm:text-5xl">{decision.title}</h1><p className="screen-prompt mt-3 max-w-2xl text-base font-semibold leading-relaxed sm:text-lg"><MarginaliaText text={decision.prompt} /></p></div>
         {revising && <div className="mt-5 border-l-4 border-warning bg-warning/10 p-4 text-sm"><strong>{S.decisionUi.revisingTitle}</strong><p className="mt-1 text-muted-foreground">{S.decisionUi.revisingText}</p></div>}
         {!selected && <div className="mobile-evidence"><EvidenceSidecar act={decision.act} /></div>}
         {!selected && <div ref={choiceRegionRef} className="choice-grid mt-4 grid gap-2" role="group" aria-label={decision.prompt}>{decision.choices.map((item, index) => <GameButton key={item.id} data-choice variant="option" className="choice-button min-h-13 justify-start py-2 normal-case" onClick={() => onChoose(decision, item.id)} autoFocus={index === 0}><span className="choice-letter grid size-8 shrink-0 place-items-center border-2 border-current text-xs">{String.fromCharCode(65 + index)}</span><span>{item.label}</span></GameButton>)}</div>}
         {!selected && <button onClick={onHint} className="hint-button mt-3 inline-flex min-h-11 items-center gap-2 text-sm font-black text-signal underline decoration-2 underline-offset-4 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring"><CircleHelp size={18} />{S.decisionUi.hint} <span className="hidden font-normal text-muted-foreground sm:inline">{S.decisionUi.hintKey}</span></button>}
         {showHint && !selected && <div className="hint-panel mt-2 border-l-4 border-signal bg-accent p-3 text-sm"><strong>{S.decisionUi.hintLead}</strong> {decision.hint}</div>}
       </div>
-       <aside className={selected ? "decision-sidecar min-w-0" : "decision-sidecar desktop-evidence min-w-0"}>{selected && choice ? <Feedback decision={decision} choice={choice} showWhy={showWhy} onWhy={onWhy} /> : <EvidenceSidecar act={decision.act} />}</aside>
+       <aside className={selected ? "decision-sidecar min-w-0" : "decision-sidecar desktop-evidence min-w-0"}>{selected && choice ? <Feedback decision={decision} choice={choice} showWhy={showWhy} showStamp={stamped} onWhy={onWhy} /> : <EvidenceSidecar act={decision.act} />}</aside>
     </div>
     {selected && <BottomActions>{decision.critical && <GameButton variant="secondary" onClick={onRevise} icon={<RotateCcw size={18} />}>{S.decisionUi.revise}</GameButton>}<GameButton variant="secondary" onClick={onWhy} icon={<CircleHelp size={18} />}>{S.decisionUi.why}</GameButton><GameButton onClick={onNext} icon={<ArrowRight size={18} />}>{S.decisionUi.next}</GameButton></BottomActions>}
   </ScreenFrame>;
@@ -403,15 +420,16 @@ function DecisionScreen({ decision, selected, showWhy, showHint, revising, choic
 function EvidenceSidecar({ act }: { act: number }) {
   if (act === 6) return <TimelineVisual />;
   if (act === 7) return <NetworkVisual />;
-  if (act === 8) return <article className="evidence-card"><Globe2 className="text-signal" size={30} /><span className="stamp-muted mt-5 w-fit">{S.evidence.foreign.stamp}</span><h2 className="mt-3 text-2xl font-black">{S.evidence.foreign.site}</h2><p className="mt-2 text-muted-foreground">{S.evidence.foreign.text}</p><dl className="mt-5 grid grid-cols-2 gap-3 text-sm"><div><dt className="text-muted-foreground">{S.evidence.foreign.firstSeen}</dt><dd className="font-black">{S.evidence.foreign.firstSeenValue}</dd></div><div><dt className="text-muted-foreground">{S.evidence.foreign.languages}</dt><dd className="font-black">{S.evidence.foreign.languagesValue}</dd></div></dl></article>;
-  if (act === 9) return <article className="evidence-card"><TimerReset className="text-warning" size={30} /><h2 className="mt-4 text-2xl font-black">{S.evidence.direction.title}</h2><ol className="mt-6 space-y-5 border-l-2 border-border pl-5">{S.evidence.direction.events.map((event, index, all) => <li key={event.time} className={index === all.length - 1 ? "text-signal" : ""}><strong>{event.time}</strong><p className={index === all.length - 1 ? "text-sm" : "text-sm text-muted-foreground"}>{event.label}</p></li>)}</ol></article>;
-  if (act === 10) return <article className="evidence-card"><Radio className="text-alert" size={30} /><h2 className="mt-4 text-2xl font-black">{S.evidence.response.title}</h2><p className="mt-3 text-muted-foreground">{S.evidence.response.text}</p></article>;
-  if (act >= 11) return <article className="evidence-card"><ShieldCheck className="text-signal" size={30} /><h2 className="mt-4 text-2xl font-black">{S.evidence.findings.title}</h2><ul className="mt-5 space-y-3 text-sm">{S.evidence.findings.confirmed.map((item) => <li key={item} className="flex gap-2"><Check className="shrink-0 text-signal" size={18} />{item}</li>)}<li className="flex gap-2 text-muted-foreground"><TriangleAlert className="shrink-0 text-warning" size={18} />{S.evidence.findings.caveat}</li></ul></article>;
-  return <article className="evidence-card"><FileSearch className="text-signal" size={30} /><h2 className="mt-4 text-2xl font-black">{S.evidence.current.title}</h2><p className="mt-3 text-muted-foreground">{S.evidence.current.text}</p></article>;
+  if (act === 8) return <article className="evidence-card"><Globe2 className="text-signal" size={30} /><span className="stamp-muted mt-5 w-fit">{S.evidence.foreign.stamp}</span><h2 className="mt-3 text-2xl font-black">{S.evidence.foreign.site}</h2><p className="mt-2 text-muted-foreground"><MarginaliaText text={S.evidence.foreign.text} /></p><dl className="mt-5 grid grid-cols-2 gap-3 text-sm"><div><dt className="text-muted-foreground">{S.evidence.foreign.firstSeen}</dt><dd className="font-black">{S.evidence.foreign.firstSeenValue}</dd></div><div><dt className="text-muted-foreground">{S.evidence.foreign.languages}</dt><dd className="font-black">{S.evidence.foreign.languagesValue}</dd></div></dl></article>;
+  if (act === 9) return <article className="evidence-card"><TimerReset className="text-warning" size={30} /><h2 className="mt-4 text-2xl font-black">{S.evidence.direction.title}</h2><ol className="mt-6 space-y-5 border-l-2 border-border pl-5">{S.evidence.direction.events.map((event, index, all) => <li key={event.time} className={index === all.length - 1 ? "text-signal" : ""}><strong>{event.time}</strong><p className={index === all.length - 1 ? "text-sm" : "text-sm text-muted-foreground"}><MarginaliaText text={event.label} /></p></li>)}</ol></article>;
+  if (act === 10) return <article className="evidence-card"><Radio className="text-alert" size={30} /><h2 className="mt-4 text-2xl font-black">{S.evidence.response.title}</h2><p className="mt-3 text-muted-foreground"><MarginaliaText text={S.evidence.response.text} /></p></article>;
+  if (act >= 11) return <article className="evidence-card"><ShieldCheck className="text-signal" size={30} /><h2 className="mt-4 text-2xl font-black">{S.evidence.findings.title}</h2><ul className="mt-5 space-y-3 text-sm">{S.evidence.findings.confirmed.map((item) => <li key={item} className="flex gap-2"><Check className="shrink-0 text-signal" size={18} /><span className="min-w-0"><MarginaliaText text={item} /></span></li>)}<li className="flex gap-2 text-muted-foreground"><TriangleAlert className="shrink-0 text-warning" size={18} /><span className="min-w-0"><MarginaliaText text={S.evidence.findings.caveat} /></span></li></ul></article>;
+  return <article className="evidence-card"><FileSearch className="text-signal" size={30} /><h2 className="mt-4 text-2xl font-black">{S.evidence.current.title}</h2><p className="mt-3 text-muted-foreground"><MarginaliaText text={S.evidence.current.text} /></p></article>;
 }
 
-function Feedback({ decision, choice, showWhy, onWhy }: { decision: Decision; choice: Decision["choices"][number]; showWhy: boolean; onWhy: () => void }) {
-  return <article className={`feedback-card feedback-reveal verdict-board ${choice.correct ? "feedback-strong border-signal" : "feedback-caution border-warning"}`} aria-live="polite"><div className="verdict-heading"><span className={`${choice.correct ? "stamp" : "stamp-warning"} verdict-stamp`}>{choice.correct ? S.feedback.strong : S.feedback.premature}</span><span className="verdict-case-id font-mono">{S.feedback.caseId}</span></div>
+function Feedback({ decision, choice, showWhy, showStamp, onWhy }: { decision: Decision; choice: Decision["choices"][number]; showWhy: boolean; showStamp: boolean; onWhy: () => void }) {
+  return <article className={`feedback-card feedback-reveal verdict-board ${choice.correct ? "feedback-strong border-signal" : "feedback-caution border-warning"}`} aria-live="polite"><FolderStamp show={showStamp} /><div className="verdict-heading"><span className={`${choice.correct ? "stamp" : "stamp-warning"} verdict-stamp`}>{choice.correct ? S.feedback.strong : S.feedback.premature}</span><span className="verdict-case-id font-mono">{S.feedback.caseId}</span></div>
+    {!choice.correct && <div className="desk-memo"><span className="desk-memo-label">{S.notify.memoLabel}</span><p><MarginaliaText text={S.notify.memo} /></p></div>}
     <FeedbackRow title={S.feedback.yourChoice} text={choice.label} icon={<Fingerprint size={18} />} />
     <FeedbackRow title={S.feedback.evidence} text={decision.evidence} icon={<Search size={18} />} />
     <FeedbackRow title={S.feedback.cannot} text={decision.cannot} icon={<TriangleAlert size={18} />} />
@@ -422,11 +440,11 @@ function Feedback({ decision, choice, showWhy, onWhy }: { decision: Decision; ch
 }
 
 function FeedbackRow({ title, text, icon, strong }: { title: string; text: string; icon: ReactNode; strong?: boolean }) {
-  return <div className={`feedback-row mt-5 grid grid-cols-[auto_minmax(0,1fr)] gap-3 border-t border-border pt-4 first:border-0 ${strong ? "feedback-principle" : ""}`}><span className="text-signal">{icon}</span><div><h3 className="font-mono text-[11px] font-black uppercase text-muted-foreground">{title}</h3><p className={`mt-1 text-sm leading-relaxed ${strong ? "font-black text-signal" : ""}`}>{text}</p></div></div>;
+  return <div className={`feedback-row mt-5 grid grid-cols-[auto_minmax(0,1fr)] gap-3 border-t border-border pt-4 first:border-0 ${strong ? "feedback-principle" : ""}`}><span className="text-signal">{icon}</span><div><h3 className="font-mono text-[11px] font-black uppercase text-muted-foreground">{title}</h3><p className={`mt-1 text-sm leading-relaxed ${strong ? "font-black text-signal" : ""}`}><MarginaliaText text={text} /></p></div></div>;
 }
 
 function EvidenceReveal({ onNext }: { onNext: () => void }) {
-  return <ScreenFrame label={S.evidenceReveal.label}><div className="evidence-reveal-layout mt-2 grid gap-5 lg:grid-cols-2 lg:items-center"><div><h1 className="font-display text-3xl font-black uppercase sm:text-5xl">{S.evidenceReveal.title}</h1><p className="marker-copy mt-2 text-base font-semibold sm:text-lg">{S.evidenceReveal.text}</p><Dialogue who="mara">{S.evidenceReveal.maraLine}</Dialogue></div><div className="evidence-pair evidence-comparison relative grid grid-cols-2 gap-2"><span className="comparison-arrow" aria-hidden="true">→</span><article className="evidence-card evidence-print"><span className="stamp-warning">{S.evidenceReveal.viralStamp}</span><div className="mt-2 aspect-video overflow-hidden"><img src={keyArt} alt={S.evidenceReveal.viralAlt} width={1536} height={1024} className="size-full object-cover" /></div><p className="mt-2 text-xs font-black">{S.evidenceReveal.viralCaption}</p><span className="scribble-note">{S.evidenceReveal.viralNote}</span></article><article className="evidence-card evidence-print"><span className="stamp">{S.evidenceReveal.archiveStamp}</span><div className="mt-2 aspect-video overflow-hidden grayscale"><img src={keyArt} alt={S.evidenceReveal.archiveAlt} width={1536} height={1024} className="size-full object-cover" /></div><p className="mt-2 text-xs font-black">{S.evidenceReveal.archiveCaption}</p><span className="scribble-note text-signal">{S.evidenceReveal.archiveNote}</span></article></div></div><BottomActions><GameButton onClick={onNext} icon={<ArrowRight size={18} />}>{S.evidenceReveal.action}</GameButton></BottomActions></ScreenFrame>;
+  return <ScreenFrame label={S.evidenceReveal.label} ribbon={<FaxOnMount message={S.evidenceReveal.title} />}><div className="evidence-reveal-layout mt-2 grid gap-5 lg:grid-cols-2 lg:items-center"><div><h1 className="font-display text-3xl font-black uppercase sm:text-5xl">{S.evidenceReveal.title}</h1><p className="marker-copy mt-2 text-base font-semibold sm:text-lg">{S.evidenceReveal.text}</p><Dialogue who="mara">{S.evidenceReveal.maraLine}</Dialogue></div><div className="evidence-pair evidence-comparison relative grid grid-cols-2 gap-2"><span className="comparison-arrow" aria-hidden="true">→</span><article className="evidence-card evidence-print"><span className="stamp-warning">{S.evidenceReveal.viralStamp}</span><div className="mt-2 aspect-video overflow-hidden"><img src={keyArt} alt={S.evidenceReveal.viralAlt} width={1536} height={1024} className="size-full object-cover" /></div><p className="mt-2 text-xs font-black">{S.evidenceReveal.viralCaption}</p><span className="scribble-note">{S.evidenceReveal.viralNote}</span></article><article className="evidence-card evidence-print"><span className="stamp">{S.evidenceReveal.archiveStamp}</span><div className="mt-2 aspect-video overflow-hidden grayscale"><img src={keyArt} alt={S.evidenceReveal.archiveAlt} width={1536} height={1024} className="size-full object-cover" /></div><p className="mt-2 text-xs font-black">{S.evidenceReveal.archiveCaption}</p><span className="scribble-note text-signal">{S.evidenceReveal.archiveNote}</span></article></div></div><BottomActions><GameButton onClick={onNext} icon={<ArrowRight size={18} />}>{S.evidenceReveal.action}</GameButton></BottomActions></ScreenFrame>;
 }
 
 function Checkpoint({ onNext }: { onNext: () => void }) {
