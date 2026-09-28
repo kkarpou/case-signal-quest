@@ -10,3 +10,4 @@
 
 - [ ] Editorial case-file redesign across Hub and all case screens
 - [ ] Preserve mobile evidence and verify full 16-act flow at target viewports
+- [ ] Add character portrait treatments and signature mobile network/timeline evidence views
