@@ -273,7 +273,7 @@ function Hub({ state, onPlay, onReset, onOpenMember, case02Progress, onPlayCase,
 
         <div className="wall-lower grid min-h-0 flex-1 gap-3 lg:grid-cols-[1.35fr_0.65fr]">
           <section className="future-file-stack min-h-0" aria-labelledby="future-cases-title"><h2 id="future-cases-title" className="sr-only">{H.futureCasesTitle}</h2>
-            <article className="open-case-file relative border-2 border-signal bg-card p-2">
+            <article className="open-case-file active-next-file relative col-span-2 overflow-hidden border-2 border-signal bg-card p-2">
               <div className="flex items-center justify-between gap-2"><div className="min-w-0"><p className="file-meta font-mono text-[11px] font-black text-signal">{case02.number}</p><h3 className="truncate font-display text-base font-black uppercase sm:text-lg">{case02.title}</h3></div><span className="stamp shrink-0">{case02Progress.completed ? H.completed : H.caseStatus}</span></div>
               <p className="file-summary mt-0.5 truncate text-[11px] font-medium">{case02.subtitle}</p>
               <div className="mt-1.5 flex flex-wrap gap-2"><GameButton className="min-h-11 px-3 py-1 text-xs" onClick={() => onPlayCase(case02)} icon={case02Started ? <ArrowRight size={16} /> : <Play size={16} />}>{case02Progress.completed ? H.playReport : case02Started ? H.playContinue : H.playStart}</GameButton>{case02Started && <GameButton variant="secondary" className="min-h-11 px-3 py-1 text-xs" onClick={() => onResetCase(case02)} icon={<RotateCcw size={16} />}>{H.reset}</GameButton>}</div>
