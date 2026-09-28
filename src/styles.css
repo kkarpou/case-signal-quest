@@ -272,10 +272,10 @@
   .game-screen { padding-top: 0.75rem; }
   .desktop-evidence { display: none; }
   .mobile-evidence { display: block; margin-top: .55rem; }
-  .mobile-evidence .evidence-card { min-height: 0; max-height: 11.5rem; overflow: hidden; padding: .65rem; box-shadow: 4px 4px 0 color-mix(in oklab, var(--foreground) 12%, transparent); }
+  .mobile-evidence .evidence-card { min-height: 0; max-height: 9rem; overflow: hidden; padding: .65rem; box-shadow: 4px 4px 0 color-mix(in oklab, var(--foreground) 12%, transparent); }
   .mobile-evidence .evidence-card > svg:first-child, .mobile-evidence .evidence-card > div:first-child svg { width: 1.15rem; height: 1.15rem; }.mobile-evidence .evidence-card h2 { margin-top: .25rem; font-size: .9rem; }.mobile-evidence .evidence-card p { margin-top: .2rem; font-size: .7rem; line-height: 1rem; }
-  .mobile-evidence .timeline-plot { height: 6rem; margin-top: .3rem; }.mobile-evidence .timeline-events { margin-top: .25rem; }.mobile-evidence .direction-note { display: none; }.mobile-evidence .spike-tag { top: 0; }
-  .mobile-evidence .network-map { max-height: 7.8rem; }.mobile-evidence .network-legend { display: none; }.mobile-evidence .network-card > p { display: none; }
+  .mobile-evidence .timeline-plot { height: 4.5rem; margin-top: .3rem; }.mobile-evidence .timeline-events { margin-top: .2rem; }.mobile-evidence .direction-note { display: none; }.mobile-evidence .spike-tag { top: 0; }
+  .mobile-evidence .network-map { max-height: 5.8rem; }.mobile-evidence .network-legend { display: none; }.mobile-evidence .network-card > p { display: none; }
   .question-sheet { padding: .65rem .75rem; box-shadow: 4px 4px 0 color-mix(in oklab, var(--signal) 30%, transparent); }.paper-clip { height: 1.7rem; }
   .choice-button { padding-block: .45rem; }.choice-letter { width: 1.8rem; height: 1.8rem; }
   .cold-open-layout { gap: 0.625rem; }
