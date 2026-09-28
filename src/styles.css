@@ -167,7 +167,7 @@
 .future-file-stack { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: .65rem; perspective: 800px; }
 .sealed-file { position: relative; min-width: 0; color: var(--paper-ink); box-shadow: 5px 5px 0 color-mix(in oklab, var(--foreground) 10%, transparent); }
 .sealed-file:nth-child(odd) { transform: rotate(-.3deg); }.sealed-file:nth-child(even) { transform: rotate(.25deg); }
-.sealed-file::after { content: "ΚΛΕΙΔΩΜΕΝΟ"; position: absolute; right: .6rem; bottom: .4rem; color: var(--alert); font-size: .52rem; font-weight: 900; transform: rotate(-5deg); }
+.sealed-file::after { content: "ΚΛΕΙΔΩΜΕΝΗ"; position: absolute; right: .6rem; bottom: .4rem; color: var(--alert); font-size: .52rem; font-weight: 900; transform: rotate(-5deg); }
 .next-case-mark { display: block; margin-top: .35rem; width: fit-content; border-left: 3px solid var(--alert); padding-left: .35rem; color: var(--alert); font-size: .56rem; font-weight: 900; }
 .team-pin { color: var(--paper-ink); transform: rotate(.35deg); box-shadow: 6px 6px 0 color-mix(in oklab, var(--warning) 45%, transparent); }
 .team-pin::before { content: ""; position: absolute; z-index: 2; left: 50%; top: -.45rem; width: 3.5rem; height: .9rem; background: color-mix(in oklab, var(--warning) 72%, transparent); transform: translateX(-50%) rotate(-2deg); }
@@ -201,7 +201,7 @@
 .dossier-progress { height: .5rem; background: color-mix(in oklab, var(--paper-ink) 14%, transparent); border: 1px solid var(--paper-ink); }
 .dossier-progress span { display: block; height: 100%; background: var(--signal); }
 .sealed-dossier { opacity: .78; background-image: repeating-linear-gradient(-35deg, transparent 0 18px, color-mix(in oklab, var(--paper-ink) 4%, transparent) 18px 20px); }
-.sealed-dossier::after { content: "ΚΛΕΙΔΩΜΕΝΟ"; position: absolute; right: -1.1rem; bottom: 1rem; border: 2px solid var(--alert); color: var(--alert); padding: .25rem 1.25rem; font-weight: 900; font-size: .65rem; transform: rotate(-8deg); }
+.sealed-dossier::after { content: "ΚΛΕΙΔΩΜΕΝΗ"; position: absolute; right: -1.1rem; bottom: 1rem; border: 2px solid var(--alert); color: var(--alert); padding: .25rem 1.25rem; font-weight: 900; font-size: .65rem; transform: rotate(-8deg); }
 .case-tilt-1 { transform: rotate(.3deg); }.case-tilt-2 { transform: rotate(-.25deg); }.case-tilt-3 { transform: rotate(.15deg); }
 .question-sheet { position: relative; color: var(--paper-ink); background: var(--paper); border: 2px solid color-mix(in oklab, var(--paper-ink) 75%, transparent); padding: 1rem 1.1rem; box-shadow: 7px 7px 0 color-mix(in oklab, var(--signal) 30%, transparent); clip-path: polygon(0 0, 98% 1%, 100% 92%, 97% 100%, 1% 98%); }
 .paper-clip { position: absolute; right: 1.2rem; top: -.3rem; width: .7rem; height: 2.3rem; border: 2px solid var(--paper-ink); border-radius: 50%; transform: rotate(12deg); }
@@ -381,3 +381,10 @@
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
 }
+
+/* ---- Glossary dialog ---- */
+.glossary-overlay { background: color-mix(in oklab, var(--background) 80%, transparent); backdrop-filter: blur(2px); }
+.glossary-panel { width: min(46rem, 100%); max-height: calc(100svh - 1.5rem); overflow-y: auto; overscroll-behavior: contain; }
+.glossary-panel .tape-top { width: 7rem; }
+.glossary-term dt { letter-spacing: .02em; }
+@media (min-width: 640px) { .glossary-panel { max-height: calc(100svh - 3rem); } }
