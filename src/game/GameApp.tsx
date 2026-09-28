@@ -497,11 +497,12 @@ function Glossary({ open, onClose }: { open: boolean; onClose: () => void }) {
             <button ref={closeRef} onClick={onClose} aria-label={G.close} className="dialog-close grid size-11 shrink-0 place-items-center border-2 border-border font-black transition-all focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring">✕</button>
           </div>
           <dl className="glossary-list">
-            {G.terms.map(({ term, definition, example }) => (
+            {G.terms.map(({ term, en, definition, example }) => (
               <div key={term} className="glossary-term border-b border-dashed border-border py-3 last:border-0">
-                <dt className="font-display text-base font-black uppercase leading-tight text-signal sm:text-lg">{term}</dt>
+                <dt className="font-display text-base font-black uppercase leading-tight text-signal sm:text-lg">{term}<span className="glossary-en ml-2 font-mono text-[11px] font-bold normal-case">{en}</span></dt>
                 <dd className="mt-1 text-sm leading-relaxed">{definition}</dd>
                 <p className="mt-2 text-sm leading-relaxed"><span className="stamp-muted mr-2 inline-block align-middle">{G.exampleLabel}</span>{example}</p>
+
               </div>
             ))}
           </dl>
