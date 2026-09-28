@@ -242,6 +242,12 @@
 .network-conclusion { display: grid; grid-template-columns: auto 1fr; gap: .5rem; align-items: center; border-top: 3px solid var(--alert); padding-top: .45rem; font-size: .66rem; }.network-conclusion strong { color: var(--alert); }
 .network-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: .3rem .65rem; margin-bottom: .35rem; font-size: .55rem; font-weight: 800; }.network-legend span { display: flex; align-items: center; gap: .25rem; }.network-legend i { width: .45rem; height: .45rem; border-radius: 50%; }
 .dossier-report { position: relative; }.report-finding { position: relative; padding: .75rem; border: 2px solid var(--border); background: color-mix(in oklab, var(--background) 85%, var(--paper)); }
+.closed-dossier { position: relative; display: grid; color: var(--paper-ink); background: var(--paper); border: 3px solid var(--paper-ink); box-shadow: 10px 10px 0 color-mix(in oklab, var(--signal) 25%, transparent); }
+.dossier-spine { padding: .35rem .65rem; color: var(--paper); background: var(--paper-ink); font: 900 .6rem/1.1 var(--font-sans); }
+.closed-dossier .report-finding { border: 0; border-bottom: 2px solid var(--paper-ink); background: color-mix(in oklab, var(--paper) 88%, var(--background)); }
+.report-profile { padding: .75rem; min-width: 0; }
+.closed-dossier .skill-sheet { padding: .2rem; background: transparent; box-shadow: none; }
+.report-margin-note { background: color-mix(in oklab, var(--paper-ink) 4%, transparent); }
 .final-assessment { position: relative; border: 3px double var(--signal); padding: .7rem; color: var(--paper-ink); background: var(--paper); transform: rotate(-.35deg); }.final-assessment > span { display: block; margin-bottom: .35rem; color: var(--alert); font-size: .62rem; font-weight: 900; }
 .skill-track { transform: skewX(-8deg); }.skill-track > div { background-image: repeating-linear-gradient(90deg, var(--signal) 0 8px, color-mix(in oklab, var(--signal) 70%, transparent) 8px 11px); }
 .revision-note { border-left: 4px solid var(--warning); padding: .5rem; background: color-mix(in oklab, var(--warning) 12%, transparent); }
@@ -273,6 +279,9 @@
   .scene-act-6, .scene-act-7 { grid-template-columns: minmax(0,.82fr) minmax(430px,1.18fr); }
   .scene-act-6 .signature-evidence, .scene-act-7 .signature-evidence { min-height: 25rem; }
   .scene-act-7 .network-stage { max-width: 21rem; }
+  .closed-dossier { grid-template-columns: minmax(0,.82fr) minmax(0,1.18fr); grid-template-rows: auto 1fr; }
+  .closed-dossier .dossier-spine { grid-column: 1 / -1; }
+  .closed-dossier .report-finding { border-right: 2px solid var(--paper-ink); border-bottom: 0; }
 }
 
 @media (max-height: 750px) {
@@ -298,6 +307,10 @@
   .report-notes { margin-top: 0.5rem; gap: 0.5rem; }
   .report-notes > div { padding: 0.5rem; }
   .report-notes p { display: none; }
+  .closed-dossier .report-finding { padding: .6rem; }
+  .closed-dossier .report-profile { padding: .6rem; }
+  .closed-dossier .score-bars { margin-top: .45rem; row-gap: .3rem; }
+  .closed-dossier .skill-track { height: .45rem; }
 }
 
 @media (max-width: 639px) {
