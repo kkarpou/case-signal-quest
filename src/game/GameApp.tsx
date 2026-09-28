@@ -179,6 +179,26 @@ export function GameApp() {
     setState(initialState); setView("hub");
   };
 
+  const openRunner = (def: CaseDef) => {
+    setRunnerDef(def);
+    setRunnerProgress(loadProgress(def.storageKey));
+    setView("runner");
+  };
+
+  const saveRunnerProgress = (def: CaseDef, nextProgress: CaseProgress) => {
+    setRunnerProgress(nextProgress);
+    if (def.id === "case02") setCase02Progress(nextProgress);
+    window.localStorage.setItem(def.storageKey, JSON.stringify(nextProgress));
+  };
+
+  const resetCase = (def: CaseDef) => {
+    if (!window.confirm(`Να διαγραφεί όλη η πρόοδος της ${def.number};`)) return;
+    window.localStorage.removeItem(def.storageKey);
+    if (def.id === "case02") setCase02Progress(initialProgress);
+    setRunnerProgress(initialProgress);
+    setView("hub");
+  };
+
   if (!hydrated) return <div className="grid min-h-screen place-items-center bg-background"><span className="stamp">{S.app.loading}</span></div>;
 
   return (
