@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode, type RefObject } from "react";
-import { ArrowLeft, ArrowRight, BarChart3, BookOpen, Check, ChevronDown, CircleHelp, FileSearch, Fingerprint, Globe2, LockKeyhole, Moon, Network, Play, Radio, RotateCcw, Search, ShieldCheck, Sun, TimerReset, TriangleAlert } from "lucide-react";
+import { ArrowLeft, ArrowRight, BarChart3, Check, ChevronDown, CircleHelp, FileSearch, Fingerprint, Globe2, LockKeyhole, Moon, Network, Play, Radio, RotateCcw, Search, ShieldCheck, Sun, TimerReset, TriangleAlert } from "lucide-react";
 import { GameButton } from "../components/GameButton";
 import keyArt from "../assets/signal-files-keyart.jpg";
 import teamArt from "../assets/signal-team.jpg";
@@ -215,10 +215,11 @@ export function GameApp() {
             <span className="status-stamp hidden sm:inline-flex">{view === "hub" ? S.app.statusSeason : S.app.statusCase}</span>
             {view === "case" && <span className="act-counter border-r border-border px-2 font-mono text-xs font-black text-signal">{String(state.currentAct + 1).padStart(2, "0")} / {TOTAL_ACTS}</span>}
             {view === "runner" && runnerDef && <span className="act-counter border-r border-border px-2 font-mono text-xs font-black text-signal">{String(Math.min(runnerProgress.currentScene, runnerDef.scenes.length - 1) + 1).padStart(2, "0")} / {runnerDef.scenes.length}</span>}
-            <GameButton variant="ghost" className="min-h-11 min-w-11 gap-1.5 px-2" onClick={() => setGlossaryOpen(true)} aria-label={S.glossary.open} aria-haspopup="dialog" aria-expanded={glossaryOpen}>
-              <BookOpen size={20} aria-hidden="true" />
+            <GameButton variant="ghost" className="help-button min-h-11 min-w-11 gap-1.5 px-2" onClick={() => setGlossaryOpen(true)} aria-label={S.glossary.open} title={S.glossary.open} aria-haspopup="dialog" aria-expanded={glossaryOpen}>
+              <CircleHelp size={22} aria-hidden="true" />
               <span className="hidden font-mono text-[11px] font-black uppercase lg:inline">{S.glossary.short}</span>
             </GameButton>
+
             <GameButton variant="ghost" className="min-h-11 min-w-11 px-2" onClick={() => setTheme(theme === "dark" ? "light" : "dark")} aria-label={theme === "dark" ? S.app.themeToLight : S.app.themeToDark}>
               {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
             </GameButton>
@@ -496,11 +497,12 @@ function Glossary({ open, onClose }: { open: boolean; onClose: () => void }) {
             <button ref={closeRef} onClick={onClose} aria-label={G.close} className="dialog-close grid size-11 shrink-0 place-items-center border-2 border-border font-black transition-all focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring">✕</button>
           </div>
           <dl className="glossary-list">
-            {G.terms.map(({ term, definition, example }) => (
+            {G.terms.map(({ term, en, definition, example }) => (
               <div key={term} className="glossary-term border-b border-dashed border-border py-3 last:border-0">
-                <dt className="font-display text-base font-black uppercase leading-tight text-signal sm:text-lg">{term}</dt>
+                <dt className="font-display text-base font-black uppercase leading-tight text-signal sm:text-lg">{term}<span className="glossary-en ml-2 font-mono text-[11px] font-bold normal-case">{en}</span></dt>
                 <dd className="mt-1 text-sm leading-relaxed">{definition}</dd>
                 <p className="mt-2 text-sm leading-relaxed"><span className="stamp-muted mr-2 inline-block align-middle">{G.exampleLabel}</span>{example}</p>
+
               </div>
             ))}
           </dl>

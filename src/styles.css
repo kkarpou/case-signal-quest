@@ -328,9 +328,13 @@
 @keyframes spike-pulse { 50% { filter: brightness(1.35); transform: scaleY(1.04); transform-origin: bottom; } }
 @keyframes signal-pulse { 50% { transform: scale(1.12); opacity: .65; } }
 @keyframes recommended-action-pulse {
-  0%, 100% { border-color: var(--primary); box-shadow: 0 0 0 0 color-mix(in oklab, var(--signal) 12%, transparent); }
-  50% { border-color: var(--warning); box-shadow: 0 0 0 4px color-mix(in oklab, var(--warning) 34%, transparent); }
+  0%, 100% { border-color: color-mix(in oklab, var(--signal) 70%, var(--primary)); box-shadow: 0 0 0 0 color-mix(in oklab, var(--signal) 20%, transparent); }
+  50% { border-color: var(--signal); box-shadow: 0 0 0 5px color-mix(in oklab, var(--signal) 32%, transparent); }
 }
+
+.glossary-en { color: color-mix(in oklab, var(--paper-ink) 72%, var(--signal)); letter-spacing: .01em; }
+.help-button { border: 2px solid color-mix(in oklab, var(--signal) 55%, var(--border)); }
+
 
 .decision-question-complete { display: none; }
 .game-screen .dialogue { margin-top: 0.75rem; }
