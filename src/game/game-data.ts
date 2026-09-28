@@ -1,3 +1,5 @@
+import { strings } from "./strings";
+
 export type SkillKey = "source" | "network" | "evidence" | "uncertainty" | "response";
 
 export type Choice = {
@@ -23,180 +25,90 @@ export type Decision = {
   critical?: boolean;
 };
 
-export const skillLabels: Record<SkillKey, string> = {
-  source: "Έλεγχος πηγών",
-  network: "Συλλογιστική δικτύων",
-  evidence: "Πειθαρχία τεκμηρίων",
-  uncertainty: "Διαχείριση αβεβαιότητας",
-  response: "Κρίση απόκρισης",
-};
+export const skillLabels: Record<SkillKey, string> = strings.skills;
 
-export const decisions: Decision[] = [
-  {
-    id: "classification", act: 1, eyebrow: "ΑΠΟΦΑΣΗ 01", title: "Πρώτη ταξινόμηση",
-    prompt: "Με βάση μόνο τη viral ανάρτηση, πώς καταγράφεις το περιστατικό;",
-    hint: "Ξεχώρισε αυτό που βλέπεις από την πρόθεση που ίσως κρύβεται πίσω του.",
-    choices: [
-      { id: "disinfo", label: "Επιβεβαιωμένη παραπληροφόρηση", delta: { evidence: -8, uncertainty: -6 } },
-      { id: "unverified", label: "Μη επαληθευμένος ισχυρισμός", correct: true, delta: { evidence: 10, uncertainty: 10 } },
-      { id: "coord", label: "Συντονισμένη χειραγώγηση", delta: { network: -8, evidence: -5 } },
-      { id: "fimi", label: "Επιχείρηση FIMI", delta: { uncertainty: -10, evidence: -8 } },
-    ], best: "Μη επαληθευμένος ισχυρισμός",
-    evidence: "Υπάρχει ένας σοβαρός ισχυρισμός και ένα βίντεο χωρίς επιβεβαιωμένη προέλευση.",
-    cannot: "Δεν γνωρίζουμε ακόμη αν το βίντεο είναι σύγχρονο, αν ο δημιουργός γνώριζε ότι ήταν ψευδές ή αν υπάρχει συντονισμός.",
-    principle: "Ψευδές περιεχόμενο ≠ παραπληροφόρηση",
-    why: "Η παραπληροφόρηση προϋποθέτει πρόθεση εξαπάτησης. Στην αρχή της έρευνας καταγράφουμε την αβεβαιότητα, δεν την καλύπτουμε με βεβαιότητα.", critical: true,
-  },
-  {
-    id: "sourceLab", act: 2, eyebrow: "SOURCE LAB", title: "Πρώτη κίνηση",
-    prompt: "Ο χρόνος πιέζει. Τι ελέγχεις πρώτο;",
-    hint: "Ποια επιλογή μπορεί να απαντήσει πότε και πού εμφανίστηκε αρχικά το υλικό;",
-    choices: [
-      { id: "provenance", label: "Προέλευση του βίντεο", correct: true, delta: { source: 12, evidence: 5 } },
-      { id: "nationality", label: "Εθνικότητα του uploader", delta: { source: -7, uncertainty: -4 } },
-      { id: "comments", label: "Θυμωμένα σχόλια", delta: { evidence: -5 } },
-      { id: "emotion", label: "Συναισθηματική γλώσσα", delta: { source: -3 } },
-    ], best: "Προέλευση του βίντεο",
-    evidence: "Η προέλευση συνδέει το αρχείο με προηγούμενες δημοσιεύσεις και αρχικό πλαίσιο.",
-    cannot: "Η ταυτότητα ή το ύφος ενός λογαριασμού δεν αποδεικνύουν από μόνα τους ότι το υλικό είναι ψευδές.",
-    principle: "Πρώτα το τεκμήριο, μετά ο φορέας",
-    why: "Η αντίστροφη αναζήτηση καρέ και τα ίχνη δημοσίευσης ελέγχουν άμεσα τον ισχυρισμό. Τα σχόλια δείχνουν αντίδραση, όχι προέλευση.", critical: true,
-  },
-  {
-    id: "proven", act: 4, eyebrow: "ΑΠΟΦΑΣΗ 03", title: "Τι αποδείχθηκε;",
-    prompt: "Η αντίστροφη αναζήτηση βρήκε το ίδιο πλάνο σε τηλεοπτική παραγωγή 27 μήνες πριν. Ποιο συμπέρασμα αντέχει;",
-    hint: "Περιέγραψε το περιεχόμενο και το πλαίσιο — όχι το κίνητρο.",
-    choices: [
-      { id: "fake", label: "Το βίντεο είναι κατασκευασμένο", delta: { source: -4, evidence: -5 } },
-      { id: "miscontext", label: "Αυθεντικό πλάνο σε ψευδές πλαίσιο", correct: true, delta: { source: 10, evidence: 12 } },
-      { id: "intent", label: "Αποδείχθηκε πρόθεση εξαπάτησης", delta: { evidence: -9, uncertainty: -5 } },
-      { id: "insufficient", label: "Δεν υπάρχουν ακόμη αρκετά στοιχεία", delta: { uncertainty: 4, evidence: 2 } },
-    ], best: "Αυθεντικό πλάνο σε ψευδές πλαίσιο",
-    evidence: "Το πλάνο είναι πραγματικό ως αρχείο, αλλά δεν δείχνει σημερινή έκρηξη στον Κεντρικό Σταθμό της Νεάπολης.",
-    cannot: "Η παλιά προέλευση δεν αποδεικνύει ποιος άλλαξε το πλαίσιο ούτε με ποια πρόθεση.",
-    principle: "Ανακρίβεια ≠ απόδειξη πρόθεσης",
-    why: "Η επαλήθευση περιεχομένου μπορεί να είναι ισχυρή, ενώ η απόδοση πρόθεσης παραμένει ανοιχτή. Αυτά είναι διαφορετικά ερευνητικά ερωτήματα.", critical: true,
-  },
-  {
-    id: "spike", act: 6, eyebrow: "TIMELINE", title: "Η αιχμή",
-    prompt: "Οι αναρτήσεις εκτοξεύονται αμέσως μετά το repost ενός λογαριασμού με 2,4 εκατ. ακόλουθους. Τι δείχνει η αιχμή;",
-    hint: "Αναζήτησε την απλούστερη εξήγηση που υποστηρίζει η χρονική σειρά.",
-    choices: [
-      { id: "influencer", label: "Ο λογαριασμός υψηλής απήχησης ίσως εξηγεί μεγάλο μέρος της αύξησης", correct: true, delta: { network: 12, uncertainty: 6 } },
-      { id: "coord", label: "Η ταυτόχρονη αύξηση αποδεικνύει συντονισμό", delta: { network: -10, evidence: -5 } },
-      { id: "bots", label: "Πρόκειται για botnet", delta: { network: -9 } },
-      { id: "unknown", label: "Δεν υπάρχουν ακόμη αρκετά στοιχεία", delta: { uncertainty: 5, network: 2 } },
-    ], best: "Ο λογαριασμός υψηλής απήχησης ίσως εξηγεί μεγάλο μέρος της αύξησης",
-    evidence: "Η μεγαλύτερη μεταβολή ακολουθεί ένα μοναδικό repost μεγάλης εμβέλειας.",
-    cannot: "Η χρονική συσχέτιση δεν αποκλείει άλλους παράγοντες και δεν αποδεικνύει οργανωμένη δράση.",
-    principle: "Viral διάδοση ≠ συντονισμός",
-    why: "Ένας ισχυρός κόμβος μπορεί να δημιουργήσει μαζική διάδοση χωρίς κρυφή συνεργασία. Για συντονισμό χρειαζόμαστε κοινά μοτίβα συμπεριφοράς πέρα από την ίδια στιγμή.", critical: true,
-  },
-  {
-    id: "network", act: 7, eyebrow: "NETWORK VIEW", title: "Δομή διάδοσης",
-    prompt: "Πώς περιγράφεις το σχήμα του δικτύου;",
-    hint: "Κοίτα αν υπάρχουν πολλοί ισότιμοι πυρήνες ή ένας κεντρικός πομπός με ακτίνες.",
-    choices: [
-      { id: "cluster", label: "Συντονισμένο cluster", delta: { network: -6 } },
-      { id: "botnet", label: "Botnet", delta: { network: -9 } },
-      { id: "broadcast", label: "Broadcast cascade", correct: true, delta: { network: 14, evidence: 4 } },
-      { id: "command", label: "Command-and-control network", delta: { network: -10, evidence: -5 } },
-    ], best: "Broadcast cascade",
-    evidence: "Ένας λογαριασμός τροφοδοτεί πολλούς δευτερεύοντες κόμβους, οι οποίοι αναμεταδίδουν σε μικρότερα ακροατήρια.",
-    cannot: "Η οπτική ομοιότητα ενός μοτίβου δεν αποκαλύπτει μυστικό έλεγχο ή κοινή εντολή.",
-    principle: "Μοτίβο ≠ συντονισμός",
-    why: "Η δομή broadcast είναι συμβατή με οργανική διάδοση από λογαριασμό μεγάλης εμβέλειας. Ο συντονισμός απαιτεί πρόσθετα στοιχεία κοινής, σκόπιμης δράσης.", critical: true,
-  },
-  {
-    id: "foreign", act: 8, eyebrow: "FOREIGN SIGNAL", title: "Ξενόγλωσση ενίσχυση",
-    prompt: "Το worldpulse.media αναδημοσιεύει την ιστορία σε τρεις γλώσσες. Πώς το καταγράφεις;",
-    hint: "Η γλώσσα ή η χώρα ενός μέσου είναι ένδειξη ταυτότητας — όχι απόδειξη ρόλου.",
-    choices: [
-      { id: "operation", label: "Ξένη επιχείρηση επιρροής", delta: { uncertainty: -10, evidence: -7 } },
-      { id: "amplification", label: "Ξενόγλωσση ενίσχυση που χρειάζεται περαιτέρω έλεγχο", correct: true, delta: { uncertainty: 10, evidence: 8 } },
-      { id: "origin", label: "Η αρχική πηγή της ιστορίας", delta: { source: -7 } },
-      { id: "irrelevant", label: "Άσχετη αναδημοσίευση", delta: { evidence: -3 } },
-    ], best: "Ξενόγλωσση ενίσχυση που χρειάζεται περαιτέρω έλεγχο",
-    evidence: "Ένα ξενόγλωσσο site ενίσχυσε τον ισχυρισμό. Αυτό είναι παρατηρήσιμο γεγονός.",
-    cannot: "Δεν γνωρίζουμε ακόμη αν συνδέεται με κρατικό φορέα, αν έλαβε οδηγίες ή αν είχε ρόλο στην έναρξη.",
-    principle: "Σύνδεση ≠ έλεγχος",
-    why: "Η ξένη σύνδεση μπορεί να είναι σημαντική, αλλά η απόδοση ευθύνης χρειάζεται αποδείξεις ελέγχου, κατεύθυνσης ή συντονισμού.", critical: true,
-  },
-  {
-    id: "direction", act: 9, eyebrow: "DIRECTIONALITY", title: "Ποιος ακολούθησε ποιον;",
-    prompt: "Το άρθρο του worldpulse.media εμφανίζεται 38 λεπτά μετά τη viral αιχμή. Τι δείχνει η κατεύθυνση;",
-    hint: "Σύγκρινε τις ώρες πρώτης εμφάνισης και την ώρα της αιχμής.",
-    choices: [
-      { id: "follows", label: "Φαίνεται να ακολουθεί, όχι να ξεκινά, το κύμα", correct: true, delta: { network: 10, source: 5 } },
-      { id: "originates", label: "Ξεκίνησε το κύμα", delta: { source: -8, network: -6 } },
-      { id: "controls", label: "Ελέγχει τους εγχώριους λογαριασμούς", delta: { evidence: -9 } },
-      { id: "insufficient", label: "Δεν υπάρχουν ακόμη αρκετά στοιχεία", delta: { uncertainty: 4 } },
-    ], best: "Φαίνεται να ακολουθεί, όχι να ξεκινά, το κύμα",
-    evidence: "Η εγχώρια διάδοση και η κύρια αιχμή προηγούνται χρονικά της αναδημοσίευσης.",
-    cannot: "Η μεταγενέστερη εμφάνιση δεν αποδεικνύει ότι δεν υπήρξε καμία άλλη σύνδεση εκτός του dataset.",
-    principle: "Απουσία τεκμηρίων ≠ τεκμήριο απουσίας",
-    why: "Το dataset υποστηρίζει κατεύθυνση διάδοσης για όσα παρατηρούμε. Δεν δικαιολογεί απόλυτους ισχυρισμούς για ό,τι ίσως συνέβη εκτός του δείγματος.", critical: true,
-  },
-  {
-    id: "response", act: 10, eyebrow: "RESPONSE DESK", title: "Δημόσια απόκριση",
-    prompt: "Ποια ανακοίνωση προστατεύει το κοινό χωρίς υπεραπόδοση;",
-    hint: "Διόρθωσε το άμεσο ψεύδος και όρισε καθαρά τα όρια της έρευνας.",
-    choices: [
-      { id: "accuse", label: "«Ξένο δίκτυο οργάνωσε την ψευδή επίθεση.»", delta: { response: -12, evidence: -6 } },
-      { id: "correct", label: "«Το βίντεο είναι παλιό και δεν δείχνει σημερινή έκρηξη. Δεν έχουμε προς το παρόν στοιχεία οργανωμένου συντονισμού.»", correct: true, delta: { response: 15, uncertainty: 8 } },
-      { id: "silent", label: "Καμία ανακοίνωση μέχρι να ξέρουμε τα πάντα", delta: { response: -7 } },
-      { id: "remove", label: "Ζητάμε αφαίρεση όλων των σχετικών αναρτήσεων", delta: { response: -10 } },
-    ], best: "Διόρθωση του ισχυρισμού με σαφή όρια βεβαιότητας",
-    evidence: "Μπορούμε να διορθώσουμε άμεσα το ψευδές πλαίσιο και να δηλώσουμε τι δεν τεκμηριώθηκε.",
-    cannot: "Δεν μπορούμε να ονομάσουμε υπεύθυνο φορέα ή να χαρακτηρίσουμε το σύνολο της διάδοσης οργανωμένο.",
-    principle: "Αναλογική απόκριση, ακριβής βεβαιότητα",
-    why: "Μια καλή διόρθωση μειώνει τη βλάβη χωρίς να προσθέτει νέο ατεκμηρίωτο ισχυρισμό. Η διαφάνεια για τα όρια ενισχύει την αξιοπιστία.", critical: true,
-  },
-  {
-    id: "final", act: 11, eyebrow: "FINAL CLASSIFICATION", title: "Τελική ταξινόμηση",
-    prompt: "Ποια είναι η πιο υπερασπίσιμη τελική κρίση για το παρατηρούμενο dataset;",
-    hint: "Η ταξινόμηση πρέπει να αντανακλά το ισχυρότερο αποδεδειγμένο εύρημα, όχι τη δραματικότερη υπόθεση.",
-    choices: [
-      { id: "organic", label: "Οργανική παραπληροφόρηση", delta: { evidence: 2, uncertainty: -2 } },
-      { id: "domestic", label: "Συντονισμένη εγχώρια χειραγώγηση", delta: { network: -8 } },
-      { id: "foreignlinked", label: "Χειραγώγηση με ξένη σύνδεση", delta: { uncertainty: -7 } },
-      { id: "fimi", label: "Επιχείρηση FIMI", delta: { evidence: -10 } },
-      { id: "insufficient", label: "Ανεπαρκή στοιχεία για συντονισμένη χειραγώγηση", correct: true, delta: { evidence: 12, uncertainty: 12 } },
-    ], best: "Ανεπαρκή στοιχεία για συντονισμένη χειραγώγηση",
-    evidence: "Η λανθασμένη πλαισίωση και η viral διάδοση τεκμηριώνονται. Οργανωμένος συντονισμός δεν τεκμηριώνεται.",
-    cannot: "Δεν μπορούμε να αποκλείσουμε κάθε μη παρατηρούμενη δράση ή να αποδώσουμε ευθύνη.",
-    principle: "Συντονισμός ≠ απόδοση ευθύνης",
-    why: "Ακόμη και αν υπήρχαν ενδείξεις συντονισμού, η απόδοση σε συγκεκριμένο φορέα θα απαιτούσε ξεχωριστό επίπεδο τεκμηρίωσης.", critical: true,
-  },
-  {
-    id: "confidence", act: 12, eyebrow: "CONFIDENCE", title: "Βαθμός βεβαιότητας",
-    prompt: "Πόσο βέβαιος/η είσαι για την τελική κρίση;",
-    hint: "Ζύγισε την ισχυρή επαλήθευση του βίντεο απέναντι στα όρια του dataset.",
-    choices: [
-      { id: "low", label: "Χαμηλή", delta: { uncertainty: 1 } },
-      { id: "medium", label: "Μέτρια", correct: true, delta: { uncertainty: 12, evidence: 5 } },
-      { id: "high", label: "Υψηλή", delta: { uncertainty: -7 } },
-    ], best: "Μέτρια",
-    evidence: "Η λανθασμένη πλαισίωση αποδεικνύεται ισχυρά, αλλά το διαθέσιμο δίκτυο είναι μόνο παρατηρούμενο δείγμα.",
-    cannot: "Δεν μπορούμε να ισχυριστούμε πλήρη εικόνα όλων των λογαριασμών, ιδιωτικών καναλιών ή κινήτρων.",
-    principle: "Η βεβαιότητα αφορά συγκεκριμένο συμπέρασμα",
-    why: "Μπορείς να έχεις υψηλή βεβαιότητα ότι το βίντεο είναι παλιό, αλλά μόνο μέτρια για τη συνολική δυναμική επειδή τα δεδομένα δικτύου είναι ατελή.",
-  },
-  {
-    id: "lesson", act: 13, eyebrow: "FINAL LEARNING DECISION", title: "Το ισχυρότερο μάθημα",
-    prompt: "Ποια αρχή θα κρατήσεις για την επόμενη υπόθεση;",
-    hint: "Σκέψου ποια εξήγηση κάλυψε τα δεδομένα χωρίς να προσθέσει αόρατους δράστες.",
-    choices: [
-      { id: "viral", label: "Η viral διάδοση μπορεί να εξηγείται χωρίς συντονισμένη επιχείρηση", correct: true, delta: { network: 10, evidence: 8 } },
-      { id: "foreign", label: "Κάθε ξενόγλωσση ενίσχυση είναι ξένη επιχείρηση", delta: { uncertainty: -8 } },
-      { id: "false", label: "Κάθε ψευδές περιεχόμενο είναι παραπληροφόρηση", delta: { evidence: -8 } },
-      { id: "patterns", label: "Τα οπτικά μοτίβα δικτύου αποδεικνύουν έλεγχο", delta: { network: -8 } },
-    ], best: "Η viral διάδοση μπορεί να εξηγείται χωρίς συντονισμένη επιχείρηση",
-    evidence: "Η αιχμή και η broadcast cascade εξηγούνται επαρκώς από έναν λογαριασμό υψηλής απήχησης.",
-    cannot: "Δεν μπορούμε να μετατρέψουμε μια εύλογη εξήγηση σε καθολικό κανόνα για κάθε μελλοντικό περιστατικό.",
-    principle: "Η απλούστερη επαρκής εξήγηση προηγείται",
-    why: "Η πειθαρχία τεκμηρίων δεν σημαίνει αφέλεια. Σημαίνει ότι αυξάνουμε τη σοβαρότητα του συμπεράσματος μόνο όταν αυξάνεται και η ποιότητα των αποδείξεων.",
-  },
+type DecisionKey = keyof typeof strings.decisions;
+type Logic = { id: DecisionKey; act: number; critical?: boolean; choices: { id: string; correct?: boolean; delta: Choice["delta"] }[] };
+
+// Λογική παιχνιδιού (σειρά, σωστές απαντήσεις, βαθμολογία). Τα κείμενα βρίσκονται στο strings.ts.
+const logic: Logic[] = [
+  { id: "classification", act: 1, critical: true, choices: [
+    { id: "disinfo", delta: { evidence: -8, uncertainty: -6 } },
+    { id: "unverified", correct: true, delta: { evidence: 10, uncertainty: 10 } },
+    { id: "coord", delta: { network: -8, evidence: -5 } },
+    { id: "fimi", delta: { uncertainty: -10, evidence: -8 } },
+  ] },
+  { id: "sourceLab", act: 2, critical: true, choices: [
+    { id: "provenance", correct: true, delta: { source: 12, evidence: 5 } },
+    { id: "nationality", delta: { source: -7, uncertainty: -4 } },
+    { id: "comments", delta: { evidence: -5 } },
+    { id: "emotion", delta: { source: -3 } },
+  ] },
+  { id: "proven", act: 4, critical: true, choices: [
+    { id: "fake", delta: { source: -4, evidence: -5 } },
+    { id: "miscontext", correct: true, delta: { source: 10, evidence: 12 } },
+    { id: "intent", delta: { evidence: -9, uncertainty: -5 } },
+    { id: "insufficient", delta: { uncertainty: 4, evidence: 2 } },
+  ] },
+  { id: "spike", act: 6, critical: true, choices: [
+    { id: "influencer", correct: true, delta: { network: 12, uncertainty: 6 } },
+    { id: "coord", delta: { network: -10, evidence: -5 } },
+    { id: "bots", delta: { network: -9 } },
+    { id: "unknown", delta: { uncertainty: 5, network: 2 } },
+  ] },
+  { id: "network", act: 7, critical: true, choices: [
+    { id: "cluster", delta: { network: -6 } },
+    { id: "botnet", delta: { network: -9 } },
+    { id: "broadcast", correct: true, delta: { network: 14, evidence: 4 } },
+    { id: "command", delta: { network: -10, evidence: -5 } },
+  ] },
+  { id: "foreign", act: 8, critical: true, choices: [
+    { id: "operation", delta: { uncertainty: -10, evidence: -7 } },
+    { id: "amplification", correct: true, delta: { uncertainty: 10, evidence: 8 } },
+    { id: "origin", delta: { source: -7 } },
+    { id: "irrelevant", delta: { evidence: -3 } },
+  ] },
+  { id: "direction", act: 9, critical: true, choices: [
+    { id: "follows", correct: true, delta: { network: 10, source: 5 } },
+    { id: "originates", delta: { source: -8, network: -6 } },
+    { id: "controls", delta: { evidence: -9 } },
+    { id: "insufficient", delta: { uncertainty: 4 } },
+  ] },
+  { id: "response", act: 10, critical: true, choices: [
+    { id: "accuse", delta: { response: -12, evidence: -6 } },
+    { id: "correct", correct: true, delta: { response: 15, uncertainty: 8 } },
+    { id: "silent", delta: { response: -7 } },
+    { id: "remove", delta: { response: -10 } },
+  ] },
+  { id: "final", act: 11, critical: true, choices: [
+    { id: "organic", delta: { evidence: 2, uncertainty: -2 } },
+    { id: "domestic", delta: { network: -8 } },
+    { id: "foreignlinked", delta: { uncertainty: -7 } },
+    { id: "fimi", delta: { evidence: -10 } },
+    { id: "insufficient", correct: true, delta: { evidence: 12, uncertainty: 12 } },
+  ] },
+  { id: "confidence", act: 12, choices: [
+    { id: "low", delta: { uncertainty: 1 } },
+    { id: "medium", correct: true, delta: { uncertainty: 12, evidence: 5 } },
+    { id: "high", delta: { uncertainty: -7 } },
+  ] },
+  { id: "lesson", act: 13, choices: [
+    { id: "viral", correct: true, delta: { network: 10, evidence: 8 } },
+    { id: "foreign", delta: { uncertainty: -8 } },
+    { id: "false", delta: { evidence: -8 } },
+    { id: "patterns", delta: { network: -8 } },
+  ] },
 ];
+
+export const decisions: Decision[] = logic.map(({ id, act, critical, choices }) => {
+  const text = strings.decisions[id];
+  const labels = text.choices as Record<string, string>;
+  const { choices: _labels, ...rest } = text;
+  return {
+    id, act, ...rest,
+    ...(critical ? { critical } : {}),
+    choices: choices.map((choice) => ({ ...choice, label: labels[choice.id] ?? choice.id })),
+  };
+});
 
 export const decisionByAct = Object.fromEntries(decisions.map((decision) => [decision.act, decision]));
