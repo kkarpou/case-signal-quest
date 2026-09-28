@@ -189,6 +189,7 @@
 .unverified-stamp { position: absolute; z-index: 4; right: -.4rem; top: 4.4rem; border: 3px solid var(--alert); padding: .3rem .5rem; color: var(--alert); background: var(--paper); font-size: .68rem; font-weight: 900; transform: rotate(-7deg); }
 .urgency-strip { background: linear-gradient(90deg, color-mix(in oklab, var(--alert) 15%, transparent), transparent); }
 .feedback-reveal { transform: rotate(.25deg); }
+.evidence-card .text-muted-foreground, .feedback-card .text-muted-foreground, .dialogue .text-muted-foreground, .case-card .text-muted-foreground { color: color-mix(in oklab, var(--paper-ink) 66%, transparent); }
 .verdict-stamp { animation: stamp-in .35s cubic-bezier(.2,1.4,.4,1) both; }
 .feedback-row { margin-inline: -.25rem; padding-inline: .35rem; }
 .feedback-row:nth-of-type(3) { background: color-mix(in oklab, var(--warning) 14%, transparent); }
@@ -235,6 +236,7 @@
 @media (min-width: 1024px) {
   .decision-question-complete { display: block; }
   .mobile-evidence { display: none; }
+  .hub-hero > .relative.mx-auto { min-height: 500px; }
   .hero-collage { transition: transform .35s ease; }.hero-collage:hover { transform: translateY(-4px) rotate(.4deg); }
 }
 
@@ -264,16 +266,16 @@
 }
 
 @media (max-width: 639px) {
-  .hub-hero .relative.mx-auto { min-height: 620px; grid-template-rows: 17rem auto; padding-top: 1rem; }
-  .hero-collage { margin-inline: 1rem; }.hero-art { height: 16rem; }.hero-evidence-note { left: -.5rem; bottom: .5rem; font-size: .65rem; }.hero-alert-note { right: -.5rem; top: .6rem; }
+  .hub-hero .relative.mx-auto { min-height: 540px; grid-template-rows: 13.5rem auto; gap: .75rem; padding-top: .75rem; padding-bottom: 1rem; }
+  .hero-collage { margin-inline: 1rem; }.hero-art { height: 13rem; }.hero-evidence-note { left: -.5rem; bottom: .35rem; font-size: .6rem; }.hero-alert-note { right: -.5rem; top: .4rem; }
   .hero-title-paper { padding: .45rem .7rem .6rem; }.hero-title-paper h1 { font-size: 2.85rem; }.hero-copy .marker-copy { margin-top: .75rem; font-size: .9rem; line-height: 1.3; }
   .game-screen { padding-top: 0.75rem; }
   .desktop-evidence { display: none; }
   .mobile-evidence { display: block; margin-top: .55rem; }
-  .mobile-evidence .evidence-card { min-height: 0; max-height: 9rem; overflow: hidden; padding: .65rem; box-shadow: 4px 4px 0 color-mix(in oklab, var(--foreground) 12%, transparent); }
+  .mobile-evidence .evidence-card { min-height: 0; max-height: 11.5rem; overflow: hidden; padding: .65rem; box-shadow: 4px 4px 0 color-mix(in oklab, var(--foreground) 12%, transparent); }
   .mobile-evidence .evidence-card > svg:first-child, .mobile-evidence .evidence-card > div:first-child svg { width: 1.15rem; height: 1.15rem; }.mobile-evidence .evidence-card h2 { margin-top: .25rem; font-size: .9rem; }.mobile-evidence .evidence-card p { margin-top: .2rem; font-size: .7rem; line-height: 1rem; }
-  .mobile-evidence .timeline-plot { height: 4.25rem; margin-top: .3rem; }.mobile-evidence .timeline-events, .mobile-evidence .direction-note { display: none; }.mobile-evidence .spike-tag { top: 0; }
-  .mobile-evidence .network-map { max-height: 5.6rem; }.mobile-evidence .network-legend { display: none; }.mobile-evidence .network-card > p { display: none; }
+  .mobile-evidence .timeline-plot { height: 6rem; margin-top: .3rem; }.mobile-evidence .timeline-events { margin-top: .25rem; }.mobile-evidence .direction-note { display: none; }.mobile-evidence .spike-tag { top: 0; }
+  .mobile-evidence .network-map { max-height: 7.8rem; }.mobile-evidence .network-legend { display: none; }.mobile-evidence .network-card > p { display: none; }
   .question-sheet { padding: .65rem .75rem; box-shadow: 4px 4px 0 color-mix(in oklab, var(--signal) 30%, transparent); }.paper-clip { height: 1.7rem; }
   .choice-button { padding-block: .45rem; }.choice-letter { width: 1.8rem; height: 1.8rem; }
   .cold-open-layout { gap: 0.625rem; }
@@ -295,6 +297,21 @@
   .report-layout > div:first-child .stamp { display: none; }
   .report-layout > div:first-child h1 { margin-top: 0; font-size: 1.5rem; }
   .report-layout > div:first-child > div { margin-top: 0.35rem; }
+  .dossier-report { gap: .35rem; }
+  .report-finding { padding: .55rem; }
+  .final-assessment { padding: .45rem; }
+  .final-assessment p { font-size: .875rem; line-height: 1.15rem; }
+  .report-dialogue .dialogue { grid-template-columns: 2.4rem minmax(0,1fr); padding: .45rem; }
+  .report-dialogue .portrait-cutout { width: 2.4rem; height: 2.6rem; }
+  .report-dialogue .dialogue p { margin-top: .1rem; font-size: .7rem; line-height: .95rem; }
+  .report-dialogue .dialogue strong { font-size: .7rem; }
+  .report-dialogue .dialogue span { display: none; }
+  .skill-sheet { padding: .6rem !important; }
+  .skill-sheet .score-bars { margin-top: .35rem; row-gap: .2rem; }
+  .skill-sheet .score-bars > div > div:first-child { margin-bottom: .15rem; font-size: .7rem; }
+  .skill-sheet .skill-track { height: .38rem; }
+  .report-notes { margin-top: .35rem; }
+  .report-notes > div { padding: .4rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
