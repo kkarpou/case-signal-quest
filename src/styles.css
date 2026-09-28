@@ -168,10 +168,21 @@
 .sealed-file { position: relative; min-width: 0; color: var(--paper-ink); box-shadow: 5px 5px 0 color-mix(in oklab, var(--foreground) 10%, transparent); }
 .sealed-file:nth-child(odd) { transform: rotate(-.3deg); }.sealed-file:nth-child(even) { transform: rotate(.25deg); }
 .sealed-file::after { content: "ΚΛΕΙΔΩΜΕΝΗ"; position: absolute; right: .6rem; bottom: .4rem; color: var(--alert); font-size: .52rem; font-weight: 900; transform: rotate(-5deg); }
-.next-case-mark { display: block; margin-top: .35rem; width: fit-content; border-left: 3px solid var(--alert); padding-left: .35rem; color: var(--alert); font-size: .56rem; font-weight: 900; }
+.next-case-mark { position: absolute; left: .5rem; bottom: .3rem; z-index: 2; border-left: 3px solid var(--alert); padding-left: .35rem; color: var(--alert); font-size: .68rem; font-weight: 900; letter-spacing: .02em; }
 .team-pin { color: var(--paper-ink); transform: rotate(.35deg); box-shadow: 6px 6px 0 color-mix(in oklab, var(--warning) 45%, transparent); }
 .team-pin::before { content: ""; position: absolute; z-index: 2; left: 50%; top: -.45rem; width: 3.5rem; height: .9rem; background: color-mix(in oklab, var(--warning) 72%, transparent); transform: translateX(-50%) rotate(-2deg); }
 .team-pin-label { position: absolute; left: .65rem; top: .65rem; padding: .2rem .35rem; color: var(--paper); background: var(--paper-ink); font-size: .58rem; font-weight: 900; }
+.team-roster li:nth-child(1) .roster-initials { color: var(--warning); }
+.team-roster li:nth-child(2) .roster-initials { color: var(--signal); }
+.team-roster li:nth-child(3) .roster-initials { color: var(--alert); }
+.analyst-tag { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: .5rem; width: fit-content; max-width: 100%; margin-bottom: .55rem; border-left: 4px solid var(--signal); padding: .25rem .5rem; background: color-mix(in oklab, var(--signal) 10%, transparent); }
+.analyst-tag[data-character="mara"] { border-left-color: var(--warning); background: color-mix(in oklab, var(--warning) 12%, transparent); }
+.analyst-tag[data-character="noor"] { border-left-color: var(--alert); background: color-mix(in oklab, var(--alert) 10%, transparent); }
+.analyst-tag-initials { display: grid; place-items: center; width: 1.7rem; height: 1.7rem; border: 2px solid currentColor; font: 900 .68rem/1 var(--font-mono, monospace); }
+.analyst-tag-label { display: block; font-size: .58rem; font-weight: 900; letter-spacing: .08em; opacity: .7; }
+.analyst-tag-name { display: block; font-size: .78rem; font-weight: 900; }
+.analyst-tag-focus { display: block; font-size: .7rem; line-height: 1.25; opacity: .78; }
+@media (max-height: 700px) { .analyst-tag-focus { display: none; } }
 .hub-fit .future-file-stack { grid-auto-rows: minmax(0, 1fr); overflow: hidden; }
 .hub-fit .sealed-file { overflow: hidden; }
 .hub-fit .wall-thread { display: none; }
