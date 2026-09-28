@@ -435,7 +435,7 @@
 .team-card:focus-within, .team-card:hover { border-color: color-mix(in oklab, var(--signal) 55%, var(--paper-ink)); }
 .report-team-summary li { grid-template-columns: 6.5rem minmax(0,1fr); }
 /* Σε χαμηλές οθόνες συμπιέζουμε την αναφορά ώστε να χωρά ΟΛΟ το κείμενο χωρίς κόψιμο */
-@media (max-height: 860px) {
+@media (max-height: 940px) {
   .report-profile { padding: .5rem .6rem; }
   .report-profile .score-bars { margin-top: .4rem; }
   .report-profile .score-bars > * + * { margin-top: .3rem; }
@@ -443,7 +443,11 @@
   .report-profile .skill-sheet h2 { font-size: 1.15rem; }
   .report-notes { margin-top: .45rem; }
   .report-margin-note p { display: none; }
+  .report-margin-note { padding: .35rem .45rem; }
+  .report-notes h3 { font-size: .78rem; line-height: 1rem; }
   .report-team-summary li { font-size: 10px; }
+  .report-team-summary { margin-top: .4rem; }
+  .revision-note { margin-top: .4rem; padding: .3rem .45rem; font-size: 10px; }
 }
 
 /* Hover/focus contrast: text always flips with the accent background */
@@ -468,4 +472,7 @@
   .skill-sheet .skill-track { height: .35rem; }
   .report-notes > div { padding: .4rem; }
   .report-team-summary li { grid-template-columns: 5.6rem minmax(0,1fr); font-size: 10px; }
+  .report-notes { margin-top: .4rem; gap: .4rem; }
+  .report-margin-note h3 { font-size: .78rem; }
+  .revision-note { margin-top: .4rem; padding: .3rem .45rem; font-size: 10px; }
 }
