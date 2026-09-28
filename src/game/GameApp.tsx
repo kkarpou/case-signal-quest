@@ -62,7 +62,10 @@ const decisionAnalyst: Record<string, keyof typeof team> = {
 function clamp(value: number) { return Math.max(0, Math.min(100, value)); }
 
 export function GameApp() {
-  const [view, setView] = useState<"hub" | "case">("hub");
+  const [view, setView] = useState<"hub" | "case" | "runner">("hub");
+  const [runnerDef, setRunnerDef] = useState<CaseDef | null>(null);
+  const [runnerProgress, setRunnerProgress] = useState<CaseProgress>(initialProgress);
+  const [case02Progress, setCase02Progress] = useState<CaseProgress>(initialProgress);
   const [state, setState] = useState<GameState>(initialState);
   const [hydrated, setHydrated] = useState(false);
   const [theme, setTheme] = useState<"dark" | "light">("dark");
