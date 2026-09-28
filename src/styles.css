@@ -107,6 +107,8 @@
   --warning-foreground: oklch(0.17 0.025 65);
   --alert: oklch(0.52 0.16 29);
   --alert-foreground: oklch(0.98 0.012 82);
+  --hero-foreground: oklch(0.18 0.018 188);
+  --hero-muted: oklch(0.32 0.025 188);
   --paper: oklch(0.97 0.018 82);
   --paper-ink: oklch(0.18 0.018 188);
   --board: oklch(0.865 0.034 80);
