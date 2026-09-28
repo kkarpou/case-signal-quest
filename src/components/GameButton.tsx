@@ -20,7 +20,7 @@ export function GameButton({ variant = "primary", icon, className, children, ...
   return (
     <button
       className={cn(
-        "inline-flex min-h-12 items-center justify-center gap-2 rounded-md border-2 px-5 py-3 text-sm font-black uppercase transition-all focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
+        "inline-flex min-h-12 items-center justify-center gap-2 rounded-sm border-2 px-5 py-3 text-sm font-black uppercase transition-all focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
         variants[variant],
         className,
       )}
