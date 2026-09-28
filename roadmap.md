@@ -33,3 +33,7 @@
 - [ ] Έλεγχος ροής, αποθήκευσης, αριθμητικών και κινητού για τις νέες υποθέσεις
 - [x] Show the team member's photo in the analyst tag on decision screens
 - [x] Show the full team-summary text in the case report (no truncation)
+
+- [x] Σύνδεση ΥΠΟΘΕΣΗΣ 03 στο Hub
+- [ ] Κινητό: οθόνες ανατροφοδότησης χρειάζονται σύντμηση ώστε να χωρούν χωρίς κύλιση
+- [ ] ΥΠΟΘΕΣΕΙΣ 04–06 (σενάριο στο docs/season-01-scenarios.md)
