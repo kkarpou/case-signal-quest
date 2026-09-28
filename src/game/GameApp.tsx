@@ -45,6 +45,12 @@ const team = {
   noor: { ...S.team.noor, tone: "bg-alert text-alert-foreground" },
 };
 
+// Ποιο μέλος της ομάδας «οδηγεί» κάθε απόφαση (μόνο εμφάνιση, καμία επίδραση στη λογική).
+const decisionAnalyst: Record<string, keyof typeof team> = {
+  classification: "lead", sourceLab: "mara", proven: "mara", spike: "leo", network: "leo",
+  foreign: "leo", direction: "leo", response: "noor", final: "lead", confidence: "lead", lesson: "lead",
+};
+
 function clamp(value: number) { return Math.max(0, Math.min(100, value)); }
 
 export function GameApp() {
