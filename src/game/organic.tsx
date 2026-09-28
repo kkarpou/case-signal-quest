@@ -17,7 +17,7 @@ function findTerm(label: string): GlossaryTerm | undefined {
   return terms.find((item) => item.term.toLocaleLowerCase("el") === lower);
 }
 
-function MarginaliaTerm({ label, up }: { label: string; up?: boolean }) {
+function MarginaliaTerm({ label, up }: { label: string; up?: boolean | undefined }) {
   const openGlossary = useContext(GlossaryLinkContext);
   const [open, setOpen] = useState(false);
   const wrapRef = useRef<HTMLSpanElement>(null);
