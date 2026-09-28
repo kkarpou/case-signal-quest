@@ -192,29 +192,29 @@ function Hub({ state, onPlay, onReset }: { state: GameState; onPlay: () => void;
     ["CASE 06", "THE ATTRIBUTION", "Το δυσκολότερο ερώτημα: ποιος ευθύνεται;"],
   ];
   return (
-    <div className="hub-wall min-h-[calc(100svh-4rem)] overflow-hidden pb-16">
-      <section className="case-wall relative mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:py-10">
+    <div className="hub-wall hub-fit h-full overflow-hidden">
+      <section className="case-wall relative mx-auto flex h-full max-w-7xl flex-col gap-3 px-4 py-3 sm:px-6 sm:py-4">
         <div className="wall-thread" aria-hidden="true" />
-        <header className="wall-heading relative z-10">
+        <header className="wall-heading relative z-10 shrink-0">
           <span className="stamp">SEASON 01 · ΦΑΚΕΛΟΙ ΠΛΗΡΟΦΟΡΙΑΣ</span>
-          <h1 className="mt-3 font-display text-5xl font-black uppercase leading-[0.86] sm:text-7xl">THE SIGNAL<br />FILES</h1>
-          <p className="marker-copy mt-3 max-w-xl text-sm font-semibold sm:text-base">Ερεύνησε το περιεχόμενο. Χαρτογράφησε τη διάδοση. Μίλα μόνο μέχρι εκεί που φτάνουν τα στοιχεία.</p>
+          <h1 className="mt-1 font-display text-3xl font-black uppercase leading-[0.86] sm:text-5xl">THE SIGNAL FILES</h1>
+          <p className="marker-copy mt-1 max-w-xl text-xs font-semibold sm:text-sm">Ερεύνησε το περιεχόμενο. Χαρτογράφησε τη διάδοση. Μίλα μόνο μέχρι εκεί που φτάνουν τα στοιχεία.</p>
         </header>
 
-        <article className="open-case-file relative z-20 mt-6 border-2 border-signal bg-card p-4 sm:p-6">
+        <article className="open-case-file relative z-20 min-h-0 shrink-0 border-2 border-signal bg-card p-3 sm:p-4">
           <div className="open-file-tab">CASE 01 · ΔΙΑΘΕΣΙΜΟ</div>
-          <div className="grid gap-4 sm:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] sm:items-center">
-            <div className="case-photo relative"><img src={keyArt} alt="Εικονογραφημένος φάκελος έρευνας με σταθμό, κινητό και δίκτυο διάδοσης" width={1536} height={1024} className="h-44 w-full object-cover sm:h-64" /><span className="case-photo-mark">ΜΗ ΕΠΑΛΗΘΕΥΜΕΝΟ</span><span className="case-photo-ref font-mono">REF 01-A · 19″</span></div>
-            <div className="min-w-0"><p className="font-mono text-xs font-black text-signal">ΕΝΕΡΓΟΣ ΦΑΚΕΛΟΣ / 01 OF 06</p><h2 className="mt-1 font-display text-4xl font-black uppercase leading-none sm:text-6xl">THE VIRAL LIE</h2><p className="mt-3 max-w-lg text-sm font-semibold sm:text-base">Μια ψευδής ιστορία εξαπλώνεται. Είναι όμως εκστρατεία;</p>
-              <div className="dossier-progress mt-4"><span style={{ width: state.completed ? "100%" : hasProgress ? `${((state.currentAct + 1) / TOTAL_ACTS) * 100}%` : "8%" }} /></div><p className="mt-2 text-xs font-black">{state.completed ? "ΟΛΟΚΛΗΡΩΘΗΚΕ" : hasProgress ? `ΠΡΑΞΗ ${state.currentAct + 1} ΑΠΟ ${TOTAL_ACTS}` : "~15 ΛΕΠΤΑ"}</p>
-              <div className="mt-4 flex flex-wrap gap-2"><GameButton onClick={onPlay} icon={hasProgress ? <ArrowRight size={18} /> : <Play size={18} />}>{state.completed ? "ΞΑΝΑΔΕΣ ΤΗΝ ΑΝΑΦΟΡΑ" : hasProgress ? "ΣΥΝΕΧΙΣΗ ΥΠΟΘΕΣΗΣ" : "ΑΝΟΙΓΜΑ ΦΑΚΕΛΟΥ"}</GameButton>{hasProgress && <GameButton variant="secondary" onClick={onReset} icon={<RotateCcw size={18} />}>ΕΠΑΝΑΦΟΡΑ</GameButton>}</div>
+          <div className="grid gap-3 sm:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] sm:items-center">
+            <div className="case-photo relative hidden sm:block"><img src={keyArt} alt="Εικονογραφημένος φάκελος έρευνας με σταθμό, κινητό και δίκτυο διάδοσης" width={1536} height={1024} className="h-32 w-full object-cover lg:h-40" /><span className="case-photo-mark">ΜΗ ΕΠΑΛΗΘΕΥΜΕΝΟ</span><span className="case-photo-ref font-mono">REF 01-A · 19″</span></div>
+            <div className="min-w-0"><p className="font-mono text-[11px] font-black text-signal">ΕΝΕΡΓΟΣ ΦΑΚΕΛΟΣ / 01 OF 06</p><h2 className="mt-1 font-display text-3xl font-black uppercase leading-none sm:text-5xl">THE VIRAL LIE</h2><p className="mt-2 max-w-lg text-xs font-semibold sm:text-sm">Μια ψευδής ιστορία εξαπλώνεται. Είναι όμως εκστρατεία;</p>
+              <div className="dossier-progress mt-2"><span style={{ width: state.completed ? "100%" : hasProgress ? `${((state.currentAct + 1) / TOTAL_ACTS) * 100}%` : "8%" }} /></div><p className="mt-1 text-[11px] font-black">{state.completed ? "ΟΛΟΚΛΗΡΩΘΗΚΕ" : hasProgress ? `ΠΡΑΞΗ ${state.currentAct + 1} ΑΠΟ ${TOTAL_ACTS}` : "~15 ΛΕΠΤΑ"}</p>
+              <div className="mt-3 flex flex-wrap gap-2"><GameButton onClick={onPlay} icon={hasProgress ? <ArrowRight size={18} /> : <Play size={18} />}>{state.completed ? "ΞΑΝΑΔΕΣ ΤΗΝ ΑΝΑΦΟΡΑ" : hasProgress ? "ΣΥΝΕΧΙΣΗ ΥΠΟΘΕΣΗΣ" : "ΑΝΟΙΓΜΑ ΦΑΚΕΛΟΥ"}</GameButton>{hasProgress && <GameButton variant="secondary" onClick={onReset} icon={<RotateCcw size={18} />}>ΕΠΑΝΑΦΟΡΑ</GameButton>}</div>
             </div>
           </div>
         </article>
 
-        <div className="wall-lower mt-5 grid gap-5 lg:grid-cols-[1.35fr_0.65fr]">
-          <section className="future-file-stack" aria-labelledby="future-cases-title"><h2 id="future-cases-title" className="sr-only">Μελλοντικές υποθέσεις</h2>{futureCases.map(([number, title, subtitle], index) => <article key={number} className={`sealed-file sealed-file-${index + 1} border-2 border-border bg-card p-3`}><div className="flex items-center justify-between gap-3"><div><p className="font-mono text-[10px] font-black text-muted-foreground">{number}</p><h3 className="font-display text-xl font-black uppercase sm:text-2xl">{title}</h3></div><LockKeyhole className="shrink-0" size={18} aria-hidden="true" /></div><p className="mt-1 line-clamp-2 text-xs text-muted-foreground">{subtitle}</p>{index === 0 && <span className="next-case-mark">ΕΠΟΜΕΝΟΣ ΦΑΚΕΛΟΣ</span>}</article>)}</section>
-          <aside className="team-pin relative border-2 border-border bg-card p-3"><img src={teamArt} loading="lazy" alt="Εικονογραφημένη ομάδα τεσσάρων αναλυτών" width={1536} height={1024} className="aspect-[3/2] w-full object-cover" /><span className="team-pin-label">Η ΟΜΑΔΑ ΣΟΥ</span><h2 className="mt-3 font-display text-2xl font-black uppercase">Τέσσερις οπτικές. Ένα όριο: τα στοιχεία.</h2><p className="mt-2 text-xs leading-relaxed text-muted-foreground">Η MARA ελέγχει την προέλευση. Ο LEO διαβάζει τα δίκτυα. Η NOOR ζυγίζει την απόκριση. Η Unit Lead ζητά συμπεράσματα που μπορούν να υπερασπιστούν.</p></aside>
+        <div className="wall-lower grid min-h-0 flex-1 gap-3 lg:grid-cols-[1.35fr_0.65fr]">
+          <section className="future-file-stack min-h-0" aria-labelledby="future-cases-title"><h2 id="future-cases-title" className="sr-only">Μελλοντικές υποθέσεις</h2>{futureCases.map(([number, title, subtitle], index) => <article key={number} className={`sealed-file sealed-file-${index + 1} border-2 border-border bg-card p-2`}><div className="flex items-center justify-between gap-2"><div className="min-w-0"><p className="font-mono text-[10px] font-black text-muted-foreground">{number}</p><h3 className="truncate font-display text-base font-black uppercase sm:text-lg">{title}</h3></div><LockKeyhole className="shrink-0" size={16} aria-hidden="true" /></div><p className="mt-0.5 line-clamp-1 text-[11px] text-muted-foreground">{subtitle}</p>{index === 0 && <span className="next-case-mark">ΕΠΟΜΕΝΟΣ ΦΑΚΕΛΟΣ</span>}</article>)}</section>
+          <aside className="team-pin relative hidden min-h-0 border-2 border-border bg-card p-2 lg:block"><img src={teamArt} loading="lazy" alt="Εικονογραφημένη ομάδα τεσσάρων αναλυτών" width={1536} height={1024} className="h-20 w-full object-cover" /><span className="team-pin-label">Η ΟΜΑΔΑ ΣΟΥ</span><h2 className="mt-2 font-display text-lg font-black uppercase leading-tight">Τέσσερις οπτικές. Ένα όριο: τα στοιχεία.</h2><p className="mt-1 line-clamp-3 text-[11px] leading-snug text-muted-foreground">Η MARA ελέγχει την προέλευση. Ο LEO διαβάζει τα δίκτυα. Η NOOR ζυγίζει την απόκριση. Η Unit Lead ζητά συμπεράσματα που μπορούν να υπερασπιστούν.</p></aside>
         </div>
       </section>
     </div>
