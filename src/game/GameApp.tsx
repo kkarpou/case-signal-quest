@@ -380,7 +380,7 @@ function Glossary({ open, onClose }: { open: boolean; onClose: () => void }) {
   return (
     <div className="glossary-overlay fixed inset-0 z-50 overflow-y-auto" onClick={onClose}>
       <div className="flex min-h-full items-start justify-center p-3 sm:p-6">
-        <div ref={panelRef} role="dialog" aria-modal="true" aria-labelledby="glossary-title" className="glossary-panel rotate-paper relative border-2 border-border bg-card p-4 shadow-editorial sm:p-6" onClick={(event) => event.stopPropagation()}>
+        <div ref={panelRef} role="dialog" aria-modal="true" aria-labelledby="glossary-title" className="glossary-panel rotate-paper relative border-2 border-border bg-card p-4 text-card-foreground shadow-editorial sm:p-6" onClick={(event) => event.stopPropagation()}>
           <div className="tape tape-top" aria-hidden="true" />
           <div className="flex items-start justify-between gap-3 border-b-2 border-border pb-3">
             <div className="min-w-0">
