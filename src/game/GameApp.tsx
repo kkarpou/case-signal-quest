@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode, type RefObject } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode, type RefObject } from "react";
 import { ArrowLeft, ArrowRight, BarChart3, Check, ChevronDown, CircleHelp, FileSearch, Fingerprint, Globe2, LockKeyhole, Moon, Network, Play, Radio, RotateCcw, Search, ShieldCheck, Sun, TimerReset, TriangleAlert } from "lucide-react";
 import { GameButton } from "../components/GameButton";
 import keyArt from "../assets/signal-files-keyart.jpg";
@@ -10,6 +10,7 @@ import teamNoorArt from "../assets/team-noor.jpg";
 import { strings as S } from "./strings";
 import { decisionByAct, decisions, skillLabels, type Decision, type SkillKey } from "./game-data";
 import { CaseRunner, initialProgress, loadProgress, type CaseProgress } from "./CaseRunner";
+import { FaxOnMount, FolderStamp, GlossaryLinkContext, MarginaliaText } from "./organic";
 import { case02 } from "./cases/case02";
 import { case03 } from "./cases/case03";
 const playableCases: CaseDef[] = [case02, case03];
@@ -61,6 +62,11 @@ const decisionAnalyst: Record<string, keyof typeof team> = {
   foreign: "leo", direction: "leo", response: "noor", final: "lead", confidence: "lead", lesson: "lead",
 };
 
+const faxByAct: Record<number, string> = {
+  3: S.evidenceReveal.title, 6: S.timeline.title, 7: S.network.title,
+  8: S.evidence.foreign.site, 9: S.evidence.direction.title,
+};
+
 function clamp(value: number) { return Math.max(0, Math.min(100, value)); }
 
 export function GameApp() {
@@ -78,6 +84,7 @@ export function GameApp() {
   const [glossaryOpen, setGlossaryOpen] = useState(false);
   const [memberOpen, setMemberOpen] = useState<string | null>(null);
   const choiceRegionRef = useRef<HTMLDivElement>(null);
+  const openGlossary = useCallback(() => setGlossaryOpen(true), []);
 
   useEffect(() => {
     const stored = window.localStorage.getItem(STORAGE_KEY);
@@ -204,6 +211,7 @@ export function GameApp() {
   if (!hydrated) return <div className="grid min-h-screen place-items-center bg-background"><span className="stamp">{S.app.loading}</span></div>;
 
   return (
+    <GlossaryLinkContext.Provider value={openGlossary}>
     <div className="h-svh overflow-hidden bg-background text-foreground">
       <header className="case-masthead sticky top-0 z-40 border-b-2 border-border bg-background/95">
         <div className="mx-auto grid min-h-16 max-w-7xl grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 sm:px-6">
@@ -246,6 +254,7 @@ export function GameApp() {
       <Glossary open={glossaryOpen} onClose={() => setGlossaryOpen(false)} />
       <MemberDialog initials={memberOpen} onClose={() => setMemberOpen(null)} />
     </div>
+    </GlossaryLinkContext.Provider>
   );
 }
 
@@ -349,8 +358,8 @@ function CaseScreen(props: {
   return <Cliffhanger onHub={props.onHub} />;
 }
 
-function ScreenFrame({ children, label }: { children: ReactNode; label: string }) {
-  return <section className="game-screen case-board mx-auto h-full max-w-6xl overflow-y-auto overflow-x-hidden px-4 pb-20 pt-4 sm:px-6 sm:pb-20 sm:pt-5"><div className="act-ruler"><span className="kicker">{label}</span><span className="ruler-line" aria-hidden="true" /></div>{children}</section>;
+function ScreenFrame({ children, label, ribbon }: { children: ReactNode; label: string; ribbon?: ReactNode }) {
+  return <section className="game-screen case-board mx-auto h-full max-w-6xl overflow-y-auto overflow-x-hidden px-4 pb-20 pt-4 sm:px-6 sm:pb-20 sm:pt-5"><div className="act-ruler"><span className="kicker">{label}</span><span className="ruler-line" aria-hidden="true" /></div>{ribbon}{children}</section>;
 }
 
 function Dialogue({ who, children }: { who: keyof typeof team; children: ReactNode }) {
@@ -385,16 +394,24 @@ function DecisionScreen({ decision, selected, showWhy, showHint, revising, choic
   onChoose: (decision: Decision, choiceId: string) => void; onNext: () => void; onWhy: () => void; onHint: () => void; onRevise: () => void;
 }) {
   const choice = decision.choices.find((item) => item.id === selected);
-  return <ScreenFrame label={decision.eyebrow}>
+  const [stamped, setStamped] = useState(false);
+  useEffect(() => {
+    if (!selected) return;
+    setStamped(true);
+    const timer = window.setTimeout(() => setStamped(false), 2800);
+    return () => window.clearTimeout(timer);
+  }, [selected, decision.id]);
+  const faxMessage = faxByAct[decision.act];
+  return <ScreenFrame label={decision.eyebrow} ribbon={faxMessage ? <FaxOnMount key={decision.act} message={faxMessage} /> : null}>
     <div className={`decision-layout scene-decision scene-act-${decision.act} mt-2 grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.72fr)]`}>
-      <div className={selected ? "decision-question decision-question-complete" : "decision-question"}><div className="question-sheet"><span className="paper-clip" aria-hidden="true" /><AnalystTag id={decision.id} /><h1 className="screen-title font-display text-3xl font-black uppercase leading-none sm:text-5xl">{decision.title}</h1><p className="screen-prompt mt-3 max-w-2xl text-base font-semibold leading-relaxed sm:text-lg">{decision.prompt}</p></div>
+      <div className={selected ? "decision-question decision-question-complete" : "decision-question"}><div className="question-sheet"><span className="paper-clip" aria-hidden="true" /><AnalystTag id={decision.id} /><h1 className="screen-title font-display text-3xl font-black uppercase leading-none sm:text-5xl">{decision.title}</h1><p className="screen-prompt mt-3 max-w-2xl text-base font-semibold leading-relaxed sm:text-lg"><MarginaliaText text={decision.prompt} /></p></div>
         {revising && <div className="mt-5 border-l-4 border-warning bg-warning/10 p-4 text-sm"><strong>{S.decisionUi.revisingTitle}</strong><p className="mt-1 text-muted-foreground">{S.decisionUi.revisingText}</p></div>}
         {!selected && <div className="mobile-evidence"><EvidenceSidecar act={decision.act} /></div>}
         {!selected && <div ref={choiceRegionRef} className="choice-grid mt-4 grid gap-2" role="group" aria-label={decision.prompt}>{decision.choices.map((item, index) => <GameButton key={item.id} data-choice variant="option" className="choice-button min-h-13 justify-start py-2 normal-case" onClick={() => onChoose(decision, item.id)} autoFocus={index === 0}><span className="choice-letter grid size-8 shrink-0 place-items-center border-2 border-current text-xs">{String.fromCharCode(65 + index)}</span><span>{item.label}</span></GameButton>)}</div>}
         {!selected && <button onClick={onHint} className="hint-button mt-3 inline-flex min-h-11 items-center gap-2 text-sm font-black text-signal underline decoration-2 underline-offset-4 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring"><CircleHelp size={18} />{S.decisionUi.hint} <span className="hidden font-normal text-muted-foreground sm:inline">{S.decisionUi.hintKey}</span></button>}
         {showHint && !selected && <div className="hint-panel mt-2 border-l-4 border-signal bg-accent p-3 text-sm"><strong>{S.decisionUi.hintLead}</strong> {decision.hint}</div>}
       </div>
-       <aside className={selected ? "decision-sidecar min-w-0" : "decision-sidecar desktop-evidence min-w-0"}>{selected && choice ? <Feedback decision={decision} choice={choice} showWhy={showWhy} onWhy={onWhy} /> : <EvidenceSidecar act={decision.act} />}</aside>
+       <aside className={selected ? "decision-sidecar min-w-0" : "decision-sidecar desktop-evidence min-w-0"}>{selected && choice ? <Feedback decision={decision} choice={choice} showWhy={showWhy} showStamp={stamped} onWhy={onWhy} /> : <EvidenceSidecar act={decision.act} />}</aside>
     </div>
     {selected && <BottomActions>{decision.critical && <GameButton variant="secondary" onClick={onRevise} icon={<RotateCcw size={18} />}>{S.decisionUi.revise}</GameButton>}<GameButton variant="secondary" onClick={onWhy} icon={<CircleHelp size={18} />}>{S.decisionUi.why}</GameButton><GameButton onClick={onNext} icon={<ArrowRight size={18} />}>{S.decisionUi.next}</GameButton></BottomActions>}
   </ScreenFrame>;
