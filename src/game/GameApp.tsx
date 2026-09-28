@@ -354,3 +354,53 @@ function Cliffhanger({ onHub }: { onHub: () => void }) {
   const posts = [C.post, C.post, C.post];
   return <ScreenFrame label={C.label}><div className="cliffhanger-layout mx-auto mt-3 grid max-w-5xl gap-4 lg:grid-cols-[1.2fr_0.8fr] lg:items-center"><div><Dialogue who="leo">{C.leoLine}</Dialogue><div className="incoming-board mt-3 border-2 border-alert bg-card p-3 shadow-editorial lg:p-5"><div className="fax-edge" aria-hidden="true" /><div className="flex items-center justify-between gap-4"><div><span className="stamp-warning">{C.stamp}</span><h1 className="mt-2 font-display text-3xl font-black uppercase">{C.title}</h1></div><Radio className="signal-pulse text-alert" size={32} /></div><p className="mt-1 text-sm font-bold lg:text-lg">{C.subtitle}</p><div className="post-burst mt-3 space-y-1.5">{posts.map((post, index) => <div key={index} className="intercept-post grid grid-cols-[auto_1fr_auto] items-center gap-2 border border-border bg-background p-2 text-[10px] lg:text-xs"><span className="grid size-7 place-items-center bg-muted font-black">{index + 1}</span><span>{post}</span><span className="font-black text-alert">22:14:{String(3 + index * 4).padStart(2, "0")}</span></div>)}</div></div></div><div className="next-file text-center"><span className="kicker">{C.nextLabel}</span><h2 className="mt-1 font-display text-4xl font-black uppercase lg:text-5xl">{C.nextLine1}<br />{C.nextLine2}</h2><p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground lg:mt-4">{C.nextText}</p></div></div><BottomActions><GameButton variant="secondary" onClick={onHub} icon={<ArrowLeft size={18} />}>{C.action}</GameButton></BottomActions></ScreenFrame>;
 }
+
+function Glossary({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const panelRef = useRef<HTMLDivElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const opener = document.activeElement as HTMLElement | null;
+    closeRef.current?.focus();
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") { event.preventDefault(); event.stopPropagation(); onClose(); return; }
+      if (event.key !== "Tab" || !panelRef.current) return;
+      const focusable = Array.from(panelRef.current.querySelectorAll<HTMLElement>("button:not([disabled]), [href], [tabindex]:not([tabindex='-1'])"));
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && (document.activeElement === last || !panelRef.current.contains(document.activeElement))) { event.preventDefault(); first.focus(); }
+    };
+    document.addEventListener("keydown", onKeyDown, true);
+    return () => { document.removeEventListener("keydown", onKeyDown, true); opener?.focus?.(); };
+  }, [open, onClose]);
+  if (!open) return null;
+  const G = S.glossary;
+  return (
+    <div className="glossary-overlay fixed inset-0 z-50 overflow-y-auto" onClick={onClose}>
+      <div className="flex min-h-full items-start justify-center p-3 sm:p-6">
+        <div ref={panelRef} role="dialog" aria-modal="true" aria-labelledby="glossary-title" className="glossary-panel rotate-paper relative border-2 border-border bg-card p-4 shadow-editorial sm:p-6" onClick={(event) => event.stopPropagation()}>
+          <div className="tape tape-top" aria-hidden="true" />
+          <div className="flex items-start justify-between gap-3 border-b-2 border-border pb-3">
+            <div className="min-w-0">
+              <h2 id="glossary-title" className="font-display text-2xl font-black uppercase leading-none">{G.title}</h2>
+              <p className="mt-2 text-sm font-semibold text-muted-foreground">{G.subtitle}</p>
+            </div>
+            <button ref={closeRef} onClick={onClose} aria-label={G.close} className="grid size-11 shrink-0 place-items-center border-2 border-border bg-secondary font-black transition-all hover:bg-accent focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring">✕</button>
+          </div>
+          <dl className="glossary-list">
+            {G.terms.map(({ term, definition, example }) => (
+              <div key={term} className="glossary-term border-b border-dashed border-border py-3 last:border-0">
+                <dt className="font-display text-base font-black uppercase leading-tight text-signal sm:text-lg">{term}</dt>
+                <dd className="mt-1 text-sm leading-relaxed">{definition}</dd>
+                <p className="mt-2 text-sm leading-relaxed"><span className="stamp-muted mr-2 inline-block align-middle">{G.exampleLabel}</span>{example}</p>
+              </div>
+            ))}
+          </dl>
+          <p className="mt-2 text-right font-mono text-[10px] font-bold uppercase text-muted-foreground">{G.escHint}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
