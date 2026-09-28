@@ -17,7 +17,7 @@ function findTerm(label: string): GlossaryTerm | undefined {
   return terms.find((item) => item.term.toLocaleLowerCase("el") === lower);
 }
 
-function MarginaliaTerm({ label }: { label: string }) {
+function MarginaliaTerm({ label, up }: { label: string; up?: boolean }) {
   const openGlossary = useContext(GlossaryLinkContext);
   const [open, setOpen] = useState(false);
   const wrapRef = useRef<HTMLSpanElement>(null);
@@ -32,7 +32,7 @@ function MarginaliaTerm({ label }: { label: string }) {
   const data = findTerm(label);
   if (!data) return <>{label}</>;
   return (
-    <span ref={wrapRef} className="marginalia-wrap">
+    <span ref={wrapRef} className={`marginalia-wrap${up ? " marginalia-up" : ""}`}>
       <button
         type="button"
         className="marginalia-term"
@@ -63,14 +63,14 @@ function MarginaliaTerm({ label }: { label: string }) {
 }
 
 /** Renders a string with glossary terms as underlined, tappable marginalia. */
-export function MarginaliaText({ text }: { text: string }) {
+export function MarginaliaText({ text, up }: { text: string; up?: boolean }) {
   const parts: ReactNode[] = [];
   let last = 0;
   let key = 0;
   for (const match of text.matchAll(termPattern)) {
     const index = match.index ?? 0;
     if (index > last) parts.push(text.slice(last, index));
-    parts.push(<MarginaliaTerm key={key++} label={match[0]} />);
+    parts.push(<MarginaliaTerm key={key++} label={match[0]} up={up} />);
     last = index + match[0].length;
   }
   if (last < text.length) parts.push(text.slice(last));
