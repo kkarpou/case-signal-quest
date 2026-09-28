@@ -246,8 +246,9 @@ export function GameApp() {
   );
 }
 
-function Hub({ state, onPlay, onReset, onOpenMember }: { state: GameState; onPlay: () => void; onReset: () => void; onOpenMember: (initials: string) => void }) {
+function Hub({ state, onPlay, onReset, onOpenMember, case02Progress, onPlayCase, onResetCase }: { state: GameState; onPlay: () => void; onReset: () => void; onOpenMember: (initials: string) => void; case02Progress: CaseProgress; onPlayCase: (def: CaseDef) => void; onResetCase: (def: CaseDef) => void }) {
   const hasProgress = state.currentAct > 0 || Object.keys(state.decisions).length > 0;
+  const case02Started = case02Progress.currentScene > 0 || Object.keys(case02Progress.decisions).length > 0;
   const H = S.hub;
   return (
     <div className="hub-wall hub-fit h-full overflow-hidden">
