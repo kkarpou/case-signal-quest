@@ -11,3 +11,8 @@
 - [x] Editorial case-file redesign across Hub and all case screens
 - [x] Preserve mobile evidence and verify full 16-act flow at target viewports
 - [x] Add character portrait treatments and signature mobile network/timeline evidence views
+- [ ] Turn the Hub into one integrated case wall and reduce landing-page structure
+- [ ] Create distinct briefing, evidence, and verdict scene families
+- [ ] Promote Timeline and Network to signature evidence surfaces on mobile and desktop
+- [ ] Integrate character roles, verdict feedback, report, and action controls into the case-file world
+- [ ] Verify the full next-pass redesign at 390×844, 1068×639, and 1280×720
