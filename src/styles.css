@@ -182,7 +182,7 @@
 .analyst-tag-label { display: block; font-size: .58rem; font-weight: 900; letter-spacing: .08em; opacity: .7; }
 .analyst-tag-name { display: block; font-size: .78rem; font-weight: 900; }
 .analyst-tag-focus { display: block; font-size: .7rem; line-height: 1.25; opacity: .78; }
-@media (max-height: 700px) { .analyst-tag-focus { display: none; } }
+@media (max-height: 560px) { .analyst-tag-focus { display: none; } }
 .hub-fit .future-file-stack { grid-auto-rows: minmax(0, 1fr); overflow: hidden; }
 .hub-fit .sealed-file { overflow: hidden; }
 .hub-fit .wall-thread { display: none; }
