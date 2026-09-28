@@ -426,3 +426,7 @@
 .team-card { transition: border-color .15s ease; }
 .team-card:focus-within, .team-card:hover { border-color: color-mix(in oklab, var(--signal) 55%, var(--paper-ink)); }
 .report-team-summary li { grid-template-columns: 6.5rem minmax(0,1fr); }
+
+/* Hover/focus contrast: text always flips with the accent background */
+.choice-button:hover, .choice-button:focus-visible { background: var(--accent); color: var(--accent-foreground); border-color: var(--signal); }
+.choice-button:hover .choice-letter, .choice-button:focus-visible .choice-letter { background: var(--accent-foreground); color: var(--accent); }

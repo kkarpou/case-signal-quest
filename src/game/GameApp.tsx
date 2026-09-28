@@ -405,7 +405,7 @@ function Glossary({ open, onClose }: { open: boolean; onClose: () => void }) {
               <h2 id="glossary-title" className="font-display text-2xl font-black uppercase leading-none">{G.title}</h2>
               <p className="mt-2 text-sm font-semibold text-muted-foreground">{G.subtitle}</p>
             </div>
-            <button ref={closeRef} onClick={onClose} aria-label={G.close} className="grid size-11 shrink-0 place-items-center border-2 border-border bg-secondary font-black transition-all hover:bg-accent focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring">✕</button>
+            <button ref={closeRef} onClick={onClose} aria-label={G.close} className="grid size-11 shrink-0 place-items-center border-2 border-border bg-secondary font-black transition-all hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring">✕</button>
           </div>
           <dl className="glossary-list">
             {G.terms.map(({ term, definition, example }) => (

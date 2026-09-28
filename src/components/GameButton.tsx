@@ -10,8 +10,8 @@ type GameButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 
 const variants: Record<Variant, string> = {
   primary: "border-primary bg-primary text-primary-foreground hover:bg-primary/90",
-  secondary: "border-border bg-secondary text-secondary-foreground hover:bg-accent",
-  ghost: "border-transparent bg-transparent text-foreground hover:bg-accent",
+  secondary: "border-border bg-secondary text-secondary-foreground hover:bg-accent hover:text-accent-foreground",
+  ghost: "border-transparent bg-transparent text-foreground hover:bg-accent hover:text-accent-foreground",
   danger: "border-destructive bg-destructive text-destructive-foreground hover:bg-destructive/90",
   option: "border-border bg-card text-card-foreground hover:border-signal hover:bg-accent hover:text-accent-foreground text-left",
 };
