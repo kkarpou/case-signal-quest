@@ -8,6 +8,6 @@
 - [x] Verify screen fit at 390×844, 1068×639, and 1280×720
 - [x] Increase text sizes where space permits while keeping every box within the viewport
 
-- [ ] Editorial case-file redesign across Hub and all case screens
-- [ ] Preserve mobile evidence and verify full 16-act flow at target viewports
-- [ ] Add character portrait treatments and signature mobile network/timeline evidence views
+- [x] Editorial case-file redesign across Hub and all case screens
+- [x] Preserve mobile evidence and verify full 16-act flow at target viewports
+- [x] Add character portrait treatments and signature mobile network/timeline evidence views
