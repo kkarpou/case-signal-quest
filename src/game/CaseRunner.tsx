@@ -132,7 +132,7 @@ export function CaseRunner({ def, progress, onProgress, onHub }: {
 
   if (scene.kind === "report") {
     const entries = Object.entries(progress.skillScores) as [SkillKey, number][];
-    return <Frame label={`${def.number} · ${S.report.label}`}>
+    return <Frame label={`${def.number} · ΑΝΑΦΟΡΑ`}>
       <article className="report-layout dossier-report closed-dossier mt-2">
         <div className="dossier-spine" aria-hidden="true">{def.number}</div>
         <div className="report-finding">
