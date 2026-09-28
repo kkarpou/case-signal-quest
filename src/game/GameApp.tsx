@@ -68,6 +68,7 @@ export function GameApp() {
   const [showHint, setShowHint] = useState(false);
   const [revising, setRevising] = useState(false);
   const [glossaryOpen, setGlossaryOpen] = useState(false);
+  const [memberOpen, setMemberOpen] = useState<string | null>(null);
   const choiceRegionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -126,6 +127,7 @@ export function GameApp() {
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
+      if (memberOpen) return;
       if (event.key.toLowerCase() === "g" && !event.metaKey && !event.ctrlKey && !event.altKey) {
         event.preventDefault();
         setGlossaryOpen((value) => !value);
@@ -133,7 +135,7 @@ export function GameApp() {
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, []);
+  }, [memberOpen]);
 
   const choose = (decision: Decision, choiceId: string) => {
     const previous = state.decisions[decision.id];
@@ -197,7 +199,7 @@ export function GameApp() {
 
       <main className={view === "case" ? "h-[calc(100svh-4.25rem)] overflow-hidden" : "h-[calc(100svh-4rem)] overflow-hidden"}>
         {view === "hub" ? (
-          <Hub state={state} onPlay={() => setView("case")} onReset={reset} />
+          <Hub state={state} onPlay={() => setView("case")} onReset={reset} onOpenMember={setMemberOpen} />
         ) : (
           <CaseScreen
             state={state} {...(activeDecision ? { decision: activeDecision } : {})} selected={selected} showWhy={showWhy} showHint={showHint} revising={revising}
@@ -208,11 +210,12 @@ export function GameApp() {
         )}
       </main>
       <Glossary open={glossaryOpen} onClose={() => setGlossaryOpen(false)} />
+      <MemberDialog initials={memberOpen} onClose={() => setMemberOpen(null)} />
     </div>
   );
 }
 
-function Hub({ state, onPlay, onReset }: { state: GameState; onPlay: () => void; onReset: () => void }) {
+function Hub({ state, onPlay, onReset, onOpenMember }: { state: GameState; onPlay: () => void; onReset: () => void; onOpenMember: (initials: string) => void }) {
   const hasProgress = state.currentAct > 0 || Object.keys(state.decisions).length > 0;
   const H = S.hub;
   return (
@@ -238,9 +241,55 @@ function Hub({ state, onPlay, onReset }: { state: GameState; onPlay: () => void;
 
         <div className="wall-lower grid min-h-0 flex-1 gap-3 lg:grid-cols-[1.35fr_0.65fr]">
           <section className="future-file-stack min-h-0" aria-labelledby="future-cases-title"><h2 id="future-cases-title" className="sr-only">{H.futureCasesTitle}</h2>{H.futureCases.map(({ number, title, subtitle }, index) => <article key={number} className={`sealed-file sealed-file-${index + 1} border-2 border-border bg-card p-2`}><div className="flex items-center justify-between gap-2"><div className="min-w-0"><p className="file-meta font-mono text-[11px] font-black">{number}</p><h3 className="truncate font-display text-base font-black uppercase sm:text-lg">{title}</h3></div><LockKeyhole className="shrink-0" size={16} aria-hidden="true" /></div><div className="mt-0.5 flex items-center gap-2">{index === 0 && <span className="next-case-mark">{H.nextCaseMark}</span>}<p className="file-summary min-w-0 truncate text-[11px] font-medium">{subtitle}</p></div></article>)}</section>
-          <aside className="team-pin team-folder relative hidden min-h-0 overflow-hidden border-2 border-border bg-card p-2 pt-6 lg:flex lg:flex-col" aria-labelledby="team-pin-heading"><span className="team-folder-tab font-mono" aria-hidden="true">{H.teamLabel}</span><h2 id="team-pin-heading" className="shrink-0 font-display text-sm font-black uppercase leading-tight">{H.teamTitle}</h2><ul className="team-roster mt-1.5 grid min-h-0 flex-1 grid-cols-2 content-start gap-1.5 overflow-hidden">{H.teamCards.map((member) => <li key={member.initials} className="team-card flex min-h-0 flex-col border p-1.5"><span className="member-photo relative block w-full shrink-0"><img src={teamPortraits[member.initials]} loading="lazy" alt="" width={737} height={502} className="block size-full object-cover" style={{ objectPosition: "50% 25%" }} /></span><strong className="mt-1 block text-[12px] font-black uppercase leading-tight">{member.name}</strong><span className="team-specialty mt-0.5 line-clamp-1 text-[11px] font-bold leading-tight" title={member.specialty}>{member.specialty}</span><span className="team-example mt-1 line-clamp-2 text-[11px] font-medium leading-snug" title={member.example}>{member.example}</span></li>)}</ul></aside>
+          <aside className="team-pin team-folder relative hidden min-h-0 overflow-hidden border-2 border-border bg-card p-2 pt-6 lg:flex lg:flex-col" aria-labelledby="team-pin-heading"><span className="team-folder-tab font-mono" aria-hidden="true">{H.teamLabel}</span><h2 id="team-pin-heading" className="shrink-0 font-display text-sm font-black uppercase leading-tight">{H.teamTitle}</h2><ul className="team-roster mt-1.5 grid min-h-0 flex-1 grid-cols-2 content-start gap-1.5 overflow-hidden">{H.teamCards.map((member) => <li key={member.initials} className="team-card flex min-h-0 flex-col border p-1.5"><button type="button" className="member-photo-btn shrink-0" onClick={() => onOpenMember(member.initials)} aria-haspopup="dialog" aria-label={`${member.name} · ${H.memberOpen}`}><span className="member-photo relative block w-full shrink-0"><img src={teamPortraits[member.initials]} loading="lazy" alt="" width={737} height={502} className="block size-full object-cover" style={{ objectPosition: "50% 25%" }} /></span></button><strong className="mt-1 block text-[12px] font-black uppercase leading-tight">{member.name}</strong><span className="team-specialty mt-0.5 line-clamp-1 text-[11px] font-bold leading-tight" title={member.specialty}>{member.specialty}</span><span className="team-example mt-1 line-clamp-2 text-[11px] font-medium leading-snug" title={member.example}>{member.example}</span></li>)}</ul></aside>
         </div>
       </section>
+    </div>
+  );
+}
+
+function MemberDialog({ initials, onClose }: { initials: string | null; onClose: () => void }) {
+  const panelRef = useRef<HTMLDivElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!initials) return;
+    const opener = document.activeElement as HTMLElement | null;
+    closeRef.current?.focus();
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") { event.preventDefault(); event.stopPropagation(); onClose(); return; }
+      if (event.key !== "Tab" || !panelRef.current) return;
+      const focusable = Array.from(panelRef.current.querySelectorAll<HTMLElement>("button:not([disabled]), [href], [tabindex]:not([tabindex='-1'])"));
+      if (!focusable.length) return;
+      const first = focusable[0] as HTMLElement;
+      const last = focusable[focusable.length - 1] as HTMLElement;
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && (document.activeElement === last || !panelRef.current.contains(document.activeElement))) { event.preventDefault(); first.focus(); }
+    };
+    document.addEventListener("keydown", onKeyDown, true);
+    return () => { document.removeEventListener("keydown", onKeyDown, true); opener?.focus?.(); };
+  }, [initials, onClose]);
+  if (!initials) return null;
+  const H = S.hub;
+  const member = H.teamCards.find((item) => item.initials === initials);
+  if (!member) return null;
+  return (
+    <div className="glossary-overlay fixed inset-0 z-50 overflow-y-auto" onClick={onClose}>
+      <div className="flex min-h-full items-center justify-center p-3 sm:p-6">
+        <div ref={panelRef} role="dialog" aria-modal="true" aria-labelledby="member-dialog-title" className="glossary-panel member-dialog rotate-paper relative border-2 border-border bg-card p-4 text-card-foreground shadow-editorial sm:p-6" onClick={(event) => event.stopPropagation()}>
+          <div className="tape tape-top" aria-hidden="true" />
+          <div className="flex items-start justify-between gap-3 border-b-2 border-border pb-3">
+            <div className="min-w-0">
+              <p className="font-mono text-[10px] font-black uppercase text-muted-foreground">{H.memberFile}</p>
+              <h2 id="member-dialog-title" className="font-display text-2xl font-black uppercase leading-none">{member.name}</h2>
+            </div>
+            <button ref={closeRef} onClick={onClose} aria-label={H.memberClose} className="grid size-11 shrink-0 place-items-center border-2 border-border bg-secondary font-black transition-all hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring">✕</button>
+          </div>
+          <div className="member-dialog-photo mt-4 overflow-hidden border-2 border-border"><img src={teamPortraits[member.initials]} alt="" width={737} height={502} className="block size-full object-cover" style={{ objectPosition: "50% 20%" }} /></div>
+          <p className="member-role mt-4 font-display text-lg font-black uppercase leading-tight">{H.memberRoleLabel}: <span className="text-signal">{member.role}</span></p>
+          <p className="mt-2 text-sm font-bold">{member.specialty}</p>
+          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{member.example}</p>
+        </div>
+      </div>
     </div>
   );
 }
