@@ -434,6 +434,17 @@
 .team-card { transition: border-color .15s ease; }
 .team-card:focus-within, .team-card:hover { border-color: color-mix(in oklab, var(--signal) 55%, var(--paper-ink)); }
 .report-team-summary li { grid-template-columns: 6.5rem minmax(0,1fr); }
+/* Σε χαμηλές οθόνες συμπιέζουμε την αναφορά ώστε να χωρά ΟΛΟ το κείμενο χωρίς κόψιμο */
+@media (max-height: 860px) {
+  .report-profile { padding: .5rem .6rem; }
+  .report-profile .score-bars { margin-top: .4rem; }
+  .report-profile .score-bars > * + * { margin-top: .3rem; }
+  .report-profile .score-bars .skill-track { height: .4rem; }
+  .report-profile .skill-sheet h2 { font-size: 1.15rem; }
+  .report-notes { margin-top: .45rem; }
+  .report-margin-note p { display: none; }
+  .report-team-summary li { font-size: 10px; }
+}
 
 /* Hover/focus contrast: text always flips with the accent background */
 .choice-button:hover, .choice-button:focus-visible { background: var(--accent); color: var(--accent-foreground); border-color: var(--signal); }
