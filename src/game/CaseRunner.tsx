@@ -7,6 +7,7 @@ import teamMaraArt from "../assets/team-mara.jpg";
 import teamLeoArt from "../assets/team-leo.jpg";
 import teamNoorArt from "../assets/team-noor.jpg";
 import { strings as S } from "./strings";
+import { FaxRibbon, FolderStamp, MarginaliaText } from "./organic";
 import { skillLabels, type SkillKey } from "./game-data";
 import type { Analyst, CaseChoice, CaseDecision, CaseDef, EvidenceCard } from "./cases/types";
 
@@ -61,6 +62,22 @@ export function CaseRunner({ def, progress, onProgress, onHub }: {
     setShowWhy(false); setShowHint(false); setRevising(false);
   }, [index, decisionId, progress.decisions]);
 
+  const [fax, setFax] = useState<string | null>(null);
+  const [stamped, setStamped] = useState(false);
+  useEffect(() => {
+    if (scene.kind !== "evidence") { setFax(null); return; }
+    const card = def.evidence.find((item) => item.id === scene.evidenceId);
+    setFax(card?.title ?? scene.kicker);
+    const timer = window.setTimeout(() => setFax(null), 4600);
+    return () => window.clearTimeout(timer);
+  }, [index, scene, def.evidence]);
+  useEffect(() => {
+    if (!selected) return;
+    setStamped(true);
+    const timer = window.setTimeout(() => setStamped(false), 2800);
+    return () => window.clearTimeout(timer);
+  }, [selected, index]);
+
   const next = () => onProgress({ ...progress, currentScene: Math.min(def.scenes.length - 1, index + 1), completed: progress.completed || index >= def.scenes.length - 2 });
 
   const choose = (decision: CaseDecision, choiceId: string) => {
@@ -100,7 +117,7 @@ export function CaseRunner({ def, progress, onProgress, onHub }: {
     return <Frame label={scene.kicker}>
       <div className="mt-2">
         <h1 className="font-display text-3xl font-black uppercase leading-none sm:text-5xl">{scene.title}</h1>
-        <div className="mt-2 grid gap-1 lg:grid-cols-2 lg:gap-4">{scene.lines.map((line, i) => <Dialogue key={i} who={line.who}>{line.text}</Dialogue>)}</div>
+        <div className="mt-2 grid gap-1 lg:grid-cols-2 lg:gap-4">{scene.lines.map((line, i) => <Dialogue key={i} who={line.who}><MarginaliaText text={line.text} /></Dialogue>)}</div>
       </div>
       <Actions><GameButton onClick={next} icon={<ArrowRight size={18} />}>{S.decisionUi.next}</GameButton></Actions>
     </Frame>;
@@ -108,9 +125,9 @@ export function CaseRunner({ def, progress, onProgress, onHub }: {
 
   if (scene.kind === "evidence") {
     const card = def.evidence.find((item) => item.id === scene.evidenceId);
-    return <Frame label={scene.kicker}>
+    return <Frame label={scene.kicker} ribbon={fax ? <FaxRibbon message={fax} active /> : null}>
       <div className="mt-2 grid gap-4 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-        <div><h1 className="font-display text-2xl font-black uppercase leading-none sm:text-4xl">{card?.title}</h1><p className="marker-copy mt-2 text-sm font-semibold sm:text-base">{scene.intro}</p></div>
+        <div><h1 className="font-display text-2xl font-black uppercase leading-none sm:text-4xl">{card?.title}</h1><p className="marker-copy mt-2 text-sm font-semibold sm:text-base"><MarginaliaText text={scene.intro} /></p></div>
         {card && <EvidenceView card={card} />}
       </div>
       <Actions><GameButton onClick={next} icon={<ArrowRight size={18} />}>{S.decisionUi.next}</GameButton></Actions>
@@ -175,7 +192,7 @@ export function CaseRunner({ def, progress, onProgress, onHub }: {
   return <Frame label={decision.eyebrow}>
     <div className="decision-layout scene-decision mt-2 grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.72fr)]">
       <div className={selected ? "decision-question decision-question-complete" : "decision-question"}>
-        <div className="question-sheet"><span className="paper-clip" aria-hidden="true" /><AnalystTag who={decision.analyst} /><h1 className="screen-title font-display text-2xl font-black uppercase leading-none sm:text-4xl">{decision.title}</h1><p className="screen-prompt mt-3 max-w-2xl text-base font-semibold leading-relaxed sm:text-lg">{decision.prompt}</p></div>
+        <div className="question-sheet"><span className="paper-clip" aria-hidden="true" /><AnalystTag who={decision.analyst} /><h1 className="screen-title font-display text-2xl font-black uppercase leading-none sm:text-4xl">{decision.title}</h1><p className="screen-prompt mt-3 max-w-2xl text-base font-semibold leading-relaxed sm:text-lg"><MarginaliaText text={decision.prompt} /></p></div>
         {revising && <div className="mt-5 border-l-4 border-warning bg-warning/10 p-4 text-sm"><strong>{S.decisionUi.revisingTitle}</strong><p className="mt-1 text-muted-foreground">{S.decisionUi.revisingText}</p></div>}
         {!selected && card && <div className="mobile-evidence"><EvidenceView card={card} /></div>}
         {!selected && <div ref={choiceRegionRef} className="choice-grid mt-4 grid gap-2" role="group" aria-label={decision.prompt}>{decision.choices.map((item, i) => <GameButton key={item.id} data-choice variant="option" className="choice-button min-h-13 justify-start py-2 normal-case" onClick={() => choose(decision, item.id)} autoFocus={i === 0}><span className="choice-letter grid size-8 shrink-0 place-items-center border-2 border-current text-xs">{String.fromCharCode(65 + i)}</span><span>{item.label}</span></GameButton>)}</div>}
@@ -183,7 +200,7 @@ export function CaseRunner({ def, progress, onProgress, onHub }: {
         {showHint && !selected && <div className="hint-panel mt-2 border-l-4 border-signal bg-accent p-3 text-sm"><strong>{S.decisionUi.hintLead}</strong> {decision.hint}</div>}
       </div>
       <aside className={selected ? "decision-sidecar min-w-0" : "decision-sidecar desktop-evidence min-w-0"}>
-        {selected && choice ? <FeedbackCard decision={decision} choice={choice} showWhy={showWhy} /> : card ? <EvidenceView card={card} /> : null}
+        {selected && choice ? <FeedbackCard decision={decision} choice={choice} showWhy={showWhy} showStamp={stamped} /> : card ? <EvidenceView card={card} /> : null}
       </aside>
     </div>
     {selected && <Actions>
@@ -194,8 +211,8 @@ export function CaseRunner({ def, progress, onProgress, onHub }: {
   </Frame>;
 }
 
-function Frame({ children, label }: { children: ReactNode; label: string }) {
-  return <section className="game-screen case-board mx-auto h-full max-w-6xl overflow-y-auto overflow-x-hidden px-4 pb-20 pt-4 sm:px-6 sm:pb-20 sm:pt-5"><div className="act-ruler"><span className="kicker">{label}</span><span className="ruler-line" aria-hidden="true" /></div>{children}</section>;
+function Frame({ children, label, ribbon }: { children: ReactNode; label: string; ribbon?: ReactNode }) {
+  return <section className="game-screen case-board mx-auto h-full max-w-6xl overflow-y-auto overflow-x-hidden px-4 pb-20 pt-4 sm:px-6 sm:pb-20 sm:pt-5"><div className="act-ruler"><span className="kicker">{label}</span><span className="ruler-line" aria-hidden="true" /></div>{ribbon}{children}</section>;
 }
 
 function Actions({ children }: { children: ReactNode }) {
@@ -216,16 +233,18 @@ function EvidenceView({ card }: { card: EvidenceCard }) {
   return <article className="evidence-card signature-evidence">
     <div className="evidence-meta"><FileSearch className="text-signal" size={20} /><span className="font-mono">{card.kicker}</span></div>
     <h2 className="mt-1 font-display text-lg font-black leading-tight lg:text-2xl">{card.title}</h2>
-    <ul className="mt-2 grid gap-1.5 text-[12px] leading-snug lg:text-sm">{card.lines.map((line) => <li key={line} className="flex gap-2"><span className="mt-1.5 size-1.5 shrink-0 bg-signal" />{line}</li>)}</ul>
+    <ul className="mt-2 grid gap-1.5 text-[12px] leading-snug lg:text-sm">{card.lines.map((line) => <li key={line} className="flex gap-2"><span className="mt-1.5 size-1.5 shrink-0 bg-signal" /><span className="min-w-0"><MarginaliaText text={line} /></span></li>)}</ul>
     {card.table && <table className="mt-3 w-full border-collapse text-[11px] lg:text-xs"><thead><tr>{card.table.head.map((head) => <th key={head} className="border border-border bg-muted p-1 text-left font-black uppercase">{head}</th>)}</tr></thead><tbody>{card.table.rows.map((row, i) => <tr key={i}>{row.map((cell, j) => <td key={j} className="border border-border p-1 font-semibold">{cell}</td>)}</tr>)}</tbody></table>}
     {card.chart && <div className="mt-3 grid gap-1">{card.chart.bars.map((bar) => <div key={bar.label} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 text-[11px] font-bold"><span className="truncate">{bar.label}</span><span className="tabular-nums">{bar.value} {card.chart?.unit}</span><div className="col-span-2 h-2 border border-border bg-muted"><div className="h-full bg-signal" style={{ width: `${Math.min(100, bar.value)}%` }} /></div></div>)}<p className="mt-1 text-[10px] font-semibold text-muted-foreground">{card.chart.baselineNote}</p></div>}
-    {card.note && <p className="mt-2 text-[10px] font-semibold uppercase text-muted-foreground">{card.note}</p>}
+    {card.note && <p className="mt-2 text-[10px] font-semibold uppercase text-muted-foreground"><MarginaliaText text={card.note} /></p>}
   </article>;
 }
 
-function FeedbackCard({ decision, choice, showWhy }: { decision: CaseDecision; choice: CaseChoice; showWhy: boolean }) {
+function FeedbackCard({ decision, choice, showWhy, showStamp }: { decision: CaseDecision; choice: CaseChoice; showWhy: boolean; showStamp: boolean }) {
   return <article className={`feedback-card feedback-reveal verdict-board ${choice.correct ? "feedback-strong border-signal" : "feedback-caution border-warning"}`} aria-live="polite">
+    <FolderStamp show={showStamp} />
     <div className="verdict-heading"><span className={`${choice.correct ? "stamp" : "stamp-warning"} verdict-stamp`}>{choice.correct ? S.feedback.strong : S.feedback.premature}</span></div>
+    {!choice.correct && <div className="desk-memo"><span className="desk-memo-label">{S.notify.memoLabel}</span><p><MarginaliaText text={S.notify.memo} /></p></div>}
     <Row title={S.feedback.yourChoice} text={choice.feedback} icon={<Fingerprint size={18} />} />
     <Row title={S.feedback.evidence} text={decision.evidence} icon={<Search size={18} />} />
     <Row title={S.feedback.cannot} text={decision.cannot} icon={<TriangleAlert size={18} />} />
@@ -235,5 +254,5 @@ function FeedbackCard({ decision, choice, showWhy }: { decision: CaseDecision; c
 }
 
 function Row({ title, text, icon, strong }: { title: string; text: string; icon: ReactNode; strong?: boolean }) {
-  return <div className={`feedback-row mt-4 grid grid-cols-[auto_minmax(0,1fr)] gap-3 border-t border-border pt-3 first:border-0 ${strong ? "feedback-principle" : ""}`}><span className="text-signal">{icon}</span><div><h3 className="font-mono text-[11px] font-black uppercase text-muted-foreground">{title}</h3><p className={`mt-1 text-sm leading-relaxed ${strong ? "font-black text-signal" : ""}`}>{text}</p></div></div>;
+  return <div className={`feedback-row mt-4 grid grid-cols-[auto_minmax(0,1fr)] gap-3 border-t border-border pt-3 first:border-0 ${strong ? "feedback-principle" : ""}`}><span className="text-signal">{icon}</span><div><h3 className="font-mono text-[11px] font-black uppercase text-muted-foreground">{title}</h3><p className={`mt-1 text-sm leading-relaxed ${strong ? "font-black text-signal" : ""}`}><MarginaliaText text={text} /></p></div></div>;
 }
