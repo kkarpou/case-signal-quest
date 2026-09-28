@@ -210,8 +210,9 @@ export function GameApp() {
             <span className="masthead-unit block truncate font-mono text-[11px] font-bold uppercase">{S.app.unit}</span>
           </button>
           <div className="flex shrink-0 items-center gap-1">
-            <span className="status-stamp hidden sm:inline-flex">{view === "case" ? S.app.statusCase : S.app.statusSeason}</span>
+            <span className="status-stamp hidden sm:inline-flex">{view === "hub" ? S.app.statusSeason : S.app.statusCase}</span>
             {view === "case" && <span className="act-counter border-r border-border px-2 font-mono text-xs font-black text-signal">{String(state.currentAct + 1).padStart(2, "0")} / {TOTAL_ACTS}</span>}
+            {view === "runner" && runnerDef && <span className="act-counter border-r border-border px-2 font-mono text-xs font-black text-signal">{String(Math.min(runnerProgress.currentScene, runnerDef.scenes.length - 1) + 1).padStart(2, "0")} / {runnerDef.scenes.length}</span>}
             <GameButton variant="ghost" className="min-h-11 min-w-11 gap-1.5 px-2" onClick={() => setGlossaryOpen(true)} aria-label={S.glossary.open} aria-haspopup="dialog" aria-expanded={glossaryOpen}>
               <BookOpen size={20} aria-hidden="true" />
               <span className="hidden font-mono text-[11px] font-black uppercase lg:inline">{S.glossary.short}</span>
