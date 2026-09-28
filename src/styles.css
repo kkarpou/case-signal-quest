@@ -381,3 +381,10 @@
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
 }
+
+/* ---- Glossary dialog ---- */
+.glossary-overlay { background: color-mix(in oklab, var(--background) 80%, transparent); backdrop-filter: blur(2px); }
+.glossary-panel { width: min(46rem, 100%); max-height: calc(100svh - 1.5rem); overflow-y: auto; overscroll-behavior: contain; }
+.glossary-panel .tape-top { width: 7rem; }
+.glossary-term dt { letter-spacing: .02em; }
+@media (min-width: 640px) { .glossary-panel { max-height: calc(100svh - 3rem); } }
