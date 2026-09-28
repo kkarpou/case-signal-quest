@@ -13,7 +13,7 @@ const variants: Record<Variant, string> = {
   secondary: "border-border bg-secondary text-secondary-foreground hover:bg-accent",
   ghost: "border-transparent bg-transparent text-foreground hover:bg-accent",
   danger: "border-destructive bg-destructive text-destructive-foreground hover:bg-destructive/90",
-  option: "border-border bg-card text-card-foreground hover:border-signal hover:bg-accent text-left",
+  option: "border-border bg-card text-card-foreground hover:border-signal hover:bg-accent hover:text-accent-foreground text-left",
 };
 
 export function GameButton({ variant = "primary", icon, className, children, ...props }: GameButtonProps) {
