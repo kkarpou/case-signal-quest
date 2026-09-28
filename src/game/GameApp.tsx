@@ -9,6 +9,9 @@ import teamLeoArt from "../assets/team-leo.jpg";
 import teamNoorArt from "../assets/team-noor.jpg";
 import { strings as S } from "./strings";
 import { decisionByAct, decisions, skillLabels, type Decision, type SkillKey } from "./game-data";
+import { CaseRunner, initialProgress, loadProgress, type CaseProgress } from "./CaseRunner";
+import { case02 } from "./cases/case02";
+import type { CaseDef } from "./cases/types";
 
 const STORAGE_KEY = "the-signal-files-case-01";
 const THEME_KEY = "the-signal-files-theme";
@@ -59,7 +62,10 @@ const decisionAnalyst: Record<string, keyof typeof team> = {
 function clamp(value: number) { return Math.max(0, Math.min(100, value)); }
 
 export function GameApp() {
-  const [view, setView] = useState<"hub" | "case">("hub");
+  const [view, setView] = useState<"hub" | "case" | "runner">("hub");
+  const [runnerDef, setRunnerDef] = useState<CaseDef | null>(null);
+  const [runnerProgress, setRunnerProgress] = useState<CaseProgress>(initialProgress);
+  const [case02Progress, setCase02Progress] = useState<CaseProgress>(initialProgress);
   const [state, setState] = useState<GameState>(initialState);
   const [hydrated, setHydrated] = useState(false);
   const [theme, setTheme] = useState<"dark" | "light">("dark");
@@ -78,6 +84,7 @@ export function GameApp() {
       try { setState({ ...initialState, ...JSON.parse(stored) }); } catch { window.localStorage.removeItem(STORAGE_KEY); }
     }
     if (storedTheme === "light") setTheme("light");
+    setCase02Progress(loadProgress(case02.storageKey));
     setHydrated(true);
   }, []);
 
@@ -172,6 +179,26 @@ export function GameApp() {
     setState(initialState); setView("hub");
   };
 
+  const openRunner = (def: CaseDef) => {
+    setRunnerDef(def);
+    setRunnerProgress(loadProgress(def.storageKey));
+    setView("runner");
+  };
+
+  const saveRunnerProgress = (def: CaseDef, nextProgress: CaseProgress) => {
+    setRunnerProgress(nextProgress);
+    if (def.id === "case02") setCase02Progress(nextProgress);
+    window.localStorage.setItem(def.storageKey, JSON.stringify(nextProgress));
+  };
+
+  const resetCase = (def: CaseDef) => {
+    if (!window.confirm(`Να διαγραφεί όλη η πρόοδος της ${def.number};`)) return;
+    window.localStorage.removeItem(def.storageKey);
+    if (def.id === "case02") setCase02Progress(initialProgress);
+    setRunnerProgress(initialProgress);
+    setView("hub");
+  };
+
   if (!hydrated) return <div className="grid min-h-screen place-items-center bg-background"><span className="stamp">{S.app.loading}</span></div>;
 
   return (
@@ -183,8 +210,9 @@ export function GameApp() {
             <span className="masthead-unit block truncate font-mono text-[11px] font-bold uppercase">{S.app.unit}</span>
           </button>
           <div className="flex shrink-0 items-center gap-1">
-            <span className="status-stamp hidden sm:inline-flex">{view === "case" ? S.app.statusCase : S.app.statusSeason}</span>
+            <span className="status-stamp hidden sm:inline-flex">{view === "hub" ? S.app.statusSeason : S.app.statusCase}</span>
             {view === "case" && <span className="act-counter border-r border-border px-2 font-mono text-xs font-black text-signal">{String(state.currentAct + 1).padStart(2, "0")} / {TOTAL_ACTS}</span>}
+            {view === "runner" && runnerDef && <span className="act-counter border-r border-border px-2 font-mono text-xs font-black text-signal">{String(Math.min(runnerProgress.currentScene, runnerDef.scenes.length - 1) + 1).padStart(2, "0")} / {runnerDef.scenes.length}</span>}
             <GameButton variant="ghost" className="min-h-11 min-w-11 gap-1.5 px-2" onClick={() => setGlossaryOpen(true)} aria-label={S.glossary.open} aria-haspopup="dialog" aria-expanded={glossaryOpen}>
               <BookOpen size={20} aria-hidden="true" />
               <span className="hidden font-mono text-[11px] font-black uppercase lg:inline">{S.glossary.short}</span>
@@ -195,11 +223,14 @@ export function GameApp() {
           </div>
         </div>
         {view === "case" && <div className="case-progress h-1.5 bg-muted"><div className="h-full bg-signal transition-all" style={{ width: `${((state.currentAct + 1) / TOTAL_ACTS) * 100}%` }} /></div>}
+        {view === "runner" && runnerDef && <div className="case-progress h-1.5 bg-muted"><div className="h-full bg-signal transition-all" style={{ width: `${((Math.min(runnerProgress.currentScene, runnerDef.scenes.length - 1) + 1) / runnerDef.scenes.length) * 100}%` }} /></div>}
       </header>
 
-      <main className={view === "case" ? "h-[calc(100svh-4.25rem)] overflow-hidden" : "h-[calc(100svh-4rem)] overflow-hidden"}>
+      <main className={view === "hub" ? "h-[calc(100svh-4rem)] overflow-hidden" : "h-[calc(100svh-4.25rem)] overflow-hidden"}>
         {view === "hub" ? (
-          <Hub state={state} onPlay={() => setView("case")} onReset={reset} onOpenMember={setMemberOpen} />
+          <Hub state={state} onPlay={() => setView("case")} onReset={reset} onOpenMember={setMemberOpen} case02Progress={case02Progress} onPlayCase={openRunner} onResetCase={resetCase} />
+        ) : view === "runner" && runnerDef ? (
+          <CaseRunner def={runnerDef} progress={runnerProgress} onProgress={(nextProgress) => saveRunnerProgress(runnerDef, nextProgress)} onHub={() => setView("hub")} />
         ) : (
           <CaseScreen
             state={state} {...(activeDecision ? { decision: activeDecision } : {})} selected={selected} showWhy={showWhy} showHint={showHint} revising={revising}
@@ -215,8 +246,9 @@ export function GameApp() {
   );
 }
 
-function Hub({ state, onPlay, onReset, onOpenMember }: { state: GameState; onPlay: () => void; onReset: () => void; onOpenMember: (initials: string) => void }) {
+function Hub({ state, onPlay, onReset, onOpenMember, case02Progress, onPlayCase, onResetCase }: { state: GameState; onPlay: () => void; onReset: () => void; onOpenMember: (initials: string) => void; case02Progress: CaseProgress; onPlayCase: (def: CaseDef) => void; onResetCase: (def: CaseDef) => void }) {
   const hasProgress = state.currentAct > 0 || Object.keys(state.decisions).length > 0;
+  const case02Started = case02Progress.currentScene > 0 || Object.keys(case02Progress.decisions).length > 0;
   const H = S.hub;
   return (
     <div className="hub-wall hub-fit h-full overflow-hidden">
@@ -240,7 +272,13 @@ function Hub({ state, onPlay, onReset, onOpenMember }: { state: GameState; onPla
         </article>
 
         <div className="wall-lower grid min-h-0 flex-1 gap-3 lg:grid-cols-[1.35fr_0.65fr]">
-          <section className="future-file-stack min-h-0" aria-labelledby="future-cases-title"><h2 id="future-cases-title" className="sr-only">{H.futureCasesTitle}</h2>{H.futureCases.map(({ number, title, subtitle }, index) => <article key={number} className={`sealed-file sealed-file-${index + 1} border-2 border-border bg-card p-2`}><div className="flex items-center justify-between gap-2"><div className="min-w-0"><p className="file-meta font-mono text-[11px] font-black">{number}</p><h3 className="truncate font-display text-base font-black uppercase sm:text-lg">{title}</h3></div><LockKeyhole className="shrink-0" size={16} aria-hidden="true" /></div><div className="mt-0.5 flex items-center gap-2">{index === 0 && <span className="next-case-mark">{H.nextCaseMark}</span>}<p className="file-summary min-w-0 truncate text-[11px] font-medium">{subtitle}</p></div></article>)}</section>
+          <section className="future-file-stack min-h-0" aria-labelledby="future-cases-title"><h2 id="future-cases-title" className="sr-only">{H.futureCasesTitle}</h2>
+            <article className="open-case-file active-next-file relative col-span-2 overflow-hidden border-2 border-signal bg-card p-2">
+              <div className="flex items-center justify-between gap-2"><div className="min-w-0"><p className="file-meta font-mono text-[11px] font-black text-signal">{case02.number}</p><h3 className="truncate font-display text-base font-black uppercase sm:text-lg">{case02.title}</h3></div><span className="stamp shrink-0">{case02Progress.completed ? H.completed : H.caseStatus}</span></div>
+              <p className="file-summary mt-0.5 truncate text-[11px] font-medium">{case02.subtitle}</p>
+              <div className="mt-1.5 flex flex-wrap gap-2"><GameButton className="min-h-11 px-3 py-1 text-xs" onClick={() => onPlayCase(case02)} icon={case02Started ? <ArrowRight size={16} /> : <Play size={16} />}>{case02Progress.completed ? H.playReport : case02Started ? H.playContinue : H.playStart}</GameButton>{case02Started && <GameButton variant="secondary" className="min-h-11 px-3 py-1 text-xs" onClick={() => onResetCase(case02)} icon={<RotateCcw size={16} />}>{H.reset}</GameButton>}</div>
+            </article>
+            {H.futureCases.slice(1).map(({ number, title, subtitle }, index) => <article key={number} className={`sealed-file sealed-file-${index + 1} border-2 border-border bg-card p-2`}><div className="flex items-center justify-between gap-2"><div className="min-w-0"><p className="file-meta font-mono text-[11px] font-black">{number}</p><h3 className="truncate font-display text-base font-black uppercase sm:text-lg">{title}</h3></div><LockKeyhole className="shrink-0" size={16} aria-hidden="true" /></div><div className="mt-0.5 flex items-center gap-2">{index === 0 && <span className="next-case-mark">{H.nextCaseMark}</span>}<p className="file-summary min-w-0 truncate text-[11px] font-medium">{subtitle}</p></div></article>)}</section>
           <aside className="team-pin team-folder relative hidden min-h-0 overflow-hidden border-2 border-border bg-card p-2 pt-6 lg:flex lg:flex-col" aria-labelledby="team-pin-heading"><span className="team-folder-tab font-mono" aria-hidden="true">{H.teamLabel}</span><h2 id="team-pin-heading" className="shrink-0 font-display text-sm font-black uppercase leading-tight">{H.teamTitle}</h2><ul className="team-roster mt-1.5 grid min-h-0 flex-1 grid-cols-2 content-start gap-1.5 overflow-hidden">{H.teamCards.map((member) => <li key={member.initials} className="team-card flex min-h-0 flex-col border p-1.5"><button type="button" className="member-photo-btn shrink-0" onClick={() => onOpenMember(member.initials)} aria-haspopup="dialog" aria-label={`${member.name} · ${H.memberOpen}`}><span className="member-photo relative block w-full shrink-0"><img src={teamPortraits[member.initials]} loading="lazy" alt="" width={737} height={502} className="block size-full object-cover" style={{ objectPosition: "50% 25%" }} /></span></button><strong className="mt-1 block text-[12px] font-black uppercase leading-tight">{member.name}</strong><span className="team-specialty mt-0.5 line-clamp-1 text-[11px] font-bold leading-tight" title={member.specialty}>{member.specialty}</span><span className="team-example mt-1 line-clamp-2 text-[11px] font-medium leading-snug" title={member.example}>{member.example}</span></li>)}</ul></aside>
         </div>
       </section>

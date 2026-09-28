@@ -215,6 +215,11 @@
 }
 .hub-fit .future-file-stack { grid-auto-rows: minmax(0, 1fr); overflow: hidden; }
 .hub-fit .sealed-file { overflow: hidden; }
+.future-file-stack { grid-template-rows: auto minmax(0,1fr) minmax(0,1fr); }
+.hub-fit .future-file-stack { grid-auto-rows: auto; }
+.active-next-file { min-height: 0; padding: .45rem .6rem; }
+@media (max-height: 800px) { .active-next-file .file-summary { display: none; } }
+.active-next-file .file-summary { color: var(--paper-muted); }
 .hub-fit .wall-thread { display: none; }
 @media (max-height: 700px) {
   .hub-fit .wall-heading p { display: none; }
