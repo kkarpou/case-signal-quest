@@ -433,7 +433,7 @@
 /* Team cards (Hub) & report team summary */
 .team-card { transition: border-color .15s ease; }
 .team-card:focus-within, .team-card:hover { border-color: color-mix(in oklab, var(--signal) 55%, var(--paper-ink)); }
-.report-team-summary li { grid-template-columns: 6.5rem minmax(0,1fr); }
+.report-team-summary li { grid-template-columns: 7.2rem minmax(0,1fr); }
 /* Σε χαμηλές οθόνες συμπιέζουμε την αναφορά ώστε να χωρά ΟΛΟ το κείμενο χωρίς κόψιμο */
 @media (max-height: 940px) {
   .report-profile { padding: .5rem .6rem; }
