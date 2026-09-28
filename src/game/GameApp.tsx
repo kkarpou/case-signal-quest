@@ -166,7 +166,7 @@ export function GameApp() {
         {view === "case" && <div className="case-progress h-1.5 bg-muted"><div className="h-full bg-signal transition-all" style={{ width: `${((state.currentAct + 1) / TOTAL_ACTS) * 100}%` }} /></div>}
       </header>
 
-      <main className={view === "case" ? "h-[calc(100svh-4.25rem)] overflow-hidden" : ""}>
+      <main className={view === "case" ? "h-[calc(100svh-4.25rem)] overflow-hidden" : "h-[calc(100svh-4rem)] overflow-hidden"}>
         {view === "hub" ? (
           <Hub state={state} onPlay={() => setView("case")} onReset={reset} />
         ) : (
