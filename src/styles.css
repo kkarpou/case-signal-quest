@@ -188,6 +188,11 @@
 .analyst-tag-name { display: block; font-size: .78rem; font-weight: 900; }
 .analyst-tag-focus { display: block; font-size: .7rem; line-height: 1.25; opacity: .78; }
 @media (max-height: 560px) { .analyst-tag-focus { display: none; } }
+@media (max-height: 780px) {
+  .member-photo { width: 2.3rem; height: 2.6rem; border-width: 2px; }
+  .team-roster { gap: .3rem; }
+  .team-card > span:last-child > span:last-child { display: none; }
+}
 .hub-fit .future-file-stack { grid-auto-rows: minmax(0, 1fr); overflow: hidden; }
 .hub-fit .sealed-file { overflow: hidden; }
 .hub-fit .wall-thread { display: none; }
