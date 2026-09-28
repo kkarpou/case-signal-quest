@@ -312,12 +312,21 @@
 .bottom-actions::before { content: "CURRENT ACTION"; position: absolute; left: max(1rem, calc(50% - 32rem)); top: -.7rem; padding: .15rem .45rem; color: var(--warning-foreground); background: var(--warning); font-size: .625rem; line-height: 1; font-weight: 900; }
 .bottom-actions > div { position: relative; }
 
+.recommended-action {
+  border-width: 3px;
+  animation: recommended-action-pulse 2.8s ease-in-out infinite;
+}
+
 @keyframes paper-in { from { opacity: 0; transform: translateY(10px) rotate(-1deg); } to { opacity: 1; } }
 @keyframes stamp-in { from { opacity: 0; transform: scale(1.4) rotate(-8deg); } to { opacity: 1; } }
 @keyframes note-pull { from { opacity: 0; clip-path: inset(0 0 100%); } to { opacity: 1; clip-path: inset(0); } }
 @keyframes edge-draw { to { stroke-dashoffset: 0; } }
 @keyframes spike-pulse { 50% { filter: brightness(1.35); transform: scaleY(1.04); transform-origin: bottom; } }
 @keyframes signal-pulse { 50% { transform: scale(1.12); opacity: .65; } }
+@keyframes recommended-action-pulse {
+  0%, 100% { border-color: var(--primary); box-shadow: 0 0 0 0 color-mix(in oklab, var(--signal) 12%, transparent); }
+  50% { border-color: var(--warning); box-shadow: 0 0 0 4px color-mix(in oklab, var(--warning) 34%, transparent); }
+}
 
 .decision-question-complete { display: none; }
 .game-screen .dialogue { margin-top: 0.75rem; }
