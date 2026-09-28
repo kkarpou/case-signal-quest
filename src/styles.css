@@ -480,7 +480,13 @@
   .skill-sheet .score-bars { margin-top: .35rem; row-gap: .25rem; }
   .skill-sheet .score-bars > div > div:first-child { margin-bottom: .12rem; font-size: .72rem; }
   .skill-sheet .skill-track { height: .35rem; }
-  .report-notes > div { padding: .4rem; }
+  .report-notes { grid-template-columns: 1fr 1fr; gap: .35rem; margin-top: .4rem; }
+  .report-notes > div { padding: .3rem .4rem; }
+  .report-notes h3 { font-size: .72rem; line-height: .9rem; margin-top: .1rem; }
+  .report-notes span { font-size: .58rem; }
+  .skill-sheet h2 { font-size: .95rem; line-height: 1.1rem; }
+  .skill-sheet .skill-track { height: .3rem; }
+  .skill-sheet .score-bars { row-gap: .2rem; }
   .report-team-summary li { grid-template-columns: 5.6rem minmax(0,1fr); font-size: 10px; }
   .report-team-summary { margin-top: .45rem; padding-top: .35rem; }
   .skill-sheet h2 { font-size: 1.05rem; }
