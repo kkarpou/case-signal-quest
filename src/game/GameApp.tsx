@@ -282,7 +282,7 @@ function MemberDialog({ initials, onClose }: { initials: string | null; onClose:
               <p className="font-mono text-[10px] font-black uppercase text-muted-foreground">{H.memberFile}</p>
               <h2 id="member-dialog-title" className="font-display text-2xl font-black uppercase leading-none">{member.name}</h2>
             </div>
-            <button ref={closeRef} onClick={onClose} aria-label={H.memberClose} className="grid size-11 shrink-0 place-items-center border-2 border-border bg-secondary font-black transition-all hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring">✕</button>
+            <button ref={closeRef} onClick={onClose} aria-label={H.memberClose} className="dialog-close grid size-11 shrink-0 place-items-center border-2 border-border font-black transition-all focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring">✕</button>
           </div>
           <div className="member-dialog-photo mt-4 overflow-hidden border-2 border-border"><img src={teamPortraits[member.initials]} alt="" width={737} height={502} className="block size-full object-cover" style={{ objectPosition: "50% 20%" }} /></div>
           <p className="member-role mt-4 font-display text-lg font-black uppercase leading-tight">{H.memberRoleLabel}: <span className="text-signal">{member.role}</span></p>
@@ -322,7 +322,7 @@ function AnalystTag({ id }: { id: string }) {
   const who = decisionAnalyst[id];
   if (!who) return null;
   const member = team[who];
-  return <div className="analyst-tag" data-character={who}><span className="analyst-tag-initials">{member.initials}</span><span className="min-w-0"><span className="analyst-tag-label">{S.decisionUi.analystLabel}</span><strong className="analyst-tag-name">{member.name} · {member.role}</strong><span className="analyst-tag-focus">{member.focus}</span></span></div>;
+  return <div className="analyst-tag" data-character={who}><span className="analyst-tag-photo"><img src={teamPortraits[member.initials]} alt={member.name} width={148} height={100} /></span><span className="min-w-0"><span className="analyst-tag-label">{S.decisionUi.analystLabel}</span><strong className="analyst-tag-name">{member.name} · {member.role}</strong><span className="analyst-tag-focus">{member.focus}</span></span></div>;
 }
 
 function BottomActions({ children }: { children: ReactNode }) {
@@ -454,7 +454,7 @@ function Glossary({ open, onClose }: { open: boolean; onClose: () => void }) {
               <h2 id="glossary-title" className="font-display text-2xl font-black uppercase leading-none">{G.title}</h2>
               <p className="mt-2 text-sm font-semibold text-muted-foreground">{G.subtitle}</p>
             </div>
-            <button ref={closeRef} onClick={onClose} aria-label={G.close} className="grid size-11 shrink-0 place-items-center border-2 border-border bg-secondary font-black transition-all hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring">✕</button>
+            <button ref={closeRef} onClick={onClose} aria-label={G.close} className="dialog-close grid size-11 shrink-0 place-items-center border-2 border-border font-black transition-all focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring">✕</button>
           </div>
           <dl className="glossary-list">
             {G.terms.map(({ term, definition, example }) => (

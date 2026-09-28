@@ -22,3 +22,10 @@
 - [x] Add "who guided what" team summary to the final report
 - [x] Strengthen color contrast and typography across both themes without breaking one-screen layouts
 - [x] Έλεγχος contrast σε highlights (team-specialty, next-case-mark, stamps) και hover καταστάσεις (team-card, choice buttons)
+- [ ] Διόρθωση αντίθεσης στα κουμπιά κλεισίματος διαλόγων (rest + hover, δύο θέματα)
+- [ ] Καταγραφή πλήρους σεναρίου Season 01 (ΥΠΟΘΕΣΕΙΣ 02–06) στο docs/season-01-scenarios.md
+- [ ] Υλοποίηση παικτικών ΥΠΟΘΕΣΕΩΝ 02–06 με δεδομενοκεντρικό περιεχόμενο, διατηρώντας την ΥΠΟΘΕΣΗ 01
+- [ ] Hub: άνοιγμα/συνέχιση/αναφορά ανά υπόθεση, ξεχωριστή αποθήκευση και reset ανά υπόθεση
+- [ ] Επέκταση γλωσσαρίου (lateral reading, παρονομαστής, ποσοστιαίες μονάδες, μεροληψία επιλογής, πλαστοπροσωπία, συνθετικό vs ψευδές, απόδοση)
+- [ ] Έλεγχος ροής, αποθήκευσης, αριθμητικών και κινητού για τις νέες υποθέσεις
+- [x] Show the team member's photo in the analyst tag on decision screens
