@@ -179,7 +179,7 @@
 .sealed-file:nth-child(odd) { transform: rotate(-.3deg); }.sealed-file:nth-child(even) { transform: rotate(.25deg); }
 .sealed-file::after { content: "ΚΛΕΙΔΩΜΕΝΗ"; position: absolute; right: .6rem; bottom: .4rem; color: var(--alert); font-size: .625rem; line-height: 1; font-weight: 900; transform: rotate(-5deg); }
 .sealed-file .file-meta, .sealed-file .file-summary { color: var(--paper-muted); }
-.next-case-mark { flex: none; border: 2px solid var(--alert); padding: .05rem .3rem; color: var(--alert-foreground); background: var(--alert); font-size: .64rem; font-weight: 900; letter-spacing: .02em; }
+.next-case-mark { position: absolute; right: 2rem; top: 1.55rem; flex: none; border: 2px solid var(--alert); padding: .05rem .3rem; color: var(--alert-foreground); background: var(--alert); font-size: .64rem; font-weight: 900; letter-spacing: .02em; }
 .team-pin { color: var(--paper-ink); transform: rotate(.35deg); box-shadow: 6px 6px 0 color-mix(in oklab, var(--warning) 45%, transparent); }
 .team-folder-tab { position: absolute; left: .9rem; top: -2px; padding: .15rem .8rem .3rem; color: var(--paper); background: var(--paper-ink); font-size: .625rem; font-weight: 900; letter-spacing: .06em; clip-path: polygon(0 0, 100% 0, calc(100% - .45rem) 100%, .45rem 100%); }
 .member-photo { width: 100%; height: 3.5rem; border: 3px solid var(--paper); outline: 1px solid color-mix(in oklab, var(--paper-ink) 35%, transparent); background: var(--paper); box-shadow: 2px 2px 0 color-mix(in oklab, var(--paper-ink) 22%, transparent); overflow: hidden; }
@@ -379,6 +379,7 @@
 }
 
 @media (max-width: 639px) {
+  .next-case-mark { position: static; width: fit-content; }
   .hub-hero .relative.mx-auto { min-height: 540px; grid-template-rows: 13.5rem auto; gap: .75rem; padding-top: .75rem; padding-bottom: 1rem; }
   .hero-collage { margin-inline: 1rem; }.hero-art { height: 13rem; }.hero-evidence-note { left: -.5rem; bottom: .35rem; font-size: .6rem; }.hero-alert-note { right: -.5rem; top: .4rem; }
   .hero-title-paper { padding: .45rem .7rem .6rem; }.hero-title-paper h1 { font-size: 2.85rem; }.hero-copy .marker-copy { margin-top: .75rem; font-size: .9rem; line-height: 1.3; }
