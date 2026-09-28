@@ -223,11 +223,14 @@ export function GameApp() {
           </div>
         </div>
         {view === "case" && <div className="case-progress h-1.5 bg-muted"><div className="h-full bg-signal transition-all" style={{ width: `${((state.currentAct + 1) / TOTAL_ACTS) * 100}%` }} /></div>}
+        {view === "runner" && runnerDef && <div className="case-progress h-1.5 bg-muted"><div className="h-full bg-signal transition-all" style={{ width: `${((Math.min(runnerProgress.currentScene, runnerDef.scenes.length - 1) + 1) / runnerDef.scenes.length) * 100}%` }} /></div>}
       </header>
 
-      <main className={view === "case" ? "h-[calc(100svh-4.25rem)] overflow-hidden" : "h-[calc(100svh-4rem)] overflow-hidden"}>
+      <main className={view === "hub" ? "h-[calc(100svh-4rem)] overflow-hidden" : "h-[calc(100svh-4.25rem)] overflow-hidden"}>
         {view === "hub" ? (
-          <Hub state={state} onPlay={() => setView("case")} onReset={reset} onOpenMember={setMemberOpen} />
+          <Hub state={state} onPlay={() => setView("case")} onReset={reset} onOpenMember={setMemberOpen} case02Progress={case02Progress} onPlayCase={openRunner} onResetCase={resetCase} />
+        ) : view === "runner" && runnerDef ? (
+          <CaseRunner def={runnerDef} progress={runnerProgress} onProgress={(nextProgress) => saveRunnerProgress(runnerDef, nextProgress)} onHub={() => setView("hub")} />
         ) : (
           <CaseScreen
             state={state} {...(activeDecision ? { decision: activeDecision } : {})} selected={selected} showWhy={showWhy} showHint={showHint} revising={revising}
