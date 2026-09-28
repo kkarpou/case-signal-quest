@@ -424,11 +424,12 @@ function EvidenceSidecar({ act }: { act: number }) {
   if (act === 9) return <article className="evidence-card"><TimerReset className="text-warning" size={30} /><h2 className="mt-4 text-2xl font-black">{S.evidence.direction.title}</h2><ol className="mt-6 space-y-5 border-l-2 border-border pl-5">{S.evidence.direction.events.map((event, index, all) => <li key={event.time} className={index === all.length - 1 ? "text-signal" : ""}><strong>{event.time}</strong><p className={index === all.length - 1 ? "text-sm" : "text-sm text-muted-foreground"}><MarginaliaText text={event.label} /></p></li>)}</ol></article>;
   if (act === 10) return <article className="evidence-card"><Radio className="text-alert" size={30} /><h2 className="mt-4 text-2xl font-black">{S.evidence.response.title}</h2><p className="mt-3 text-muted-foreground"><MarginaliaText text={S.evidence.response.text} /></p></article>;
   if (act >= 11) return <article className="evidence-card"><ShieldCheck className="text-signal" size={30} /><h2 className="mt-4 text-2xl font-black">{S.evidence.findings.title}</h2><ul className="mt-5 space-y-3 text-sm">{S.evidence.findings.confirmed.map((item) => <li key={item} className="flex gap-2"><Check className="shrink-0 text-signal" size={18} /><span className="min-w-0"><MarginaliaText text={item} /></span></li>)}<li className="flex gap-2 text-muted-foreground"><TriangleAlert className="shrink-0 text-warning" size={18} /><span className="min-w-0"><MarginaliaText text={S.evidence.findings.caveat} /></span></li></ul></article>;
-  return <article className="evidence-card"><FileSearch className="text-signal" size={30} /><h2 className="mt-4 text-2xl font-black">{S.evidence.current.title}</h2><p className="mt-3 text-muted-foreground">{S.evidence.current.text}</p></article>;
+  return <article className="evidence-card"><FileSearch className="text-signal" size={30} /><h2 className="mt-4 text-2xl font-black">{S.evidence.current.title}</h2><p className="mt-3 text-muted-foreground"><MarginaliaText text={S.evidence.current.text} /></p></article>;
 }
 
-function Feedback({ decision, choice, showWhy, onWhy }: { decision: Decision; choice: Decision["choices"][number]; showWhy: boolean; onWhy: () => void }) {
-  return <article className={`feedback-card feedback-reveal verdict-board ${choice.correct ? "feedback-strong border-signal" : "feedback-caution border-warning"}`} aria-live="polite"><div className="verdict-heading"><span className={`${choice.correct ? "stamp" : "stamp-warning"} verdict-stamp`}>{choice.correct ? S.feedback.strong : S.feedback.premature}</span><span className="verdict-case-id font-mono">{S.feedback.caseId}</span></div>
+function Feedback({ decision, choice, showWhy, showStamp, onWhy }: { decision: Decision; choice: Decision["choices"][number]; showWhy: boolean; showStamp: boolean; onWhy: () => void }) {
+  return <article className={`feedback-card feedback-reveal verdict-board ${choice.correct ? "feedback-strong border-signal" : "feedback-caution border-warning"}`} aria-live="polite"><FolderStamp show={showStamp} /><div className="verdict-heading"><span className={`${choice.correct ? "stamp" : "stamp-warning"} verdict-stamp`}>{choice.correct ? S.feedback.strong : S.feedback.premature}</span><span className="verdict-case-id font-mono">{S.feedback.caseId}</span></div>
+    {!choice.correct && <div className="desk-memo"><span className="desk-memo-label">{S.notify.memoLabel}</span><p><MarginaliaText text={S.notify.memo} /></p></div>}
     <FeedbackRow title={S.feedback.yourChoice} text={choice.label} icon={<Fingerprint size={18} />} />
     <FeedbackRow title={S.feedback.evidence} text={decision.evidence} icon={<Search size={18} />} />
     <FeedbackRow title={S.feedback.cannot} text={decision.cannot} icon={<TriangleAlert size={18} />} />
@@ -439,7 +440,7 @@ function Feedback({ decision, choice, showWhy, onWhy }: { decision: Decision; ch
 }
 
 function FeedbackRow({ title, text, icon, strong }: { title: string; text: string; icon: ReactNode; strong?: boolean }) {
-  return <div className={`feedback-row mt-5 grid grid-cols-[auto_minmax(0,1fr)] gap-3 border-t border-border pt-4 first:border-0 ${strong ? "feedback-principle" : ""}`}><span className="text-signal">{icon}</span><div><h3 className="font-mono text-[11px] font-black uppercase text-muted-foreground">{title}</h3><p className={`mt-1 text-sm leading-relaxed ${strong ? "font-black text-signal" : ""}`}>{text}</p></div></div>;
+  return <div className={`feedback-row mt-5 grid grid-cols-[auto_minmax(0,1fr)] gap-3 border-t border-border pt-4 first:border-0 ${strong ? "feedback-principle" : ""}`}><span className="text-signal">{icon}</span><div><h3 className="font-mono text-[11px] font-black uppercase text-muted-foreground">{title}</h3><p className={`mt-1 text-sm leading-relaxed ${strong ? "font-black text-signal" : ""}`}><MarginaliaText text={text} /></p></div></div>;
 }
 
 function EvidenceReveal({ onNext }: { onNext: () => void }) {
