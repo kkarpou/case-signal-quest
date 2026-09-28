@@ -7,3 +7,6 @@
 - [x] Fit every CASE 01 act within one viewport without page scrolling
 - [x] Verify screen fit at 390×844, 1068×639, and 1280×720
 - [x] Increase text sizes where space permits while keeping every box within the viewport
+
+- [ ] Editorial case-file redesign across Hub and all case screens
+- [ ] Preserve mobile evidence and verify full 16-act flow at target viewports
