@@ -254,12 +254,12 @@
 .dialogue[data-speaker="lead"] .portrait-cutout { width: 3.8rem; height: 4rem; }.dialogue[data-speaker="mara"] .portrait-cutout { clip-path: polygon(0 4%, 92% 0, 100% 94%, 8% 100%); }.dialogue[data-speaker="leo"] .portrait-cutout { border-radius: 50% 50% 45% 42%; }.dialogue[data-speaker="noor"] .portrait-cutout { clip-path: polygon(14% 0, 100% 10%, 88% 100%, 0 90%); }
 .viral-post, .evidence-print, .checkpoint-sheet, .feedback-reveal, .skill-sheet, .incoming-board { animation: paper-in .38s cubic-bezier(.2,.8,.2,1) both; }
 .unverified-stamp { position: absolute; z-index: 4; right: -.4rem; top: 4.4rem; border: 3px solid var(--alert); padding: .3rem .5rem; color: var(--alert); background: var(--paper); font-size: .68rem; font-weight: 900; transform: rotate(-7deg); }
-.urgency-strip { background: linear-gradient(90deg, color-mix(in oklab, var(--alert) 15%, transparent), transparent); }
+.urgency-strip { color: var(--paper-ink); background: linear-gradient(90deg, color-mix(in oklab, var(--alert) 18%, var(--paper)), var(--paper)); }
 .feedback-reveal { transform: rotate(.12deg); }
 .verdict-board { background-image: linear-gradient(90deg, transparent 0 2rem, color-mix(in oklab, var(--alert) 18%, transparent) 2rem 2.08rem, transparent 2.08rem); }
 .verdict-heading { display: flex; align-items: center; justify-content: space-between; gap: .5rem; border-bottom: 2px solid var(--paper-ink); padding-bottom: .55rem; }
 .verdict-case-id { font-size: .625rem; font-weight: 800; color: var(--paper-muted); }
-.evidence-card .text-muted-foreground, .feedback-card .text-muted-foreground, .dialogue .text-muted-foreground, .case-card .text-muted-foreground, .question-sheet .text-muted-foreground, .closed-dossier .text-muted-foreground, .glossary-panel .text-muted-foreground { color: var(--paper-muted); }
+.evidence-card .text-muted-foreground, .feedback-card .text-muted-foreground, .dialogue .text-muted-foreground, .case-card .text-muted-foreground, .question-sheet .text-muted-foreground, .closed-dossier .text-muted-foreground, .glossary-panel .text-muted-foreground, .viral-post .text-muted-foreground, .open-case-file .text-muted-foreground, .sealed-file .text-muted-foreground, .team-pin .text-muted-foreground, .incoming-board .text-muted-foreground { color: var(--paper-muted); }
 .verdict-stamp { animation: stamp-in .35s cubic-bezier(.2,1.4,.4,1) both; }
 .feedback-row { margin-inline: -.25rem; padding-inline: .35rem; }
 .feedback-row:nth-of-type(3) { background: color-mix(in oklab, var(--warning) 14%, transparent); }
