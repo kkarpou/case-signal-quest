@@ -466,12 +466,17 @@
 /* Σύνοψη ομάδας: σταθερή στήλη ονόματος ώστε να διαβάζεται ολόκληρο το κείμενο */
 .report-team-summary li { display: grid; align-items: baseline; }
 @media (max-width: 680px) {
-  .report-layout > div:first-child h1 { font-size: 1.5rem; }
+  .report-layout > div:first-child h1 { margin-top: .35rem; font-size: 1.3rem; line-height: 1.4rem; }
+  .report-layout > div:first-child .stamp { font-size: .6rem; padding: .15rem .4rem; }
+  .final-assessment span { font-size: .6rem; }
+  .report-team-summary li { gap: .1rem; }
+  .skill-sheet .score-bars > div > div:first-child { font-size: .68rem; }
   .report-dialogue { display: none; }
   .report-finding { padding: .55rem; }
   .final-assessment { padding: .5rem; }
-  .final-assessment p { font-size: .9rem; line-height: 1.2rem; }
-  .report-profile { padding: .5rem; }
+  .final-assessment p { font-size: .85rem; line-height: 1.1rem; }
+  .final-assessment { margin-top: .5rem !important; }
+  .report-profile { padding: .45rem .5rem; }
   .skill-sheet .score-bars { margin-top: .35rem; row-gap: .25rem; }
   .skill-sheet .score-bars > div > div:first-child { margin-bottom: .12rem; font-size: .72rem; }
   .skill-sheet .skill-track { height: .35rem; }
