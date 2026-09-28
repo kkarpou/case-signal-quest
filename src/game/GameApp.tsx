@@ -264,6 +264,13 @@ function Dialogue({ who, children }: { who: keyof typeof team; children: ReactNo
   return <div className={`dialogue dialogue-${who} mt-6 grid grid-cols-[auto_minmax(0,1fr)] gap-3`} data-speaker={who}><div className="portrait-cutout" data-character={who}><img src={teamArt} alt="" aria-hidden="true" /><span>{member.initials}</span></div><div className="min-w-0"><div className="flex flex-wrap items-baseline gap-x-2"><strong className="text-sm">{member.name}</strong><span className="font-mono text-[10px] font-bold uppercase text-muted-foreground">{member.role}</span></div><p className="mt-2 text-sm leading-relaxed sm:text-base">{children}</p></div></div>;
 }
 
+function AnalystTag({ id }: { id: string }) {
+  const who = decisionAnalyst[id];
+  if (!who) return null;
+  const member = team[who];
+  return <div className="analyst-tag" data-character={who}><span className="analyst-tag-initials">{member.initials}</span><span className="min-w-0"><span className="analyst-tag-label">{S.decisionUi.analystLabel}</span><strong className="analyst-tag-name">{member.name} · {member.role}</strong><span className="analyst-tag-focus">{member.focus}</span></span></div>;
+}
+
 function BottomActions({ children }: { children: ReactNode }) {
   return <div className="bottom-actions fixed inset-x-0 bottom-0 z-30 border-t-2 border-border bg-background/95 p-3"><div className="mx-auto flex max-w-4xl flex-wrap justify-end gap-2">{children}</div></div>;
 }
