@@ -20,6 +20,7 @@ function findTerm(label: string): GlossaryTerm | undefined {
 function MarginaliaTerm({ label, up }: { label: string; up?: boolean | undefined }) {
   const openGlossary = useContext(GlossaryLinkContext);
   const [open, setOpen] = useState(false);
+  const [selfUp, setSelfUp] = useState(false);
   const wrapRef = useRef<HTMLSpanElement>(null);
   useEffect(() => {
     if (!open) return;
@@ -33,13 +34,19 @@ function MarginaliaTerm({ label, up }: { label: string; up?: boolean | undefined
   const data = findTerm(label);
   if (!data) return <>{label}</>;
   return (
-    <span ref={wrapRef} className={`marginalia-wrap${up ? " marginalia-up" : ""}`}>
+    <span ref={wrapRef} className={`marginalia-wrap${up || selfUp ? " marginalia-up" : ""}`}>
       <button
         type="button"
         className="marginalia-term"
         aria-expanded={open}
         title={S.glossary.short}
-        onClick={() => setOpen((value) => !value)}
+        onClick={(event) => {
+          if (!open) {
+            const rect = event.currentTarget.getBoundingClientRect();
+            setSelfUp(rect.top > window.innerHeight * 0.55);
+          }
+          setOpen((value) => !value);
+        }}
         onKeyDown={(event) => {
           if (event.key === "Escape") { event.stopPropagation(); setOpen(false); }
         }}
