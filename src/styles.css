@@ -65,6 +65,7 @@
   --ring: oklch(0.72 0.13 190);
   --signal: oklch(0.72 0.13 190);
   --signal-foreground: oklch(0.14 0.018 188);
+  --go: oklch(0.75 0.145 168);
   --warning: oklch(0.78 0.15 82);
   --warning-foreground: oklch(0.18 0.025 65);
   --alert: oklch(0.61 0.16 29);
@@ -103,6 +104,7 @@
   --ring: oklch(0.47 0.105 190);
   --signal: oklch(0.47 0.105 190);
   --signal-foreground: oklch(0.98 0.012 82);
+  --go: oklch(0.45 0.115 168);
   --warning: oklch(0.69 0.14 76);
   --warning-foreground: oklch(0.17 0.025 65);
   --alert: oklch(0.52 0.16 29);
@@ -328,8 +330,8 @@
 @keyframes spike-pulse { 50% { filter: brightness(1.35); transform: scaleY(1.04); transform-origin: bottom; } }
 @keyframes signal-pulse { 50% { transform: scale(1.12); opacity: .65; } }
 @keyframes recommended-action-pulse {
-  0%, 100% { border-color: color-mix(in oklab, var(--signal) 70%, var(--primary)); box-shadow: 0 0 0 0 color-mix(in oklab, var(--signal) 20%, transparent); }
-  50% { border-color: var(--signal); box-shadow: 0 0 0 5px color-mix(in oklab, var(--signal) 32%, transparent); }
+  0%, 100% { border-color: color-mix(in oklab, var(--go) 70%, var(--primary)); box-shadow: 0 0 0 0 color-mix(in oklab, var(--go) 20%, transparent); }
+  50% { border-color: var(--go); box-shadow: 0 0 0 5px color-mix(in oklab, var(--go) 32%, transparent); }
 }
 
 .glossary-en { color: color-mix(in oklab, var(--paper-ink) 72%, var(--signal)); letter-spacing: .01em; }
