@@ -148,7 +148,7 @@ export function GameApp() {
   if (!hydrated) return <div className="grid min-h-screen place-items-center bg-background"><span className="stamp">ΦΟΡΤΩΣΗ ΑΡΧΕΙΩΝ…</span></div>;
 
   return (
-    <div className={view === "case" ? "h-svh overflow-hidden bg-background text-foreground" : "min-h-screen bg-background text-foreground"}>
+    <div className="h-svh overflow-hidden bg-background text-foreground">
       <header className="case-masthead sticky top-0 z-40 border-b-2 border-border bg-background/95">
         <div className="mx-auto grid min-h-16 max-w-7xl grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 sm:px-6">
           <button onClick={() => setView("hub")} className="min-w-0 text-left focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring" aria-label="Επιστροφή στο Season Hub">
