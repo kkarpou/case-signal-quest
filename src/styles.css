@@ -142,7 +142,7 @@
 @utility stamp-warning { display: inline-flex; align-items: center; border: 2px solid var(--warning); background: color-mix(in oklab, var(--warning) 12%, transparent); padding: 0.3rem 0.55rem; font-size: 0.625rem; line-height: 0.8rem; font-weight: 900; text-transform: uppercase; color: var(--warning); transform: rotate(1deg); }
 @utility rotate-paper { transform: rotate(0.6deg); }
 
-.case-masthead { background-image: linear-gradient(90deg, color-mix(in oklab, var(--signal) 12%, transparent) 1px, transparent 1px); background-size: 22px 100%; box-shadow: 0 5px 0 color-mix(in oklab, var(--foreground) 8%, transparent); }
+.case-masthead { background-image: linear-gradient(90deg, color-mix(in oklab, var(--signal) 8%, transparent) 1px, transparent 1px); background-size: 44px 100%; box-shadow: 0 3px 0 color-mix(in oklab, var(--signal) 18%, transparent); }
 .masthead-brand { text-decoration: underline; text-decoration-color: var(--alert); text-decoration-thickness: 3px; text-underline-offset: 3px; }
 .status-stamp { border: 1px solid var(--signal); padding: .22rem .45rem; font: 800 .625rem/1 var(--font-sans); color: var(--signal); transform: rotate(-1deg); }
 .case-progress { position: relative; }
@@ -270,6 +270,9 @@
   .mobile-evidence { display: none; }
   .hub-hero > .relative.mx-auto { min-height: 500px; }
   .hero-collage { transition: transform .35s ease; }.hero-collage:hover { transform: translateY(-4px) rotate(.4deg); }
+  .scene-act-6, .scene-act-7 { grid-template-columns: minmax(0,.82fr) minmax(430px,1.18fr); }
+  .scene-act-6 .signature-evidence, .scene-act-7 .signature-evidence { min-height: 25rem; }
+  .scene-act-7 .network-stage { max-width: 21rem; }
 }
 
 @media (max-height: 750px) {

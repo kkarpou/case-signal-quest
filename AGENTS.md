@@ -11,3 +11,4 @@
 
 - Keep the game as a single-route state-driven experience; this preserves instant local progress restoration between Hub and Case.
 - Store CASE 01 progress only in browser localStorage; the MVP is intentionally account-free and offline-capable.
+- Structure visual scenes as briefing, evidence, and verdict families instead of a repeated dashboard layout; this keeps the narrative identity primary.
