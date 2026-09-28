@@ -137,16 +137,16 @@ export function CaseRunner({ def, progress, onProgress, onHub }: {
         <div className="dossier-spine" aria-hidden="true">{def.number}</div>
         <div className="report-finding">
           <span className="stamp">{def.report.verdictKicker}</span>
-          <h1 className="mt-3 font-display text-2xl font-black uppercase leading-none lg:text-4xl">{def.report.verdict}</h1>
+          <h1 className="mt-3 font-display text-xl font-black uppercase leading-tight lg:text-3xl">{def.report.verdict}</h1>
           <ul className="mt-3 grid gap-1 text-[12px] font-semibold leading-snug lg:text-sm">{def.report.lines.map((line) => <li key={line} className="flex gap-2"><span className="mt-1.5 size-1.5 shrink-0 bg-signal" />{line}</li>)}</ul>
-          <section className="report-team-summary mt-3 border-t-2 border-border pt-2">
-            <h2 className="text-[11px] font-black uppercase tracking-wide text-muted-foreground">{S.report.teamSummaryTitle}</h2>
-            <ul className="mt-1.5 grid gap-y-1">{def.report.teamSummary.map((row) => <li key={row.who} className="items-baseline gap-1.5 text-[11px] leading-snug"><strong className="font-black uppercase text-signal">{row.who} </strong><span className="min-w-0 text-muted-foreground">{row.text}</span></li>)}</ul>
-          </section>
         </div>
         <div className="report-profile">
           <section className="skill-sheet"><h2 className="font-display text-base font-black lg:text-2xl">{S.report.profileTitle}</h2>
             <div className="score-bars mt-2 space-y-1 lg:mt-5 lg:space-y-4">{entries.map(([key, value]) => <div key={key}><div className="mb-1 flex justify-between gap-3 text-xs font-black lg:mb-2 lg:text-sm"><span>{skillLabels[key]}</span><span>{value}</span></div><div className="skill-track h-2 border border-border bg-muted lg:h-3"><div className="h-full bg-signal" style={{ width: `${value}%` }} /></div></div>)}</div>
+          </section>
+          <section className="report-team-summary mt-3 border-t-2 border-border pt-2">
+            <h2 className="text-[11px] font-black uppercase tracking-wide text-muted-foreground">{S.report.teamSummaryTitle}</h2>
+            <ul className="mt-1.5 grid gap-y-1">{def.report.teamSummary.map((row) => <li key={row.who} className="items-baseline gap-1.5 text-[11px] leading-snug"><strong className="font-black uppercase text-signal">{row.who} </strong><span className="min-w-0 text-muted-foreground">{row.text}</span></li>)}</ul>
           </section>
           {progress.revisedDecisions.length > 0 && <p className="revision-note mt-2 text-xs font-semibold text-signal lg:mt-3">{S.report.revisions(progress.revisedDecisions.length)}</p>}
         </div>
