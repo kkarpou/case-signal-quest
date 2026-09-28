@@ -9,6 +9,9 @@ import teamLeoArt from "../assets/team-leo.jpg";
 import teamNoorArt from "../assets/team-noor.jpg";
 import { strings as S } from "./strings";
 import { decisionByAct, decisions, skillLabels, type Decision, type SkillKey } from "./game-data";
+import { CaseRunner, initialProgress, loadProgress, type CaseProgress } from "./CaseRunner";
+import { case02 } from "./cases/case02";
+import type { CaseDef } from "./cases/types";
 
 const STORAGE_KEY = "the-signal-files-case-01";
 const THEME_KEY = "the-signal-files-theme";
