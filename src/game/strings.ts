@@ -105,6 +105,7 @@ export const el = {
     revise: "ΑΝΑΘΕΩΡΗΣΗ",
     why: "ΓΙΑΤΙ;",
     next: "ΣΥΝΕΧΕΙΑ",
+    analystLabel: "ΕΠΙΚΕΦΑΛΗΣ ΒΗΜΑΤΟΣ",
   },
 
   feedback: {
