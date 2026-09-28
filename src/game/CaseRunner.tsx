@@ -195,7 +195,7 @@ export function CaseRunner({ def, progress, onProgress, onHub }: {
 }
 
 function Frame({ children, label }: { children: ReactNode; label: string }) {
-  return <section className="game-screen case-board mx-auto h-full max-w-6xl overflow-hidden px-4 pb-20 pt-4 sm:px-6 sm:pb-20 sm:pt-5"><div className="act-ruler"><span className="kicker">{label}</span><span className="ruler-line" aria-hidden="true" /></div>{children}</section>;
+  return <section className="game-screen case-board mx-auto h-full max-w-6xl overflow-y-auto overflow-x-hidden px-4 pb-20 pt-4 sm:px-6 sm:pb-20 sm:pt-5"><div className="act-ruler"><span className="kicker">{label}</span><span className="ruler-line" aria-hidden="true" /></div>{children}</section>;
 }
 
 function Actions({ children }: { children: ReactNode }) {
