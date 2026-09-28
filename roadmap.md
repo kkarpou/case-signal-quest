@@ -21,3 +21,4 @@
 - [x] Add accessible team cards with role, specialty, and CASE 01 examples to the Hub
 - [x] Add "who guided what" team summary to the final report
 - [x] Strengthen color contrast and typography across both themes without breaking one-screen layouts
+- [ ] Έλεγχος contrast σε highlights (team-specialty, next-case-mark, stamps) και hover καταστάσεις (team-card, choice buttons)
