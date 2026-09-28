@@ -149,20 +149,21 @@ export function GameApp() {
 
   return (
     <div className={view === "case" ? "h-svh overflow-hidden bg-background text-foreground" : "min-h-screen bg-background text-foreground"}>
-      <header className="sticky top-0 z-40 border-b-2 border-border bg-background/95 backdrop-blur">
+      <header className="case-masthead sticky top-0 z-40 border-b-2 border-border bg-background/95">
         <div className="mx-auto grid min-h-16 max-w-7xl grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 sm:px-6">
           <button onClick={() => setView("hub")} className="min-w-0 text-left focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring" aria-label="Επιστροφή στο Season Hub">
-            <span className="block truncate font-display text-lg font-black uppercase sm:text-xl">THE SIGNAL FILES</span>
-            <span className="block truncate text-[10px] font-bold uppercase text-muted-foreground">ΜΟΝΑΔΑ ΑΚΕΡΑΙΟΤΗΤΑΣ ΠΛΗΡΟΦΟΡΙΑΣ</span>
+            <span className="masthead-brand block truncate font-display text-lg font-black uppercase sm:text-xl">THE SIGNAL FILES</span>
+            <span className="block truncate font-mono text-[10px] font-bold uppercase text-muted-foreground">ΜΟΝΑΔΑ ΑΚΕΡΑΙΟΤΗΤΑΣ ΠΛΗΡΟΦΟΡΙΑΣ</span>
           </button>
           <div className="flex shrink-0 items-center gap-1">
-            {view === "case" && <span className="hidden border-r border-border pr-3 text-xs font-black text-signal sm:block">{String(state.currentAct + 1).padStart(2, "0")} / {TOTAL_ACTS}</span>}
+            <span className="status-stamp hidden sm:inline-flex">{view === "case" ? "CASE ACTIVE" : "SEASON 01"}</span>
+            {view === "case" && <span className="act-counter border-r border-border px-2 font-mono text-xs font-black text-signal">{String(state.currentAct + 1).padStart(2, "0")} / {TOTAL_ACTS}</span>}
             <GameButton variant="ghost" className="min-h-11 min-w-11 px-2" onClick={() => setTheme(theme === "dark" ? "light" : "dark")} aria-label={theme === "dark" ? "Ενεργοποίηση φωτεινού θέματος" : "Ενεργοποίηση σκοτεινού θέματος"}>
               {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
             </GameButton>
           </div>
         </div>
-        {view === "case" && <div className="h-1 bg-muted"><div className="h-full bg-signal transition-all" style={{ width: `${((state.currentAct + 1) / TOTAL_ACTS) * 100}%` }} /></div>}
+        {view === "case" && <div className="case-progress h-1.5 bg-muted"><div className="h-full bg-signal transition-all" style={{ width: `${((state.currentAct + 1) / TOTAL_ACTS) * 100}%` }} /></div>}
       </header>
 
       <main className={view === "case" ? "h-[calc(100svh-4.25rem)] overflow-hidden" : ""}>
@@ -192,19 +193,22 @@ function Hub({ state, onPlay, onReset }: { state: GameState; onPlay: () => void;
   ];
   return (
     <div className="pb-20">
-      <section className="relative min-h-[72svh] overflow-hidden border-b-2 border-border">
-        <img src={keyArt} alt="Εικονογραφημένος φάκελος έρευνας με σταθμό, κινητό και δίκτυο διάδοσης" width={1536} height={1024} className="absolute inset-0 size-full object-cover" />
-        <div className="absolute inset-0 bg-hero-overlay" />
-        <div className="relative mx-auto flex min-h-[72svh] max-w-7xl flex-col justify-end px-4 pb-10 pt-24 sm:px-6 lg:pb-14">
+      <section className="hub-hero relative overflow-hidden border-b-2 border-border">
+        <div className="hero-grid" aria-hidden="true" />
+        <div className="hero-network" aria-hidden="true"><span /><span /><span /><span /></div>
+        <div className="relative mx-auto grid min-h-[66svh] max-w-7xl items-center gap-6 px-4 py-8 sm:px-6 lg:min-h-[560px] lg:grid-cols-[0.86fr_1.14fr] lg:py-12">
+          <div className="hero-copy relative z-10 order-2 lg:order-1">
           <span className="stamp w-fit">SEASON 01 · ΦΑΚΕΛΟΙ ΠΛΗΡΟΦΟΡΙΑΣ</span>
-          <h1 className="mt-5 max-w-4xl font-display text-5xl font-black uppercase leading-[0.92] text-hero-foreground sm:text-7xl lg:text-8xl">THE SIGNAL<br />FILES</h1>
-          <p className="mt-5 max-w-xl text-base font-semibold text-hero-muted sm:text-lg">Ερεύνησε το περιεχόμενο. Χαρτογράφησε τη διάδοση. Μίλα μόνο μέχρι εκεί που φτάνουν τα στοιχεία.</p>
-          <div className="mt-7 flex flex-wrap gap-3">
+          <div className="hero-title-paper mt-4"><span className="hero-pin" aria-hidden="true" /><h1 className="font-display text-5xl font-black uppercase leading-[0.88] sm:text-7xl lg:text-8xl">THE SIGNAL<br />FILES</h1></div>
+          <p className="marker-copy mt-4 max-w-xl text-base font-semibold sm:text-lg">Ερεύνησε το περιεχόμενο. Χαρτογράφησε τη διάδοση. Μίλα μόνο μέχρι εκεί που φτάνουν τα στοιχεία.</p>
+          <div className="mt-5 flex flex-wrap gap-3">
             <GameButton onClick={onPlay} icon={hasProgress ? <ArrowRight size={18} /> : <Play size={18} />}>
               {state.completed ? "ΞΑΝΑΔΕΣ ΤΗΝ ΑΝΑΦΟΡΑ" : hasProgress ? "ΣΥΝΕΧΙΣΗ ΥΠΟΘΕΣΗΣ" : "ΑΝΟΙΓΜΑ ΦΑΚΕΛΟΥ"}
             </GameButton>
             {hasProgress && <GameButton variant="secondary" onClick={onReset} icon={<RotateCcw size={18} />}>ΕΠΑΝΑΦΟΡΑ</GameButton>}
           </div>
+          </div>
+          <div className="hero-collage relative order-1 lg:order-2"><div className="tape tape-top" aria-hidden="true" /><img src={keyArt} alt="Εικονογραφημένος φάκελος έρευνας με σταθμό, κινητό και δίκτυο διάδοσης" width={1536} height={1024} className="hero-art" /><div className="hero-evidence-note font-mono">REF: 01-A<br /><strong>19″ / SOURCE?</strong></div><div className="hero-alert-note">ΜΗ ΕΠΑΛΗΘΕΥΜΕΝΟ</div></div>
         </div>
       </section>
 
@@ -214,15 +218,13 @@ function Hub({ state, onPlay, onReset }: { state: GameState; onPlay: () => void;
           <span className="shrink-0 text-xs font-black text-muted-foreground">01 / 06</span>
         </div>
         <div className="mt-6 grid gap-4 lg:grid-cols-2">
-          <article className="case-card border-signal bg-card p-5 sm:p-7">
+          <article className="case-card active-dossier border-signal bg-card p-5 sm:p-7">
             <div className="flex items-start justify-between gap-4"><span className="stamp">ΔΙΑΘΕΣΙΜΟ</span><Radio className="text-signal" aria-hidden="true" /></div>
-            <p className="mt-8 text-sm font-black text-signal">CASE 01</p>
-            <h3 className="mt-1 font-display text-4xl font-black uppercase">THE VIRAL LIE</h3>
-            <p className="mt-3 max-w-lg text-muted-foreground">Μια ψευδής ιστορία εξαπλώνεται. Είναι όμως εκστρατεία;</p>
-            <div className="mt-7 flex items-center justify-between border-t border-border pt-4 text-xs font-bold"><span>{state.completed ? "ΟΛΟΚΛΗΡΩΘΗΚΕ" : hasProgress ? `ΠΡΑΞΗ ${state.currentAct + 1} ΑΠΟ ${TOTAL_ACTS}` : "~15 ΛΕΠΤΑ"}</span><ArrowRight className="text-signal" /></div>
+            <div className="mt-5 grid grid-cols-[5.5rem_minmax(0,1fr)] gap-4"><img src={keyArt} alt="" className="case-thumb h-24 w-full object-cover" /><div><p className="text-sm font-black text-signal">CASE 01</p><h3 className="mt-1 font-display text-3xl font-black uppercase sm:text-4xl">THE VIRAL LIE</h3><p className="mt-2 max-w-lg text-sm text-muted-foreground sm:text-base">Μια ψευδής ιστορία εξαπλώνεται. Είναι όμως εκστρατεία;</p></div></div>
+            <div className="dossier-progress mt-5"><span style={{ width: state.completed ? "100%" : hasProgress ? `${((state.currentAct + 1) / TOTAL_ACTS) * 100}%` : "8%" }} /></div><div className="mt-3 flex items-center justify-between text-xs font-bold"><span>{state.completed ? "ΟΛΟΚΛΗΡΩΘΗΚΕ" : hasProgress ? `ΠΡΑΞΗ ${state.currentAct + 1} ΑΠΟ ${TOTAL_ACTS}` : "~15 ΛΕΠΤΑ"}</span><ArrowRight className="text-signal" /></div>
           </article>
           {futureCases.map(([number, title, subtitle], index) => (
-            <article key={number} className="case-card relative overflow-hidden border-border bg-muted/30 p-5 opacity-75 sm:p-7">
+            <article key={number} className={`case-card sealed-dossier relative overflow-hidden border-border bg-muted/30 p-5 sm:p-7 case-tilt-${(index % 3) + 1}`}>
               <div className="flex items-start justify-between gap-4"><span className="stamp-muted">ΚΛΕΙΔΩΜΕΝΟ</span><LockKeyhole aria-hidden="true" /></div>
               <p className="mt-8 text-sm font-black text-muted-foreground">{number}</p><h3 className="mt-1 font-display text-3xl font-black uppercase">{title}</h3>
               <p className="mt-3 text-sm text-muted-foreground">{subtitle}</p>
@@ -255,16 +257,16 @@ function CaseScreen(props: {
 }
 
 function ScreenFrame({ children, label }: { children: ReactNode; label: string }) {
-  return <section className="game-screen mx-auto h-full max-w-6xl overflow-hidden px-4 pb-20 pt-5 sm:px-6 sm:pb-20 sm:pt-6"><span className="kicker">{label}</span>{children}</section>;
+  return <section className="game-screen case-board mx-auto h-full max-w-6xl overflow-hidden px-4 pb-20 pt-4 sm:px-6 sm:pb-20 sm:pt-5"><div className="act-ruler"><span className="kicker">{label}</span><span className="ruler-line" aria-hidden="true" /></div>{children}</section>;
 }
 
 function Dialogue({ who, children }: { who: keyof typeof team; children: ReactNode }) {
   const member = team[who];
-  return <div className="dialogue mt-6 grid grid-cols-[auto_minmax(0,1fr)] gap-3"><div className={`grid size-12 shrink-0 place-items-center rounded-full border-2 border-foreground font-black ${member.tone}`}>{member.initials}</div><div className="min-w-0"><div className="flex flex-wrap items-baseline gap-x-2"><strong className="text-sm">{member.name}</strong><span className="text-[10px] font-bold uppercase text-muted-foreground">{member.role}</span></div><p className="mt-2 text-sm leading-relaxed sm:text-base">{children}</p></div></div>;
+  return <div className={`dialogue dialogue-${who} mt-6 grid grid-cols-[auto_minmax(0,1fr)] gap-3`}><div className="portrait-cutout" data-character={who}><img src={teamArt} alt="" aria-hidden="true" /><span>{member.initials}</span></div><div className="min-w-0"><div className="flex flex-wrap items-baseline gap-x-2"><strong className="text-sm">{member.name}</strong><span className="font-mono text-[10px] font-bold uppercase text-muted-foreground">{member.role}</span></div><p className="mt-2 text-sm leading-relaxed sm:text-base">{children}</p></div></div>;
 }
 
 function BottomActions({ children }: { children: ReactNode }) {
-  return <div className="fixed inset-x-0 bottom-0 z-30 border-t-2 border-border bg-background/95 p-3 backdrop-blur"><div className="mx-auto flex max-w-4xl flex-wrap justify-end gap-2">{children}</div></div>;
+  return <div className="bottom-actions fixed inset-x-0 bottom-0 z-30 border-t-2 border-border bg-background/95 p-3"><div className="mx-auto flex max-w-4xl flex-wrap justify-end gap-2">{children}</div></div>;
 }
 
 function ColdOpen({ onNext }: { onNext: () => void }) {
@@ -273,7 +275,7 @@ function ColdOpen({ onNext }: { onNext: () => void }) {
   return <ScreenFrame label="CASE 01 · COLD OPEN">
     <div className="cold-open-layout mt-2 grid gap-5 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
       <div><h1 className="font-display text-4xl font-black uppercase leading-none sm:text-6xl">THE VIRAL LIE</h1><p className="mt-4 max-w-xl text-lg font-semibold">19 δευτερόλεπτα. Ένας φωτισμένος σταθμός. Μια λεζάντα που ουρλιάζει «ΕΚΡΗΞΗ ΤΩΡΑ».</p><Dialogue who="lead">Έχουμε αναφορές πανικού στον Κεντρικό Σταθμό της Νεάπολης. Οι υπηρεσίες δεν επιβεβαιώνουν έκρηξη. Θέλω συμπέρασμα που να αντέχει — όχι το γρηγορότερο.</Dialogue></div>
-      <article className="rotate-paper border-2 border-border bg-card p-4 shadow-editorial"><div className="flex items-center gap-3 border-b border-border pb-3"><div className="grid size-10 place-items-center rounded-full bg-alert font-black text-alert-foreground">!</div><div><strong>@citywire_now</strong><p className="text-xs text-muted-foreground">μόλις τώρα · Νεάπολη</p></div></div><div className="relative mt-4 aspect-video overflow-hidden bg-foreground"><img src={keyArt} alt="Καρέ viral βίντεο από σταθμό" width={1536} height={1024} className="size-full object-cover opacity-80" /><div className="absolute inset-0 grid place-items-center"><div className="grid size-16 place-items-center rounded-full border-4 border-hero-foreground bg-alert text-alert-foreground"><Play fill="currentColor" /></div></div><span className="absolute bottom-2 right-2 bg-foreground px-2 py-1 text-xs font-black text-background">0:19</span></div><p className="mt-4 text-xl font-black">ΕΚΡΗΞΗ ΣΤΟΝ ΚΕΝΤΡΙΚΟ ΣΤΑΘΜΟ — ΜΕΙΝΕΤΕ ΜΑΚΡΙΑ</p><div className="mt-4 flex items-center justify-between border-t border-border pt-3 text-xs font-black"><span>ΑΝΑΔΗΜΟΣΙΕΥΣΕΙΣ</span><span className="text-2xl text-alert tabular-nums">{count.toLocaleString("el-GR")}</span></div></article>
+      <article className="viral-post rotate-paper relative border-2 border-border bg-card p-4 shadow-editorial"><div className="tape tape-top" aria-hidden="true" /><span className="unverified-stamp">ΜΗ ΕΠΑΛΗΘΕΥΜΕΝΟ</span><div className="flex items-center gap-3 border-b border-border pb-3"><div className="grid size-10 place-items-center bg-alert font-black text-alert-foreground">!</div><div><strong>@citywire_now</strong><p className="text-xs text-muted-foreground">μόλις τώρα · Νεάπολη</p></div></div><div className="relative mt-4 aspect-video overflow-hidden bg-foreground"><img src={keyArt} alt="Καρέ viral βίντεο από σταθμό" width={1536} height={1024} className="size-full object-cover opacity-80" /><div className="absolute inset-0 grid place-items-center"><div className="grid size-16 place-items-center rounded-full border-4 border-hero-foreground bg-alert text-alert-foreground"><Play fill="currentColor" /></div></div><span className="absolute bottom-2 right-2 bg-foreground px-2 py-1 text-xs font-black text-background">0:19</span></div><p className="mt-4 text-xl font-black">ΕΚΡΗΞΗ ΣΤΟΝ ΚΕΝΤΡΙΚΟ ΣΤΑΘΜΟ — ΜΕΙΝΕΤΕ ΜΑΚΡΙΑ</p><div className="urgency-strip mt-4 flex items-center justify-between border-t border-border pt-3 text-xs font-black"><span>ΑΝΑΔΗΜΟΣΙΕΥΣΕΙΣ</span><span className="text-2xl text-alert tabular-nums">{count.toLocaleString("el-GR")}</span></div></article>
     </div><BottomActions><GameButton onClick={onNext} icon={<ArrowRight size={18} />}>ΑΝΑΛΗΨΗ ΥΠΟΘΕΣΗΣ</GameButton></BottomActions>
   </ScreenFrame>;
 }
@@ -285,13 +287,14 @@ function DecisionScreen({ decision, selected, showWhy, showHint, revising, choic
   const choice = decision.choices.find((item) => item.id === selected);
   return <ScreenFrame label={decision.eyebrow}>
     <div className="decision-layout mt-2 grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.72fr)]">
-      <div className={selected ? "decision-question decision-question-complete" : "decision-question"}><h1 className="screen-title font-display text-3xl font-black uppercase leading-none sm:text-5xl">{decision.title}</h1><p className="screen-prompt mt-3 max-w-2xl text-base font-semibold leading-relaxed sm:text-lg">{decision.prompt}</p>
+      <div className={selected ? "decision-question decision-question-complete" : "decision-question"}><div className="question-sheet"><span className="paper-clip" aria-hidden="true" /><h1 className="screen-title font-display text-3xl font-black uppercase leading-none sm:text-5xl">{decision.title}</h1><p className="screen-prompt mt-3 max-w-2xl text-base font-semibold leading-relaxed sm:text-lg">{decision.prompt}</p></div>
         {revising && <div className="mt-5 border-l-4 border-warning bg-warning/10 p-4 text-sm"><strong>ΑΝΑΘΕΩΡΗΣΗ</strong><p className="mt-1 text-muted-foreground">Διάλεξε ξανά. Η αλλαγή συμπεράσματος όταν αλλάζει η αξιολόγηση είναι αναλυτική δύναμη.</p></div>}
-        {!selected && <div ref={choiceRegionRef} className="choice-grid mt-4 grid gap-2" role="group" aria-label={decision.prompt}>{decision.choices.map((item, index) => <GameButton key={item.id} data-choice variant="option" className="choice-button min-h-13 justify-start py-2 normal-case" onClick={() => onChoose(decision, item.id)} autoFocus={index === 0}><span className="grid size-7 shrink-0 place-items-center rounded-full border border-current text-xs">{String.fromCharCode(65 + index)}</span><span>{item.label}</span></GameButton>)}</div>}
+        {!selected && <div className="mobile-evidence"><EvidenceSidecar act={decision.act} /></div>}
+        {!selected && <div ref={choiceRegionRef} className="choice-grid mt-4 grid gap-2" role="group" aria-label={decision.prompt}>{decision.choices.map((item, index) => <GameButton key={item.id} data-choice variant="option" className="choice-button min-h-13 justify-start py-2 normal-case" onClick={() => onChoose(decision, item.id)} autoFocus={index === 0}><span className="choice-letter grid size-8 shrink-0 place-items-center border-2 border-current text-xs">{String.fromCharCode(65 + index)}</span><span>{item.label}</span></GameButton>)}</div>}
         {!selected && <button onClick={onHint} className="hint-button mt-3 inline-flex min-h-11 items-center gap-2 text-sm font-black text-signal underline decoration-2 underline-offset-4 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring"><CircleHelp size={18} />ΥΠΟΔΕΙΞΗ <span className="hidden font-normal text-muted-foreground sm:inline">(H)</span></button>}
         {showHint && !selected && <div className="hint-panel mt-2 border-l-4 border-signal bg-accent p-3 text-sm"><strong>ΚΟΙΤΑ ΠΙΟ ΚΟΝΤΑ:</strong> {decision.hint}</div>}
       </div>
-      <aside className={selected ? "decision-sidecar min-w-0" : "decision-sidecar decision-evidence min-w-0"}>{selected && choice ? <Feedback decision={decision} choice={choice} showWhy={showWhy} onWhy={onWhy} /> : <EvidenceSidecar act={decision.act} />}</aside>
+       <aside className={selected ? "decision-sidecar min-w-0" : "decision-sidecar desktop-evidence min-w-0"}>{selected && choice ? <Feedback decision={decision} choice={choice} showWhy={showWhy} onWhy={onWhy} /> : <EvidenceSidecar act={decision.act} />}</aside>
     </div>
     {selected && <BottomActions>{decision.critical && <GameButton variant="secondary" onClick={onRevise} icon={<RotateCcw size={18} />}>ΑΝΑΘΕΩΡΗΣΗ</GameButton>}<GameButton variant="secondary" onClick={onWhy} icon={<CircleHelp size={18} />}>ΓΙΑΤΙ;</GameButton><GameButton onClick={onNext} icon={<ArrowRight size={18} />}>ΣΥΝΕΧΕΙΑ</GameButton></BottomActions>}
   </ScreenFrame>;
@@ -308,18 +311,18 @@ function EvidenceSidecar({ act }: { act: number }) {
 }
 
 function Feedback({ decision, choice, showWhy, onWhy }: { decision: Decision; choice: Decision["choices"][number]; showWhy: boolean; onWhy: () => void }) {
-  return <article className={`feedback-card ${choice.correct ? "border-signal" : "border-warning"}`} aria-live="polite"><div className="flex items-center gap-2"><span className={choice.correct ? "stamp" : "stamp-warning"}>{choice.correct ? "ΙΣΧΥΡΗ ΚΡΙΣΗ" : "ΠΡΟΩΡΟ ΣΥΜΠΕΡΑΣΜΑ"}</span></div>
+  return <article className={`feedback-card feedback-reveal ${choice.correct ? "feedback-strong border-signal" : "feedback-caution border-warning"}`} aria-live="polite"><div className="flex items-center gap-2"><span className={`${choice.correct ? "stamp" : "stamp-warning"} verdict-stamp`}>{choice.correct ? "ΙΣΧΥΡΗ ΚΡΙΣΗ" : "ΠΡΟΩΡΟ ΣΥΜΠΕΡΑΣΜΑ"}</span></div>
     <FeedbackRow title="Η επιλογή σου" text={choice.label} icon={<Fingerprint size={18} />} />
     <FeedbackRow title="Τι δείχνουν τα στοιχεία" text={decision.evidence} icon={<Search size={18} />} />
     <FeedbackRow title="Τι ΔΕΝ μπορούμε ακόμη να συμπεράνουμε" text={decision.cannot} icon={<TriangleAlert size={18} />} />
     <FeedbackRow title="Αρχή" text={decision.principle} icon={<ShieldCheck size={18} />} strong />
-    {showWhy && <div className="mt-5 border-t-2 border-dashed border-border pt-5"><h3 className="text-xs font-black uppercase text-signal">ΓΙΑΤΙ;</h3><p className="mt-2 text-sm leading-relaxed text-muted-foreground">{decision.why}</p><p className="mt-3 text-xs font-black">ΚΑΛΥΤΕΡΑ ΥΠΟΣΤΗΡΙΖΟΜΕΝΟ: {decision.best}</p></div>}
+    {showWhy && <div className="analyst-note mt-5 border-t-2 border-dashed border-border pt-5"><span className="tape tape-top" aria-hidden="true" /><h3 className="font-mono text-xs font-black uppercase text-signal">ΓΙΑΤΙ; · ΣΗΜΕΙΩΣΗ ΑΝΑΛΥΤΗ</h3><p className="mt-2 text-sm leading-relaxed text-muted-foreground">{decision.why}</p><p className="mt-3 text-xs font-black">ΚΑΛΥΤΕΡΑ ΥΠΟΣΤΗΡΙΖΟΜΕΝΟ: {decision.best}</p></div>}
     <button className="mt-4 inline-flex min-h-11 items-center gap-2 text-xs font-black text-signal focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring lg:hidden" onClick={onWhy}>{showWhy ? "ΛΙΓΟΤΕΡΑ" : "ΠΕΡΙΣΣΟΤΕΡΑ"}<ChevronDown className={showWhy ? "rotate-180" : ""} size={16} /></button>
   </article>;
 }
 
 function FeedbackRow({ title, text, icon, strong }: { title: string; text: string; icon: ReactNode; strong?: boolean }) {
-  return <div className="mt-5 grid grid-cols-[auto_minmax(0,1fr)] gap-3 border-t border-border pt-4 first:border-0"><span className="text-signal">{icon}</span><div><h3 className="text-[11px] font-black uppercase text-muted-foreground">{title}</h3><p className={`mt-1 text-sm leading-relaxed ${strong ? "font-black text-signal" : ""}`}>{text}</p></div></div>;
+  return <div className={`feedback-row mt-5 grid grid-cols-[auto_minmax(0,1fr)] gap-3 border-t border-border pt-4 first:border-0 ${strong ? "feedback-principle" : ""}`}><span className="text-signal">{icon}</span><div><h3 className="font-mono text-[11px] font-black uppercase text-muted-foreground">{title}</h3><p className={`mt-1 text-sm leading-relaxed ${strong ? "font-black text-signal" : ""}`}>{text}</p></div></div>;
 }
 
 function EvidenceReveal({ onNext }: { onNext: () => void }) {
