@@ -283,7 +283,6 @@ function DecisionScreen({ decision, selected, showWhy, showHint, revising, choic
   decision: Decision; selected: string | null; showWhy: boolean; showHint: boolean; revising: boolean; choiceRegionRef: RefObject<HTMLDivElement | null>;
   onChoose: (decision: Decision, choiceId: string) => void; onNext: () => void; onWhy: () => void; onHint: () => void; onRevise: () => void;
 }) {
-  // (βλ. AnalystTag παρακάτω)
   const choice = decision.choices.find((item) => item.id === selected);
   return <ScreenFrame label={decision.eyebrow}>
     <div className={`decision-layout scene-decision scene-act-${decision.act} mt-2 grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.72fr)]`}>
