@@ -211,6 +211,12 @@ export function GameApp() {
     setView("hub");
   };
 
+  // Ποιες υποθέσεις έχει ολοκληρώσει ο παίκτης (ξεκλειδώνουν παραδείγματα γλωσσαρίου και σήματα).
+  const completedCases = new Set<string>([
+    ...(state.completed ? ["case01"] : []),
+    ...playableCases.filter((c) => caseProgress[c.id]?.completed).map((c) => c.id),
+  ]);
+
   if (!hydrated) return <div className="grid min-h-screen place-items-center bg-background"><span className="stamp">{S.app.loading}</span></div>;
 
   return (
@@ -242,7 +248,7 @@ export function GameApp() {
 
       <main className={view === "hub" ? "h-[calc(100svh-4rem)] overflow-hidden" : "h-[calc(100svh-4.25rem)] overflow-hidden"}>
         {view === "hub" ? (
-          <Hub state={state} onPlay={() => setView("case")} onReset={reset} onOpenMember={setMemberOpen} caseProgress={caseProgress} onPlayCase={openRunner} onResetCase={resetCase} />
+          <Hub state={state} onPlay={() => setView("case")} onReset={reset} onOpenMember={setMemberOpen} caseProgress={caseProgress} onPlayCase={openRunner} onResetCase={resetCase} completedCases={completedCases} />
         ) : view === "runner" && runnerDef ? (
           <CaseRunner def={runnerDef} progress={runnerProgress} onProgress={(nextProgress) => saveRunnerProgress(runnerDef, nextProgress)} onHub={() => setView("hub")} />
         ) : (
@@ -254,14 +260,14 @@ export function GameApp() {
           />
         )}
       </main>
-      <Glossary open={glossaryOpen} onClose={() => setGlossaryOpen(false)} />
+      <Glossary open={glossaryOpen} onClose={() => setGlossaryOpen(false)} completedCases={completedCases} />
       <MemberDialog initials={memberOpen} onClose={() => setMemberOpen(null)} />
     </div>
     </GlossaryLinkContext.Provider>
   );
 }
 
-function Hub({ state, onPlay, onReset, onOpenMember, caseProgress, onPlayCase, onResetCase }: { state: GameState; onPlay: () => void; onReset: () => void; onOpenMember: (initials: string) => void; caseProgress: Record<string, CaseProgress>; onPlayCase: (def: CaseDef) => void; onResetCase: (def: CaseDef) => void }) {
+function Hub({ state, onPlay, onReset, onOpenMember, caseProgress, onPlayCase, onResetCase, completedCases }: { state: GameState; onPlay: () => void; onReset: () => void; onOpenMember: (initials: string) => void; caseProgress: Record<string, CaseProgress>; onPlayCase: (def: CaseDef) => void; onResetCase: (def: CaseDef) => void; completedCases: Set<string> }) {
   const hasProgress = state.currentAct > 0 || Object.keys(state.decisions).length > 0;
   const H = S.hub;
   const [expandedFile, setExpandedFile] = useState(playableCases[0]?.id ?? "");
@@ -269,11 +275,15 @@ function Hub({ state, onPlay, onReset, onOpenMember, caseProgress, onPlayCase, o
     <div className="hub-wall hub-fit h-full overflow-hidden">
       <section className="case-wall relative mx-auto flex h-full max-w-7xl flex-col gap-3 px-4 py-3 sm:px-6 sm:py-4">
         <div className="wall-thread" aria-hidden="true" />
-        <header className="wall-heading relative z-10 shrink-0">
-          <span className="stamp">{H.seasonStamp}</span>
-          <h1 className="mt-1 font-display text-3xl font-black uppercase leading-[0.86] sm:text-5xl">{H.title}</h1>
-          <p className="marker-copy mt-1 max-w-xl text-xs font-semibold sm:text-sm">{H.tagline}</p>
+        <header className="wall-heading relative z-10 shrink-0 sm:grid sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end sm:gap-4">
+          <div className="min-w-0">
+            <span className="stamp">{H.seasonStamp}</span>
+            <h1 className="mt-1 font-display text-3xl font-black uppercase leading-[0.86] sm:text-5xl">{H.title}</h1>
+            <p className="marker-copy mt-1 max-w-xl text-xs font-semibold sm:text-sm">{H.tagline}</p>
+          </div>
+          <JourneyRail completedCases={completedCases} />
         </header>
+
 
         <article className="open-case-file relative z-20 min-h-0 shrink-0 border-2 border-signal bg-card p-3 sm:p-4">
           <div className="open-file-tab">{H.caseTab}</div>
@@ -309,6 +319,36 @@ function Hub({ state, onPlay, onReset, onOpenMember, caseProgress, onPlayCase, o
         </div>
       </section>
     </div>
+  );
+}
+
+/** Η διαδρομή του αναλυτή: ένα σήμα ανά ολοκληρωμένη υπόθεση (μόνο εμφάνιση). */
+function JourneyRail({ completedCases }: { completedCases: Set<string> }) {
+  const J = S.journey;
+  const done = J.stages.filter((stage) => completedCases.has(stage.caseId)).length;
+  return (
+    <section className="journey-rail relative z-10 mt-2 shrink-0 border-2 border-border bg-card px-2 py-1.5 sm:mt-0" aria-labelledby="journey-heading">
+      <div className="flex items-baseline justify-between gap-2">
+        <h2 id="journey-heading" className="font-mono text-[10px] font-black uppercase tracking-wide text-signal">{J.title}</h2>
+        <span className="font-mono text-[10px] font-black uppercase text-muted-foreground">{J.progress(done, J.stages.length)}</span>
+      </div>
+      <ol className="journey-steps mt-1 flex items-stretch gap-1">
+        {J.stages.map((stage, index) => {
+          const earned = completedCases.has(stage.caseId);
+          const label = earned ? `${stage.stage} — ${stage.badge}: ${stage.earnedText}` : `${stage.stage} — ${J.locked}`;
+          return (
+            <li key={stage.caseId} className={`journey-step ${earned ? "journey-step-earned" : ""}`} title={label}>
+              <span className="sr-only">{label}</span>
+              <span className="journey-badge" aria-hidden="true">{earned ? <ShieldCheck size={14} /> : <LockKeyhole size={12} />}</span>
+              <span className="journey-step-no font-mono" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+            </li>
+          );
+        })}
+      </ol>
+      <p className="journey-caption mt-1 truncate font-mono text-[10px] font-bold uppercase text-muted-foreground">
+        {done > 0 ? (J.stages.filter((s) => completedCases.has(s.caseId)).at(-1)?.badge ?? "") : J.footer}
+      </p>
+    </section>
   );
 }
 
@@ -495,7 +535,7 @@ function Cliffhanger({ onHub }: { onHub: () => void }) {
   return <ScreenFrame label={C.label}><div className="cliffhanger-layout mx-auto mt-3 grid max-w-5xl gap-4 lg:grid-cols-[1.2fr_0.8fr] lg:items-center"><div><Dialogue who="leo">{C.leoLine}</Dialogue><div className="incoming-board mt-3 border-2 border-alert bg-card p-3 shadow-editorial lg:p-5"><div className="fax-edge" aria-hidden="true" /><div className="flex items-center justify-between gap-4"><div><span className="stamp-warning">{C.stamp}</span><h1 className="mt-2 font-display text-3xl font-black uppercase">{C.title}</h1></div><Radio className="signal-pulse text-alert" size={32} /></div><p className="mt-1 text-sm font-bold lg:text-lg">{C.subtitle}</p><div className="post-burst mt-3 space-y-1.5">{posts.map((post, index) => <div key={index} className="intercept-post grid grid-cols-[auto_1fr_auto] items-center gap-2 border border-border bg-background p-2 text-[10px] lg:text-xs"><span className="grid size-7 place-items-center bg-muted font-black">{index + 1}</span><span>{post}</span><span className="font-black text-alert">22:14:{String(3 + index * 4).padStart(2, "0")}</span></div>)}</div></div></div><div className="next-file text-center"><span className="kicker">{C.nextLabel}</span><h2 className="mt-1 font-display text-4xl font-black uppercase lg:text-5xl">{C.nextLine1}<br />{C.nextLine2}</h2><p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground lg:mt-4">{C.nextText}</p></div></div><BottomActions><GameButton variant="secondary" onClick={onHub} icon={<ArrowLeft size={18} />}>{C.action}</GameButton></BottomActions></ScreenFrame>;
 }
 
-function Glossary({ open, onClose }: { open: boolean; onClose: () => void }) {
+function Glossary({ open, onClose, completedCases }: { open: boolean; onClose: () => void; completedCases: Set<string> }) {
   const panelRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
@@ -530,14 +570,26 @@ function Glossary({ open, onClose }: { open: boolean; onClose: () => void }) {
             <button ref={closeRef} onClick={onClose} aria-label={G.close} className="dialog-close grid size-11 shrink-0 place-items-center border-2 border-border font-black transition-all focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring">✕</button>
           </div>
           <dl className="glossary-list">
-            {G.terms.map(({ term, en, definition, example }) => (
+            {G.terms.map(({ term, en, definition, example, unlocked }) => {
+              const shown = (unlocked ?? []).filter((item) => completedCases.has(item.caseId));
+              return (
               <div key={term} className="glossary-term border-b border-dashed border-border py-3 last:border-0">
                 <dt className="font-display text-base font-black uppercase leading-tight text-signal sm:text-lg">{term}<span className="glossary-en ml-2 font-mono text-[11px] font-bold normal-case">{en}</span></dt>
                 <dd className="mt-1 text-sm leading-relaxed">{definition}</dd>
                 <p className="mt-2 text-sm leading-relaxed"><span className="stamp-muted mr-2 inline-block align-middle">{G.exampleLabel}</span>{example}</p>
-
+                {shown.length > 0 && (
+                  <div className="glossary-unlocked mt-2 border-l-4 border-signal pl-3">
+                    <span className="block font-mono text-[10px] font-black uppercase text-signal">{G.unlockedTitle}</span>
+                    <ul className="mt-1 grid gap-1.5">
+                      {shown.map((item) => (
+                        <li key={item.caseId} className="text-sm leading-relaxed"><span className="stamp-muted mr-2 inline-block align-middle">{item.label}</span>{item.text}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
-            ))}
+              );
+            })}
           </dl>
           <p className="mt-2 text-right font-mono text-[10px] font-bold uppercase text-muted-foreground">{G.escHint}</p>
         </div>
