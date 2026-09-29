@@ -270,7 +270,7 @@ export function GameApp() {
 function Hub({ state, onPlay, onReset, onOpenMember, caseProgress, onPlayCase, onResetCase, completedCases }: { state: GameState; onPlay: () => void; onReset: () => void; onOpenMember: (initials: string) => void; caseProgress: Record<string, CaseProgress>; onPlayCase: (def: CaseDef) => void; onResetCase: (def: CaseDef) => void; completedCases: Set<string> }) {
   const hasProgress = state.currentAct > 0 || Object.keys(state.decisions).length > 0;
   const H = S.hub;
-  const [expandedFile, setExpandedFile] = useState(playableCases[0]?.id ?? "");
+  const [expandedFile, setExpandedFile] = useState(() => (!state.completed ? "case01" : playableCases.find((c) => !caseProgress[c.id]?.completed)?.id ?? ""));
   return (
     <div className="hub-wall hub-fit h-full overflow-hidden">
       <section className="case-wall relative mx-auto flex h-full max-w-7xl flex-col gap-3 px-4 py-3 sm:px-6 sm:py-4">
@@ -285,16 +285,26 @@ function Hub({ state, onPlay, onReset, onOpenMember, caseProgress, onPlayCase, o
         </header>
 
 
-        <article className="open-case-file relative z-20 min-h-0 shrink-0 border-2 border-signal bg-card p-3 sm:p-4">
+        {expandedFile !== "case01" ? (
+          <article className="archive-folder relative z-20 shrink-0 border-2 border-signal bg-card" data-expanded={false}>
+            <GameButton variant="ghost" className="archive-folder-trigger grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-none border-0 px-3 py-2 text-left normal-case" onClick={() => setExpandedFile("case01")} aria-expanded={false} aria-controls="case-file-case01">
+              <span className="min-w-0"><span className="file-meta block font-mono text-[11px] font-black text-signal">{H.caseTab}</span><span className="archive-folder-title block font-display text-base font-black uppercase leading-tight sm:text-lg">{H.caseTitle}</span></span>
+              <span className="flex items-center gap-2">{state.completed && <span className="archive-status archive-status-complete">{H.completed}</span>}<ChevronDown className="archive-chevron" size={18} aria-hidden="true" /></span>
+            </GameButton>
+          </article>
+        ) : (
+        <article id="case-file-case01" className="open-case-file relative z-20 min-h-0 shrink-0 border-2 border-signal bg-card p-3 sm:p-4">
           <div className="open-file-tab">{H.caseTab}</div>
+          <button type="button" onClick={() => setExpandedFile("")} aria-expanded={true} aria-controls="case-file-case01" aria-label={H.caseTitle} className="absolute right-2 top-2 z-10 grid h-11 w-11 place-items-center border-2 border-border bg-card hover:bg-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-signal"><ChevronDown className="rotate-180" size={18} aria-hidden="true" /></button>
           <div className="grid gap-3 sm:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] sm:items-center">
             <div className="case-photo relative hidden sm:block"><img src={keyArt} alt={H.caseImageAlt} width={1536} height={1024} className="h-32 w-full object-cover lg:h-40" /><span className="case-photo-mark">{H.caseImageMark}</span><span className="case-photo-ref font-mono">{H.caseImageRef}</span></div>
-            <div className="min-w-0"><p className="font-mono text-[11px] font-black text-signal">{H.activeFile}</p><h2 className="mt-1 font-display text-3xl font-black uppercase leading-none sm:text-5xl">{H.caseTitle}</h2><p className="mt-2 max-w-lg text-xs font-semibold sm:text-sm">{H.caseSubtitle}</p>
+            <div className="min-w-0 pr-12"><p className="font-mono text-[11px] font-black text-signal">{H.activeFile}</p><h2 className="mt-1 font-display text-3xl font-black uppercase leading-none sm:text-5xl">{H.caseTitle}</h2><p className="mt-2 max-w-lg text-xs font-semibold sm:text-sm">{H.caseSubtitle}</p>
               <div className="dossier-progress mt-2"><span style={{ width: state.completed ? "100%" : hasProgress ? `${((state.currentAct + 1) / TOTAL_ACTS) * 100}%` : "8%" }} /></div><p className="mt-1 text-[11px] font-black">{state.completed ? H.completed : hasProgress ? H.actProgress(state.currentAct + 1, TOTAL_ACTS) : H.duration}</p>
               <div className="mt-3 flex flex-wrap gap-2"><GameButton onClick={onPlay} icon={hasProgress ? <ArrowRight size={18} /> : <Play size={18} />}>{state.completed ? H.playReport : hasProgress ? H.playContinue : H.playStart}</GameButton>{hasProgress && <GameButton variant="secondary" onClick={onReset} icon={<RotateCcw size={18} />}>{H.reset}</GameButton>}</div>
             </div>
           </div>
         </article>
+        )}
 
         <div className="wall-lower grid min-h-0 flex-1 gap-3 lg:grid-cols-[1.35fr_0.65fr]">
           <section className="future-file-stack min-h-0" aria-labelledby="future-cases-title"><h2 id="future-cases-title" className="sr-only">{H.futureCasesTitle}</h2>
