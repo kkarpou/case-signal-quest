@@ -94,6 +94,9 @@ export const el = {
     playContinue: "ΣΥΝΕΧΙΣΗ ΥΠΟΘΕΣΗΣ",
     playStart: "ΑΝΟΙΓΜΑ ΦΑΚΕΛΟΥ",
     reset: "ΕΠΑΝΑΦΟΡΑ",
+    folderOpen: (file: string) => `Άνοιγμα φακέλου: ${file}`,
+    folderClose: (file: string) => `Κλείσιμο φακέλου: ${file}`,
+    resetCase: (file: string) => `Εκκαθάριση προόδου: ${file}`,
     futureCasesTitle: "Μελλοντικές υποθέσεις",
     nextCaseMark: "ΕΠΟΜΕΝΟΣ ΦΑΚΕΛΟΣ",
     futureCases: [
