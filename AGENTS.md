@@ -15,3 +15,4 @@
 - Use Archivo Black for display text and IBM Plex Sans/Mono for Greek UI and metadata; this preserves editorial character with reliable Greek legibility.
 - Keep secondary Hub cases in a single-open, locally ephemeral archive accordion; this prevents status/action collisions without changing game progress.
 - Author Cases 02–06 as typed CaseDef data with independent versioned localStorage keys; this keeps one runner consistent while isolating progress.
+- Derive glossary unlocked examples and Hub journey badges from a single completedCases set computed from stored progress; this keeps rewards in sync without duplicating progress state.
