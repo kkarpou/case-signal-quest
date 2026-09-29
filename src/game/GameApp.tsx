@@ -271,6 +271,11 @@ export function GameApp() {
       </main>
       <Glossary open={glossaryOpen} onClose={() => setGlossaryOpen(false)} completedCases={completedCases} />
       <MemberDialog initials={memberOpen} onClose={() => setMemberOpen(null)} />
+      <ResetMemoDialog
+        file={pendingReset?.file ?? null}
+        onCancel={() => setPendingReset(null)}
+        onConfirm={() => { pendingReset?.confirm(); setPendingReset(null); }}
+      />
     </div>
     </GlossaryLinkContext.Provider>
   );
