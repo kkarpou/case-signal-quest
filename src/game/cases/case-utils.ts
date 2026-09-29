@@ -14,6 +14,6 @@ export function decision(config: {
       { id: "dismiss", label: config.wrong[1], feedback: "Η επιφύλαξη δεν σημαίνει ότι αγνοούμε όσα ήδη επαληθεύονται.", misconception: "over-caution", delta: { evidence: -4, uncertainty: -5 } },
     ],
     best: "bounded", evidence: config.finding, cannot: config.cannot, principle: config.principle,
-    why: "Η ισχυρή ανάλυση χωρίζει την παρατήρηση, την ερμηνεία και την απόδοση ευθύνης.", critical: true, tags: config.tags,
+    why: "Η ισχυρή ανάλυση χωρίζει την παρατήρηση, την ερμηνεία και την απόδοση ευθύνης.", critical: true, ...(config.tags ? { tags: config.tags } : {}),
   };
 }
