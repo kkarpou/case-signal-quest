@@ -229,6 +229,7 @@
   .hub-fit .active-next-file > .flex:first-child { min-width: 0; }
   .hub-fit .active-next-file > .mt-1\.5 { margin-top: 0; flex-wrap: nowrap; gap: .35rem; }
   .hub-fit .active-next-file .game-button { min-height: 2.75rem; padding-inline: .55rem; }
+  .hub-fit .active-next-file .compact-case-reset { width: 2.75rem; padding-inline: 0; font-size: 0; }
 }
 .active-next-file .file-summary { color: var(--paper-muted); }
 .hub-fit .wall-thread { display: none; }
