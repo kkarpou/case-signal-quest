@@ -347,6 +347,45 @@ function Hub({ state, onPlay, onReset, onOpenMember, caseProgress, onPlayCase, o
 }
 
 /** Η διαδρομή του αναλυτή: ένα σήμα ανά ολοκληρωμένη υπόθεση (μόνο εμφάνιση). */
+/** Οργανικό σημείωμα γραφείου αντί για confirm() του φυλλομετρητή. */
+function ResetMemoDialog({ file, onCancel, onConfirm }: { file: string | null; onCancel: () => void; onConfirm: () => void }) {
+  const R = S.app.resetMemo;
+  const panelRef = useRef<HTMLDivElement>(null);
+  const cancelRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!file) return;
+    const opener = document.activeElement as HTMLElement | null;
+    cancelRef.current?.focus();
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") { event.stopPropagation(); onCancel(); return; }
+      if (event.key !== "Tab") return;
+      const nodes = panelRef.current?.querySelectorAll<HTMLElement>("button");
+      if (!nodes || nodes.length === 0) return;
+      const first = nodes[0]!;
+      const last = nodes[nodes.length - 1]!;
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    };
+    document.addEventListener("keydown", onKeyDown, true);
+    return () => { document.removeEventListener("keydown", onKeyDown, true); opener?.focus?.(); };
+  }, [file, onCancel]);
+  if (!file) return null;
+  return (
+    <div className="glossary-overlay fixed inset-0 z-50 grid place-items-center p-4" onPointerDown={(event) => { if (event.target === event.currentTarget) onCancel(); }}>
+      <div ref={panelRef} role="alertdialog" aria-modal="true" aria-labelledby="reset-memo-title" aria-describedby="reset-memo-body" className="reset-memo relative w-full max-w-md p-4 sm:p-5">
+        <span className="reset-memo-stamp" aria-hidden="true">{R.stamp}</span>
+        <p className="desk-memo-label">{R.label}</p>
+        <h2 id="reset-memo-title" className="font-display text-2xl font-black uppercase leading-none">{R.title}</h2>
+        <p id="reset-memo-body" className="mt-2 text-sm font-semibold leading-relaxed">{R.body(file)}</p>
+        <div className="mt-4 flex flex-wrap gap-2">
+          <button ref={cancelRef} type="button" onClick={onCancel} className="reset-memo-btn reset-memo-keep">{R.cancel}</button>
+          <button type="button" onClick={onConfirm} className="reset-memo-btn reset-memo-clear">{R.confirm}</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function JourneyRail({ completedCases }: { completedCases: Set<string> }) {
   const J = S.journey;
   const done = J.stages.filter((stage) => completedCases.has(stage.caseId)).length;
