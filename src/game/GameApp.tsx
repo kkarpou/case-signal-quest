@@ -86,6 +86,7 @@ export function GameApp() {
   const [revising, setRevising] = useState(false);
   const [glossaryOpen, setGlossaryOpen] = useState(false);
   const [memberOpen, setMemberOpen] = useState<string | null>(null);
+  const [pendingReset, setPendingReset] = useState<{ file: string; confirm: () => void } | null>(null);
   const choiceRegionRef = useRef<HTMLDivElement>(null);
   const openGlossary = useCallback(() => setGlossaryOpen(true), []);
 
@@ -186,9 +187,13 @@ export function GameApp() {
   };
 
   const reset = () => {
-    if (!window.confirm(S.app.resetConfirm)) return;
-    window.localStorage.removeItem(STORAGE_KEY);
-    setState(initialState); setView("hub");
+    setPendingReset({
+      file: S.app.resetMemo.case01,
+      confirm: () => {
+        window.localStorage.removeItem(STORAGE_KEY);
+        setState(initialState); setView("hub");
+      },
+    });
   };
 
   const openRunner = (def: CaseDef) => {
@@ -204,11 +209,15 @@ export function GameApp() {
   };
 
   const resetCase = (def: CaseDef) => {
-    if (!window.confirm(`Να διαγραφεί όλη η πρόοδος της ${def.number};`)) return;
-    window.localStorage.removeItem(def.storageKey);
-    setCaseProgress((prev) => ({ ...prev, [def.id]: initialProgress }));
-    setRunnerProgress(initialProgress);
-    setView("hub");
+    setPendingReset({
+      file: `${def.number} — ${def.title}`,
+      confirm: () => {
+        window.localStorage.removeItem(def.storageKey);
+        setCaseProgress((prev) => ({ ...prev, [def.id]: initialProgress }));
+        setRunnerProgress(initialProgress);
+        setView("hub");
+      },
+    });
   };
 
   // Ποιες υποθέσεις έχει ολοκληρώσει ο παίκτης (ξεκλειδώνουν παραδείγματα γλωσσαρίου και σήματα).
@@ -262,6 +271,11 @@ export function GameApp() {
       </main>
       <Glossary open={glossaryOpen} onClose={() => setGlossaryOpen(false)} completedCases={completedCases} />
       <MemberDialog initials={memberOpen} onClose={() => setMemberOpen(null)} />
+      <ResetMemoDialog
+        file={pendingReset?.file ?? null}
+        onCancel={() => setPendingReset(null)}
+        onConfirm={() => { pendingReset?.confirm(); setPendingReset(null); }}
+      />
     </div>
     </GlossaryLinkContext.Provider>
   );
@@ -287,7 +301,7 @@ function Hub({ state, onPlay, onReset, onOpenMember, caseProgress, onPlayCase, o
 
         {expandedFile !== "case01" ? (
           <article className="archive-folder relative z-20 shrink-0 border-2 border-signal bg-card" data-expanded={false}>
-            <GameButton variant="ghost" className="archive-folder-trigger grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-none border-0 px-3 py-2 text-left normal-case" onClick={() => setExpandedFile("case01")} aria-expanded={false} aria-controls="case-file-case01">
+            <GameButton variant="ghost" className="archive-folder-trigger grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-none border-0 px-3 py-2 text-left normal-case" onClick={() => setExpandedFile("case01")} aria-expanded={false} aria-controls="case-file-case01" aria-label={H.folderOpen(`${H.caseTab} — ${H.caseTitle}`)}>
               <span className="min-w-0"><span className="file-meta block font-mono text-[11px] font-black text-signal">{H.caseTab}</span><span className="archive-folder-title block font-display text-base font-black uppercase leading-tight sm:text-lg">{H.caseTitle}</span></span>
               <span className="flex items-center gap-2">{state.completed && <span className="archive-status archive-status-complete">{H.completed}</span>}<ChevronDown className="archive-chevron" size={18} aria-hidden="true" /></span>
             </GameButton>
@@ -295,12 +309,12 @@ function Hub({ state, onPlay, onReset, onOpenMember, caseProgress, onPlayCase, o
         ) : (
         <article id="case-file-case01" className="open-case-file relative z-20 min-h-0 shrink-0 border-2 border-signal bg-card p-3 sm:p-4">
           <div className="open-file-tab">{H.caseTab}</div>
-          <button type="button" onClick={() => setExpandedFile("")} aria-expanded={true} aria-controls="case-file-case01" aria-label={H.caseTitle} className="absolute right-2 top-2 z-10 grid h-11 w-11 place-items-center border-2 border-border bg-card hover:bg-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-signal"><ChevronDown className="rotate-180" size={18} aria-hidden="true" /></button>
+          <button type="button" onClick={() => setExpandedFile("")} onKeyDown={(event) => { if (event.key === "Escape") setExpandedFile(""); }} aria-expanded={true} aria-controls="case-file-case01" aria-label={H.folderClose(`${H.caseTab} — ${H.caseTitle}`)} title={H.folderClose(H.caseTitle)} className="absolute right-2 top-2 z-10 grid h-11 w-11 place-items-center border-2 border-border bg-card hover:bg-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-signal focus-visible:ring-4 focus-visible:ring-ring"><ChevronDown className="rotate-180" size={18} aria-hidden="true" /></button>
           <div className="grid gap-3 sm:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] sm:items-center">
             <div className="case-photo relative hidden sm:block"><img src={keyArt} alt={H.caseImageAlt} width={1536} height={1024} className="h-32 w-full object-cover lg:h-40" /><span className="case-photo-mark">{H.caseImageMark}</span><span className="case-photo-ref font-mono">{H.caseImageRef}</span></div>
             <div className="min-w-0 pr-12"><p className="font-mono text-[11px] font-black text-signal">{H.activeFile}</p><h2 className="mt-1 font-display text-3xl font-black uppercase leading-none sm:text-5xl">{H.caseTitle}</h2><p className="mt-2 max-w-lg text-xs font-semibold sm:text-sm">{H.caseSubtitle}</p>
               <div className="dossier-progress mt-2"><span style={{ width: state.completed ? "100%" : hasProgress ? `${((state.currentAct + 1) / TOTAL_ACTS) * 100}%` : "8%" }} /></div><p className="mt-1 text-[11px] font-black">{state.completed ? H.completed : hasProgress ? H.actProgress(state.currentAct + 1, TOTAL_ACTS) : H.duration}</p>
-              <div className="mt-3 flex flex-wrap gap-2"><GameButton onClick={onPlay} icon={hasProgress ? <ArrowRight size={18} /> : <Play size={18} />}>{state.completed ? H.playReport : hasProgress ? H.playContinue : H.playStart}</GameButton>{hasProgress && <GameButton variant="secondary" onClick={onReset} icon={<RotateCcw size={18} />}>{H.reset}</GameButton>}</div>
+              <div className="mt-3 flex flex-wrap gap-2"><GameButton onClick={onPlay} icon={hasProgress ? <ArrowRight size={18} /> : <Play size={18} />}>{state.completed ? H.playReport : hasProgress ? H.playContinue : H.playStart}</GameButton>{hasProgress && <GameButton variant="secondary" onClick={onReset} aria-label={H.resetCase(`${H.caseTab} — ${H.caseTitle}`)} icon={<RotateCcw size={18} />}>{H.reset}</GameButton>}</div>
             </div>
           </div>
         </article>
@@ -309,14 +323,14 @@ function Hub({ state, onPlay, onReset, onOpenMember, caseProgress, onPlayCase, o
         <div className="wall-lower grid min-h-0 flex-1 gap-3 lg:grid-cols-[1.35fr_0.65fr]">
           <section className="future-file-stack min-h-0" aria-labelledby="future-cases-title"><h2 id="future-cases-title" className="sr-only">{H.futureCasesTitle}</h2>
             {playableCases.map((c, index) => { const prog = caseProgress[c.id] ?? initialProgress; const started = prog.currentScene > 0 || Object.keys(prog.decisions).length > 0; const expanded = expandedFile === c.id; const panelId = `case-file-${c.id}`; return <article key={c.id} className="archive-folder border-2 border-border bg-card" data-expanded={expanded}>
-              <GameButton variant="ghost" className="archive-folder-trigger grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-none border-0 px-3 py-2 text-left normal-case" onClick={() => setExpandedFile(expanded ? "" : c.id)} aria-expanded={expanded} aria-controls={panelId}>
+              <GameButton variant="ghost" className="archive-folder-trigger grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-none border-0 px-3 py-2 text-left normal-case" onClick={() => setExpandedFile(expanded ? "" : c.id)} onKeyDown={(event) => { if (event.key === "Escape" && expanded) setExpandedFile(""); }} aria-expanded={expanded} aria-controls={panelId} aria-label={(expanded ? H.folderClose : H.folderOpen)(`${c.number} — ${c.title}`)} title={(expanded ? H.folderClose : H.folderOpen)(c.title)}>
                 <span className="min-w-0"><span className="file-meta block font-mono text-[11px] font-black text-signal">{c.number}</span><span className="archive-folder-title block font-display text-base font-black uppercase leading-tight sm:text-lg">{c.title}</span></span>
                 <span className="flex shrink-0 items-center gap-2"><span className={`archive-status ${prog.completed ? "archive-status-complete" : ""}`}>{prog.completed ? H.completed : H.caseStatus}</span><ChevronDown className="archive-chevron shrink-0" size={20} aria-hidden="true" /></span>
               </GameButton>
               <div id={panelId} className="archive-folder-panel" hidden={!expanded}>
                 <div className="archive-folder-content grid gap-2 border-t border-border px-3 pb-3 pt-2 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
                   <p className="file-summary min-w-0 text-[11px] font-semibold leading-snug">{c.subtitle}</p>
-                  <div className="archive-folder-actions flex flex-wrap gap-2"><GameButton className="min-h-11 px-3 py-1 text-xs" onClick={() => onPlayCase(c)} icon={started ? <ArrowRight size={16} /> : <Play size={16} />}>{prog.completed ? H.playReport : started ? H.playContinue : H.playStart}</GameButton>{started && <GameButton variant="secondary" className="min-h-11 px-3 py-1 text-xs" onClick={() => onResetCase(c)} icon={<RotateCcw size={16} />}>{H.reset}</GameButton>}</div>
+                  <div className="archive-folder-actions flex flex-wrap gap-2"><GameButton className="min-h-11 px-3 py-1 text-xs" onClick={() => onPlayCase(c)} icon={started ? <ArrowRight size={16} /> : <Play size={16} />}>{prog.completed ? H.playReport : started ? H.playContinue : H.playStart}</GameButton>{started && <GameButton variant="secondary" className="min-h-11 px-3 py-1 text-xs" onClick={() => onResetCase(c)} aria-label={H.resetCase(`${c.number} — ${c.title}`)} icon={<RotateCcw size={16} />}>{H.reset}</GameButton>}</div>
                 </div>
               </div>
               <span className={`archive-folder-tab archive-folder-tab-${index + 1}`} aria-hidden="true">{c.number}</span>
@@ -333,6 +347,45 @@ function Hub({ state, onPlay, onReset, onOpenMember, caseProgress, onPlayCase, o
 }
 
 /** Η διαδρομή του αναλυτή: ένα σήμα ανά ολοκληρωμένη υπόθεση (μόνο εμφάνιση). */
+/** Οργανικό σημείωμα γραφείου αντί για confirm() του φυλλομετρητή. */
+function ResetMemoDialog({ file, onCancel, onConfirm }: { file: string | null; onCancel: () => void; onConfirm: () => void }) {
+  const R = S.app.resetMemo;
+  const panelRef = useRef<HTMLDivElement>(null);
+  const cancelRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!file) return;
+    const opener = document.activeElement as HTMLElement | null;
+    cancelRef.current?.focus();
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") { event.stopPropagation(); onCancel(); return; }
+      if (event.key !== "Tab") return;
+      const nodes = panelRef.current?.querySelectorAll<HTMLElement>("button");
+      if (!nodes || nodes.length === 0) return;
+      const first = nodes[0]!;
+      const last = nodes[nodes.length - 1]!;
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    };
+    document.addEventListener("keydown", onKeyDown, true);
+    return () => { document.removeEventListener("keydown", onKeyDown, true); opener?.focus?.(); };
+  }, [file, onCancel]);
+  if (!file) return null;
+  return (
+    <div className="glossary-overlay fixed inset-0 z-50 grid place-items-center p-4" onPointerDown={(event) => { if (event.target === event.currentTarget) onCancel(); }}>
+      <div ref={panelRef} role="alertdialog" aria-modal="true" aria-labelledby="reset-memo-title" aria-describedby="reset-memo-body" className="reset-memo relative w-full max-w-md p-4 sm:p-5">
+        <span className="reset-memo-stamp" aria-hidden="true">{R.stamp}</span>
+        <p className="desk-memo-label">{R.label}</p>
+        <h2 id="reset-memo-title" className="font-display text-2xl font-black uppercase leading-none">{R.title}</h2>
+        <p id="reset-memo-body" className="mt-2 text-sm font-semibold leading-relaxed">{R.body(file)}</p>
+        <div className="mt-4 flex flex-wrap gap-2">
+          <button ref={cancelRef} type="button" onClick={onCancel} className="reset-memo-btn reset-memo-keep">{R.cancel}</button>
+          <button type="button" onClick={onConfirm} className="reset-memo-btn reset-memo-clear">{R.confirm}</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function JourneyRail({ completedCases }: { completedCases: Set<string> }) {
   const J = S.journey;
   const done = J.stages.filter((stage) => completedCases.has(stage.caseId)).length;

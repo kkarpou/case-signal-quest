@@ -749,3 +749,58 @@
   top: auto;
   bottom: calc(100% + 0.5rem);
 }
+
+/* Οργανικό σημείωμα γραφείου για την εκκαθάριση φακέλου */
+.reset-memo {
+  background: color-mix(in oklab, var(--warning) 16%, var(--paper));
+  color: var(--paper-ink);
+  border: 1px solid color-mix(in oklab, var(--paper-ink) 45%, transparent);
+  box-shadow: 6px 8px 0 color-mix(in oklab, var(--paper-ink) 25%, transparent);
+  transform: rotate(-0.5deg);
+}
+.reset-memo::before {
+  content: "";
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  transform: translateX(-50%);
+  background: color-mix(in oklab, var(--alert) 80%, var(--paper-ink));
+  box-shadow: 0 2px 0 color-mix(in oklab, var(--paper-ink) 40%, transparent);
+}
+.reset-memo-stamp {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 1.1rem;
+  padding: 0.1rem 0.4rem;
+  border: 2px solid var(--alert);
+  color: var(--alert);
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.6rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transform: rotate(7deg);
+  opacity: 0.9;
+}
+.reset-memo-btn {
+  min-height: 2.75rem;
+  padding: 0.35rem 0.9rem;
+  border: 2px solid color-mix(in oklab, var(--paper-ink) 60%, transparent);
+  background: var(--paper);
+  color: var(--paper-ink);
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.reset-memo-btn:hover { background: color-mix(in oklab, var(--paper-ink) 10%, var(--paper)); }
+.reset-memo-btn:focus-visible { outline: 3px solid var(--signal); outline-offset: 2px; }
+.reset-memo-clear { border-color: var(--alert); color: var(--alert); }
+.reset-memo-clear:hover { background: color-mix(in oklab, var(--alert) 14%, var(--paper)); }
+@media (prefers-reduced-motion: reduce) {
+  .reset-memo { transform: none; }
+}

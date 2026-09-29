@@ -27,6 +27,16 @@ export const el = {
     themeToDark: "Ενεργοποίηση σκοτεινού θέματος",
     loading: "ΦΟΡΤΩΣΗ ΑΡΧΕΙΩΝ…",
     resetConfirm: "Να διαγραφεί όλη η πρόοδος της ΥΠΟΘΕΣΗΣ 01;",
+    resetMemo: {
+      label: "ΣΗΜΕΙΩΜΑ ΓΡΑΦΕΙΟΥ · ΠΡΩΤΟΚΟΛΛΟ",
+      title: "ΕΚΚΑΘΑΡΙΣΗ ΦΑΚΕΛΟΥ",
+      body: (file: string) =>
+        `Ζητάς εκκαθάριση του φακέλου ${file}. Θα βγουν από το αρχείο όλες οι αποφάσεις, οι σημειώσεις και τα ευρήματά σου για αυτή την υπόθεση. Η κίνηση δεν αναιρείται.`,
+      stamp: "ΜΗ ΑΝΑΣΤΡΕΨΙΜΟ",
+      cancel: "ΔΙΑΤΗΡΗΣΗ ΣΤΟΙΧΕΙΩΝ",
+      confirm: "ΕΚΚΑΘΑΡΙΣΗ ΦΑΚΕΛΟΥ",
+      case01: "ΥΠΟΘΕΣΗ 01",
+    },
   },
 
   team: {
@@ -84,6 +94,9 @@ export const el = {
     playContinue: "ΣΥΝΕΧΙΣΗ ΥΠΟΘΕΣΗΣ",
     playStart: "ΑΝΟΙΓΜΑ ΦΑΚΕΛΟΥ",
     reset: "ΕΠΑΝΑΦΟΡΑ",
+    folderOpen: (file: string) => `Άνοιγμα φακέλου: ${file}`,
+    folderClose: (file: string) => `Κλείσιμο φακέλου: ${file}`,
+    resetCase: (file: string) => `Εκκαθάριση προόδου: ${file}`,
     futureCasesTitle: "Μελλοντικές υποθέσεις",
     nextCaseMark: "ΕΠΟΜΕΝΟΣ ΦΑΚΕΛΟΣ",
     futureCases: [
