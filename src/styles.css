@@ -264,8 +264,9 @@
   .hub-fit .future-file-stack { display: none; }
 }
 @media (max-width: 639px) {
-  .hub-fit { overflow-y: auto; }
+  .hub-fit { overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; padding-bottom: calc(2rem + env(safe-area-inset-bottom)); }
   .hub-fit > .case-wall { height: auto; min-height: 100%; }
+  .hub-fit .future-file-stack, .hub-fit .wall-lower { overflow: visible; overscroll-behavior: auto; min-height: auto; }
   .wall-lower { flex: none; }
   .archive-folder-trigger { min-height: 4.5rem; }
   .archive-folder-trigger > span:last-child { align-items: flex-end; flex-direction: column; gap: .25rem; }
