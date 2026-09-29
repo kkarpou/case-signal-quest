@@ -9,7 +9,7 @@ export function decision(config: {
     id: config.id, eyebrow: `ΑΠΟΦΑΣΗ ${String(config.n).padStart(2, "0")}`, title: config.title,
     prompt: config.prompt, hint: config.hint, analyst: config.analyst, evidenceIds: [config.evidence.id],
     choices: [
-      { id: "bounded", label: config.correct, feedback: "Ακριβής και αναλογική κρίση: λες όσα στηρίζονται και κρατάς ορατό το όριο.", correct: true, delta: { evidence: 10, uncertainty: 7, source: 5 }, tags: config.tags },
+      { id: "bounded", label: config.correct, feedback: "Ακριβής και αναλογική κρίση: λες όσα στηρίζονται και κρατάς ορατό το όριο.", correct: true, delta: { evidence: 10, uncertainty: 7, source: 5 }, ...(config.tags ? { tags: config.tags } : {}) },
       { id: "leap", label: config.wrong[0], feedback: "Το συμπέρασμα προχωρά πιο μακριά από το διαθέσιμο τεκμήριο.", misconception: "inference-leap", delta: { evidence: -8, uncertainty: -6 } },
       { id: "dismiss", label: config.wrong[1], feedback: "Η επιφύλαξη δεν σημαίνει ότι αγνοούμε όσα ήδη επαληθεύονται.", misconception: "over-caution", delta: { evidence: -4, uncertainty: -5 } },
     ],
