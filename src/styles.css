@@ -244,7 +244,7 @@
   .member-photo { height: 2.9rem; border-width: 2px; }
   .team-roster { gap: .3rem; }
 }
-.hub-fit .future-file-stack { overflow: visible; }
+.hub-fit .future-file-stack { overflow-y: auto; overscroll-behavior: contain; padding-right: .15rem; }
 .hub-fit .sealed-file { overflow: hidden; }
 @media (min-width: 640px) and (max-height: 800px) {
   .hub-fit > .case-wall > .open-case-file { padding-block: .25rem; }
