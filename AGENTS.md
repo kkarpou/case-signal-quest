@@ -13,3 +13,4 @@
 - Store CASE 01 progress only in browser localStorage; the MVP is intentionally account-free and offline-capable.
 - Structure visual scenes as briefing, evidence, and verdict families instead of a repeated dashboard layout; this keeps the narrative identity primary.
 - Use Archivo Black for display text and IBM Plex Sans/Mono for Greek UI and metadata; this preserves editorial character with reliable Greek legibility.
+- Keep secondary Hub cases in a single-open, locally ephemeral archive accordion; this prevents status/action collisions without changing game progress.
