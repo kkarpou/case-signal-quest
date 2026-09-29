@@ -330,8 +330,8 @@
 @keyframes spike-pulse { 50% { filter: brightness(1.35); transform: scaleY(1.04); transform-origin: bottom; } }
 @keyframes signal-pulse { 50% { transform: scale(1.12); opacity: .65; } }
 @keyframes recommended-action-pulse {
-  0%, 100% { border-color: color-mix(in oklab, var(--go) 70%, var(--primary)); box-shadow: 0 0 0 0 color-mix(in oklab, var(--go) 20%, transparent); }
-  50% { border-color: var(--go); box-shadow: 0 0 0 5px color-mix(in oklab, var(--go) 32%, transparent); }
+  0%, 100% { border-color: color-mix(in oklab, var(--signal) 85%, var(--paper-ink)); box-shadow: 0 0 0 0 color-mix(in oklab, var(--signal) 40%, transparent); }
+  50% { border-color: var(--signal); box-shadow: 0 0 0 7px color-mix(in oklab, var(--signal) 50%, transparent), 0 0 20px color-mix(in oklab, var(--signal) 45%, transparent); }
 }
 
 .glossary-en { color: color-mix(in oklab, var(--paper-ink) 72%, var(--signal)); letter-spacing: .01em; }
