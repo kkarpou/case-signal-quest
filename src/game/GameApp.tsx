@@ -13,7 +13,10 @@ import { CaseRunner, initialProgress, loadProgress, type CaseProgress } from "./
 import { FaxOnMount, FolderStamp, GlossaryLinkContext, MarginaliaText } from "./organic";
 import { case02 } from "./cases/case02";
 import { case03 } from "./cases/case03";
-const playableCases: CaseDef[] = [case02, case03];
+import { case04 } from "./cases/case04";
+import { case05 } from "./cases/case05";
+import { case06 } from "./cases/case06";
+const playableCases: CaseDef[] = [case02, case03, case04, case05, case06];
 import type { CaseDef } from "./cases/types";
 
 const STORAGE_KEY = "the-signal-files-case-01";
