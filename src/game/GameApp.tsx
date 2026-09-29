@@ -186,9 +186,13 @@ export function GameApp() {
   };
 
   const reset = () => {
-    if (!window.confirm(S.app.resetConfirm)) return;
-    window.localStorage.removeItem(STORAGE_KEY);
-    setState(initialState); setView("hub");
+    setPendingReset({
+      file: S.app.resetMemo.case01,
+      confirm: () => {
+        window.localStorage.removeItem(STORAGE_KEY);
+        setState(initialState); setView("hub");
+      },
+    });
   };
 
   const openRunner = (def: CaseDef) => {
@@ -204,11 +208,15 @@ export function GameApp() {
   };
 
   const resetCase = (def: CaseDef) => {
-    if (!window.confirm(`Να διαγραφεί όλη η πρόοδος της ${def.number};`)) return;
-    window.localStorage.removeItem(def.storageKey);
-    setCaseProgress((prev) => ({ ...prev, [def.id]: initialProgress }));
-    setRunnerProgress(initialProgress);
-    setView("hub");
+    setPendingReset({
+      file: `${def.number} — ${def.title}`,
+      confirm: () => {
+        window.localStorage.removeItem(def.storageKey);
+        setCaseProgress((prev) => ({ ...prev, [def.id]: initialProgress }));
+        setRunnerProgress(initialProgress);
+        setView("hub");
+      },
+    });
   };
 
   // Ποιες υποθέσεις έχει ολοκληρώσει ο παίκτης (ξεκλειδώνουν παραδείγματα γλωσσαρίου και σήματα).
