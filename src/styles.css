@@ -772,8 +772,8 @@
 }
 .reset-memo-stamp {
   position: absolute;
-  right: 0.6rem;
-  top: 0.9rem;
+  right: 0.75rem;
+  bottom: 1.1rem;
   padding: 0.1rem 0.4rem;
   border: 2px solid var(--alert);
   color: var(--alert);
