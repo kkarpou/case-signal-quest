@@ -412,7 +412,8 @@ function BriefingDialog({ open, onClose }: { open: boolean; onClose: () => void 
   useEffect(() => {
     if (!open) return;
     const opener = document.activeElement as HTMLElement | null;
-    confirmRef.current?.focus();
+    confirmRef.current?.focus({ preventScroll: true });
+    panelRef.current?.parentElement?.scrollTo({ top: 0 });
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") { event.stopPropagation(); onClose(); return; }
       if (event.key !== "Tab") return;
