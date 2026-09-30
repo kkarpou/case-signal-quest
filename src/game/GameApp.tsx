@@ -429,9 +429,9 @@ function BriefingDialog({ open, onClose }: { open: boolean; onClose: () => void 
   }, [open, onClose]);
   if (!open) return null;
   const block = (title: string, items: readonly string[]) => (
-    <section className="mt-3">
+    <section className="mt-2">
       <h3 className="font-mono text-[11px] font-black uppercase tracking-wide text-signal">{title}</h3>
-      <ul className="mt-1 grid gap-1">
+      <ul className="mt-0.5 grid gap-0.5 sm:grid-cols-2 sm:gap-x-4">
         {items.map((item) => (
           <li key={item} className="briefing-item pl-4 text-[13px] font-semibold leading-snug">{item}</li>
         ))}
@@ -440,7 +440,7 @@ function BriefingDialog({ open, onClose }: { open: boolean; onClose: () => void 
   );
   return (
     <div className="glossary-overlay fixed inset-0 z-50 flex items-start justify-center overflow-y-auto p-3 sm:p-4" onPointerDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
-      <div ref={panelRef} role="dialog" aria-modal="true" aria-labelledby="briefing-title" aria-describedby="briefing-lead" className="briefing-memo relative my-auto w-full max-w-xl p-4 sm:p-6">
+      <div ref={panelRef} role="dialog" aria-modal="true" aria-labelledby="briefing-title" aria-describedby="briefing-lead" className="briefing-memo relative my-auto w-full max-w-xl p-4 sm:max-w-3xl sm:p-5">
         <span className="briefing-stamp" aria-hidden="true">{B.stamp}</span>
         <p className="desk-memo-label">{B.label}</p>
         <div className="mt-1 grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3">
