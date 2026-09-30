@@ -386,6 +386,67 @@ function ResetMemoDialog({ file, onCancel, onConfirm }: { file: string | null; o
   );
 }
 
+/** Ενημέρωση ένταξης από τη Helen: τι κάνει ο παίκτης και πώς δουλεύει η οθόνη. */
+function BriefingDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const B = S.app.briefing;
+  const panelRef = useRef<HTMLDivElement>(null);
+  const confirmRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const opener = document.activeElement as HTMLElement | null;
+    confirmRef.current?.focus();
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") { event.stopPropagation(); onClose(); return; }
+      if (event.key !== "Tab") return;
+      const nodes = panelRef.current?.querySelectorAll<HTMLElement>("button");
+      if (!nodes || nodes.length === 0) return;
+      const first = nodes[0]!;
+      const last = nodes[nodes.length - 1]!;
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    };
+    document.addEventListener("keydown", onKeyDown, true);
+    return () => { document.removeEventListener("keydown", onKeyDown, true); opener?.focus?.(); };
+  }, [open, onClose]);
+  if (!open) return null;
+  const block = (title: string, items: readonly string[]) => (
+    <section className="mt-3">
+      <h3 className="font-mono text-[11px] font-black uppercase tracking-wide text-signal">{title}</h3>
+      <ul className="mt-1 grid gap-1">
+        {items.map((item) => (
+          <li key={item} className="briefing-item pl-4 text-[13px] font-semibold leading-snug">{item}</li>
+        ))}
+      </ul>
+    </section>
+  );
+  return (
+    <div className="glossary-overlay fixed inset-0 z-50 grid place-items-center overflow-y-auto p-3 sm:p-4" onPointerDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
+      <div ref={panelRef} role="dialog" aria-modal="true" aria-labelledby="briefing-title" aria-describedby="briefing-lead" className="briefing-memo relative my-auto w-full max-w-xl p-4 sm:p-6">
+        <span className="briefing-stamp" aria-hidden="true">{B.stamp}</span>
+        <p className="desk-memo-label">{B.label}</p>
+        <div className="mt-1 grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3">
+          <span className="briefing-photo block shrink-0 overflow-hidden border-2 border-border">
+            <img src={teamLeadArt} alt={B.photoAlt} width={737} height={502} className="block size-full object-cover" style={{ objectPosition: "50% 25%" }} />
+          </span>
+          <span className="min-w-0">
+            <h2 id="briefing-title" className="font-display text-2xl font-black uppercase leading-none sm:text-3xl">{B.title}</h2>
+            <span className="mt-1 block font-mono text-[11px] font-black uppercase text-signal">{B.from}</span>
+          </span>
+        </div>
+        <p id="briefing-lead" className="mt-3 text-sm font-semibold leading-relaxed">{B.lead}</p>
+        {block(B.missionTitle, B.mission)}
+        {block(B.rulesTitle, B.rules)}
+        {block(B.uiTitle, B.ui)}
+        <p className="mt-3 font-mono text-[11px] font-bold uppercase leading-snug text-muted-foreground">{B.note}</p>
+        <div className="mt-4">
+          <GameButton ref={confirmRef} className="w-full justify-center recommended" onClick={onClose} icon={<Check size={18} />}>{B.confirm}</GameButton>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
 function JourneyRail({ completedCases }: { completedCases: Set<string> }) {
   const J = S.journey;
   const done = J.stages.filter((stage) => completedCases.has(stage.caseId)).length;
