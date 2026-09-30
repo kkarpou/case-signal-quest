@@ -837,7 +837,7 @@
   transform: rotate(6deg);
   opacity: 0.9;
 }
-.briefing-photo { width: 4.5rem; height: 4.5rem; }
+.briefing-photo { width: 3.5rem; height: 3.5rem; }
 @media (min-width: 640px) {
   .briefing-photo { width: 5rem; height: 5rem; }
 }
