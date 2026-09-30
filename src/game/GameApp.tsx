@@ -22,7 +22,7 @@ import type { CaseDef } from "./cases/types";
 const STORAGE_KEY = "the-signal-files-case-01";
 const THEME_KEY = "the-signal-files-theme";
 const TOTAL_ACTS = 16;
-const teamPortraits: Record<string, string> = { MA: teamMaraArt, LE: teamLeoArt, NO: teamNoorArt, UL: teamLeadArt };
+const teamPortraits: Record<string, string> = { LZ: teamMaraArt, CH: teamLeoArt, KA: teamNoorArt, UL: teamLeadArt };
 
 type GameState = {
   sourceVerified: boolean;
