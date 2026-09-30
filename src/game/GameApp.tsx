@@ -100,8 +100,15 @@ export function GameApp() {
     }
     if (storedTheme === "light") setTheme("light");
     setCaseProgress(Object.fromEntries(playableCases.map((c) => [c.id, loadProgress(c.storageKey)])));
+    if (!window.localStorage.getItem(BRIEFING_KEY)) setBriefingOpen(true);
     setHydrated(true);
   }, []);
+
+  const closeBriefing = useCallback(() => {
+    setBriefingOpen(false);
+    window.localStorage.setItem(BRIEFING_KEY, "1");
+  }, []);
+
 
   useEffect(() => {
     if (!hydrated) return;
