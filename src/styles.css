@@ -824,8 +824,8 @@
 }
 .briefing-stamp {
   position: absolute;
-  right: 0.6rem;
-  top: 0.9rem;
+  right: 0.8rem;
+  bottom: 0.7rem;
   padding: 0.1rem 0.4rem;
   border: 2px solid var(--signal);
   color: var(--signal);
