@@ -11,7 +11,7 @@ import { FaxRibbon, FolderStamp, MarginaliaText } from "./organic";
 import { skillLabels, type SkillKey } from "./game-data";
 import type { Analyst, CaseChoice, CaseDecision, CaseDef, EvidenceCard } from "./cases/types";
 
-const teamPortraits: Record<string, string> = { MA: teamMaraArt, LE: teamLeoArt, NO: teamNoorArt, UL: teamLeadArt };
+const teamPortraits: Record<string, string> = { LZ: teamMaraArt, CH: teamLeoArt, KA: teamNoorArt, UL: teamLeadArt };
 const team: Record<Analyst, { name: string; role: string; initials: string; focus: string }> = {
   lead: S.team.lead, mara: S.team.mara, leo: S.team.leo, noor: S.team.noor,
 };
