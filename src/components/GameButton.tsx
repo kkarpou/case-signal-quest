@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes, ReactNode } from "react";
+import type { ButtonHTMLAttributes, ReactNode, Ref } from "react";
 import { cn } from "../lib/utils";
 
 type Variant = "primary" | "secondary" | "ghost" | "danger" | "option";
@@ -6,7 +6,9 @@ type Variant = "primary" | "secondary" | "ghost" | "danger" | "option";
 type GameButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: Variant;
   icon?: ReactNode;
+  ref?: Ref<HTMLButtonElement>;
 };
+
 
 const variants: Record<Variant, string> = {
   primary: "recommended-action border-signal bg-paper text-paper-ink hover:bg-paper/90 hover:border-signal",
