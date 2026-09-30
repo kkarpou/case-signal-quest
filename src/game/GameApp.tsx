@@ -252,10 +252,15 @@ export function GameApp() {
             <span className="status-stamp hidden sm:inline-flex">{view === "hub" ? S.app.statusSeason : S.app.statusCase}</span>
             {view === "case" && <span className="act-counter border-r border-border px-2 font-mono text-xs font-black text-signal">{String(state.currentAct + 1).padStart(2, "0")} / {TOTAL_ACTS}</span>}
             {view === "runner" && runnerDef && <span className="act-counter border-r border-border px-2 font-mono text-xs font-black text-signal">{String(Math.min(runnerProgress.currentScene, runnerDef.scenes.length - 1) + 1).padStart(2, "0")} / {runnerDef.scenes.length}</span>}
+            <GameButton variant="ghost" className="help-button min-h-11 min-w-11 gap-1.5 px-2" onClick={() => setBriefingOpen(true)} aria-label={S.app.briefing.open} title={S.app.briefing.open} aria-haspopup="dialog" aria-expanded={briefingOpen}>
+              <ClipboardList size={22} aria-hidden="true" />
+              <span className="hidden font-mono text-[11px] font-black uppercase lg:inline">{S.app.briefing.short}</span>
+            </GameButton>
             <GameButton variant="ghost" className="help-button min-h-11 min-w-11 gap-1.5 px-2" onClick={() => setGlossaryOpen(true)} aria-label={S.glossary.open} title={S.glossary.open} aria-haspopup="dialog" aria-expanded={glossaryOpen}>
               <CircleHelp size={22} aria-hidden="true" />
               <span className="hidden font-mono text-[11px] font-black uppercase lg:inline">{S.glossary.short}</span>
             </GameButton>
+
 
             <GameButton variant="ghost" className="min-h-11 min-w-11 px-2" onClick={() => setTheme(theme === "dark" ? "light" : "dark")} aria-label={theme === "dark" ? S.app.themeToLight : S.app.themeToDark}>
               {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
