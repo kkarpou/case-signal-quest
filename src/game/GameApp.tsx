@@ -438,7 +438,7 @@ function BriefingDialog({ open, onClose }: { open: boolean; onClose: () => void 
     </section>
   );
   return (
-    <div className="glossary-overlay fixed inset-0 z-50 grid place-items-center overflow-y-auto p-3 sm:p-4" onPointerDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
+    <div className="glossary-overlay fixed inset-0 z-50 flex items-start justify-center overflow-y-auto p-3 sm:p-4" onPointerDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
       <div ref={panelRef} role="dialog" aria-modal="true" aria-labelledby="briefing-title" aria-describedby="briefing-lead" className="briefing-memo relative my-auto w-full max-w-xl p-4 sm:p-6">
         <span className="briefing-stamp" aria-hidden="true">{B.stamp}</span>
         <p className="desk-memo-label">{B.label}</p>
