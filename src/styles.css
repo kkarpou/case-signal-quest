@@ -274,6 +274,11 @@
   .archive-folder-actions { display: grid; grid-template-columns: minmax(0,1fr) auto; }
   .archive-folder-actions .game-button { min-width: 0; padding-inline: .65rem; }
   .locked-file-label { display: none; }
+  /* Στο κινητό οι κάρτες ομάδας μπαίνουν κάτω από τους φακέλους με μεγαλύτερα πορτρέτα. */
+  .team-folder { overflow: visible; }
+  .team-roster { overflow: visible; gap: .5rem; }
+  .member-photo { height: 9.5rem; }
+  .team-card .team-example { display: -webkit-box; }
 }
 @media (prefers-reduced-motion: reduce) {
   .archive-folder, .archive-chevron { transition: none; }
