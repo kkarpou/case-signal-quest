@@ -439,7 +439,7 @@ function BriefingDialog({ open, onClose }: { open: boolean; onClose: () => void 
         {block(B.uiTitle, B.ui)}
         <p className="mt-3 font-mono text-[11px] font-bold uppercase leading-snug text-muted-foreground">{B.note}</p>
         <div className="mt-4">
-          <GameButton ref={confirmRef} className="w-full justify-center recommended" onClick={onClose} icon={<Check size={18} />}>{B.confirm}</GameButton>
+          <GameButton ref={confirmRef} className="w-full justify-center" onClick={onClose} icon={<Check size={18} />}>{B.confirm}</GameButton>
         </div>
       </div>
     </div>
