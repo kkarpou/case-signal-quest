@@ -213,7 +213,7 @@
 .locked-file-label { color: var(--alert); font: 900 .58rem/1 var(--font-sans); letter-spacing: 0; transform: rotate(-3deg); }
 .team-pin { color: var(--paper-ink); transform: rotate(.35deg); box-shadow: 6px 6px 0 color-mix(in oklab, var(--warning) 45%, transparent); }
 .team-folder-tab { position: absolute; left: .9rem; top: -2px; padding: .15rem .8rem .3rem; color: var(--paper); background: var(--paper-ink); font-size: .625rem; font-weight: 900; letter-spacing: .06em; clip-path: polygon(0 0, 100% 0, calc(100% - .45rem) 100%, .45rem 100%); }
-.member-photo { width: 100%; height: 3.5rem; border: 3px solid var(--paper); outline: 1px solid color-mix(in oklab, var(--paper-ink) 35%, transparent); background: var(--paper); box-shadow: 2px 2px 0 color-mix(in oklab, var(--paper-ink) 22%, transparent); overflow: hidden; }
+.member-photo { width: 100%; height: 4.5rem; border: 3px solid var(--paper); outline: 1px solid color-mix(in oklab, var(--paper-ink) 35%, transparent); background: var(--paper); box-shadow: 2px 2px 0 color-mix(in oklab, var(--paper-ink) 22%, transparent); overflow: hidden; }
 .member-photo::before { content: ""; position: absolute; z-index: 2; left: 50%; top: -.3rem; width: 2.2rem; height: .6rem; background: color-mix(in oklab, var(--warning) 70%, transparent); transform: translateX(-50%) rotate(-4deg); }
 .member-photo img { filter: grayscale(.25) contrast(1.08); }
 .team-roster li:nth-child(odd) .member-photo { transform: rotate(-1.6deg); }
