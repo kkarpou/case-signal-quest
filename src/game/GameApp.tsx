@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode, type RefObject } from "react";
-import { ArrowLeft, ArrowRight, BarChart3, Check, ChevronDown, CircleHelp, FileSearch, Fingerprint, Globe2, LockKeyhole, Moon, Network, Play, Radio, RotateCcw, Search, ShieldCheck, Sun, TimerReset, TriangleAlert } from "lucide-react";
+import { ArrowLeft, ArrowRight, BarChart3, Check, ChevronDown, CircleHelp, ClipboardList, FileSearch, Fingerprint, Globe2, LockKeyhole, Moon, Network, Play, Radio, RotateCcw, Search, ShieldCheck, Sun, TimerReset, TriangleAlert } from "lucide-react";
 import { GameButton } from "../components/GameButton";
 import keyArt from "../assets/signal-files-keyart.jpg";
 import teamArt from "../assets/signal-team.jpg";
