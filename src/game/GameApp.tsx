@@ -285,7 +285,9 @@ export function GameApp() {
           />
         )}
       </main>
+      <BriefingDialog open={briefingOpen} onClose={closeBriefing} />
       <Glossary open={glossaryOpen} onClose={() => setGlossaryOpen(false)} completedCases={completedCases} />
+
       <MemberDialog initials={memberOpen} onClose={() => setMemberOpen(null)} />
       <ResetMemoDialog
         file={pendingReset?.file ?? null}
