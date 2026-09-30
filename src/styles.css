@@ -806,6 +806,55 @@
 .reset-memo-btn:focus-visible { outline: 3px solid var(--signal); outline-offset: 2px; }
 .reset-memo-clear { border-color: var(--alert); color: var(--alert); }
 .reset-memo-clear:hover { background: color-mix(in oklab, var(--alert) 14%, var(--paper)); }
-@media (prefers-reduced-motion: reduce) {
-  .reset-memo { transform: none; }
+
+/* Σημείωμα ένταξης (briefing) από την επικεφαλής */
+.briefing-memo {
+  background: var(--paper);
+  color: var(--paper-ink);
+  border: 1px solid color-mix(in oklab, var(--paper-ink) 45%, transparent);
+  box-shadow: 8px 10px 0 color-mix(in oklab, var(--paper-ink) 28%, transparent);
+  transform: rotate(-0.3deg);
 }
+.briefing-memo::before {
+  content: "";
+  position: absolute;
+  inset: 0.35rem;
+  border: 1px dashed color-mix(in oklab, var(--paper-ink) 30%, transparent);
+  pointer-events: none;
+}
+.briefing-stamp {
+  position: absolute;
+  right: 0.6rem;
+  top: 0.9rem;
+  padding: 0.1rem 0.4rem;
+  border: 2px solid var(--signal);
+  color: var(--signal);
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.58rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transform: rotate(6deg);
+  opacity: 0.9;
+}
+.briefing-photo { width: 4.5rem; height: 4.5rem; }
+@media (min-width: 640px) {
+  .briefing-photo { width: 6rem; height: 6rem; }
+}
+.briefing-item { position: relative; }
+.briefing-item::before {
+  content: "›";
+  position: absolute;
+  left: 0.15rem;
+  font-weight: 900;
+  color: var(--signal);
+}
+.briefing-memo .desk-memo-label,
+.briefing-memo .text-muted-foreground { color: color-mix(in oklab, var(--paper-ink) 70%, transparent); }
+.briefing-memo .text-signal { color: color-mix(in oklab, var(--signal) 78%, var(--paper-ink)); }
+
+@media (prefers-reduced-motion: reduce) {
+  .reset-memo,
+  .briefing-memo { transform: none; }
+}
+
