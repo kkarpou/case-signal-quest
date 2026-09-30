@@ -452,12 +452,12 @@ function BriefingDialog({ open, onClose }: { open: boolean; onClose: () => void 
             <span className="mt-1 block font-mono text-[11px] font-black uppercase text-signal">{B.from}</span>
           </span>
         </div>
-        <p id="briefing-lead" className="mt-3 text-sm font-semibold leading-relaxed">{B.lead}</p>
+        <p id="briefing-lead" className="mt-2 text-sm font-semibold leading-snug">{B.lead}</p>
         {block(B.missionTitle, B.mission)}
         {block(B.rulesTitle, B.rules)}
         {block(B.uiTitle, B.ui)}
-        <p className="mt-3 font-mono text-[11px] font-bold uppercase leading-snug text-muted-foreground">{B.note}</p>
-        <div className="mt-4">
+        <p className="mt-2 font-mono text-[11px] font-bold uppercase leading-snug text-muted-foreground">{B.note}</p>
+        <div className="mt-3">
           <GameButton ref={confirmRef} className="w-full justify-center" onClick={onClose} icon={<Check size={18} />}>{B.confirm}</GameButton>
         </div>
       </div>

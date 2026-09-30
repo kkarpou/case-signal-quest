@@ -839,7 +839,7 @@
 }
 .briefing-photo { width: 4.5rem; height: 4.5rem; }
 @media (min-width: 640px) {
-  .briefing-photo { width: 6rem; height: 6rem; }
+  .briefing-photo { width: 5rem; height: 5rem; }
 }
 .briefing-item { position: relative; }
 .briefing-item::before {
