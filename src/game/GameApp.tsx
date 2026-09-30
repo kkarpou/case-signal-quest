@@ -87,6 +87,8 @@ export function GameApp() {
   const [glossaryOpen, setGlossaryOpen] = useState(false);
   const [memberOpen, setMemberOpen] = useState<string | null>(null);
   const [pendingReset, setPendingReset] = useState<{ file: string; confirm: () => void } | null>(null);
+  const [briefingOpen, setBriefingOpen] = useState(false);
+
   const choiceRegionRef = useRef<HTMLDivElement>(null);
   const openGlossary = useCallback(() => setGlossaryOpen(true), []);
 
