@@ -849,6 +849,12 @@
   font-weight: 900;
   color: var(--signal);
 }
+.briefing-nav { position: relative; z-index: 1; }
+.briefing-step { animation: briefing-page-in 180ms ease-out; }
+@keyframes briefing-page-in {
+  from { opacity: 0; transform: translateX(0.75rem); }
+  to { opacity: 1; transform: translateX(0); }
+}
 .briefing-memo .desk-memo-label,
 .briefing-memo .text-muted-foreground { color: color-mix(in oklab, var(--paper-ink) 70%, transparent); }
 .briefing-memo .text-signal { color: color-mix(in oklab, var(--signal) 78%, var(--paper-ink)); }
@@ -856,5 +862,6 @@
 @media (prefers-reduced-motion: reduce) {
   .reset-memo,
   .briefing-memo { transform: none; }
+  .briefing-step { animation: none; }
 }
 
