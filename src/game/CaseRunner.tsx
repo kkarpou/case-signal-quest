@@ -8,6 +8,7 @@ import teamLeoArt from "../assets/team-leo.jpg";
 import teamNoorArt from "../assets/team-noor.jpg";
 import { strings as S } from "./strings";
 import { FaxRibbon, FolderStamp, MarginaliaText } from "./organic";
+import { Case04VerificationReveal, Case04Visual } from "./Case04Visual";
 import { Case05Visual } from "./Case05Visual";
 import { skillLabels, type SkillKey } from "./game-data";
 import type { Analyst, CaseChoice, CaseDecision, CaseDef, EvidenceCard } from "./cases/types";
@@ -44,6 +45,20 @@ export function loadProgress(storageKey: string): CaseProgress {
 }
 
 function clamp(value: number) { return Math.max(0, Math.min(100, value)); }
+
+function deriveSkillScores(def: CaseDef, decisions: Record<string, string>) {
+  const scores = { ...initialProgress.skillScores };
+  for (const scene of def.scenes) {
+    if (scene.kind !== "decision") continue;
+    const selectedId = decisions[scene.decision.id];
+    const choice = scene.decision.choices.find((item) => item.id === selectedId);
+    if (!choice) continue;
+    for (const [key, value] of Object.entries(choice.delta)) {
+      scores[key as SkillKey] = clamp(scores[key as SkillKey] + (value ?? 0));
+    }
+  }
+  return scores;
+}
 
 export function CaseRunner({ def, progress, onProgress, onHub }: {
   def: CaseDef; progress: CaseProgress; onProgress: (next: CaseProgress) => void; onHub: () => void;
@@ -85,14 +100,13 @@ export function CaseRunner({ def, progress, onProgress, onHub }: {
     const choice = decision.choices.find((item) => item.id === choiceId);
     if (!choice) return;
     const previous = progress.decisions[decision.id];
-    const scores = { ...progress.skillScores };
-    Object.entries(choice.delta).forEach(([key, value]) => { scores[key as SkillKey] = clamp(scores[key as SkillKey] + (value ?? 0)); });
+    const decisions = { ...progress.decisions, [decision.id]: choiceId };
     onProgress({
       ...progress,
-      decisions: { ...progress.decisions, [decision.id]: choiceId },
+      decisions,
       revisedDecisions: previous && previous !== choiceId && !progress.revisedDecisions.includes(decision.id)
         ? [...progress.revisedDecisions, decision.id] : progress.revisedDecisions,
-      skillScores: scores,
+      skillScores: deriveSkillScores(def, decisions),
     });
     setSelected(choiceId); setRevising(false);
   };
@@ -201,7 +215,7 @@ export function CaseRunner({ def, progress, onProgress, onHub }: {
         {showHint && !selected && <div className="hint-panel mt-2 border-l-4 border-signal bg-accent p-3 text-sm"><strong>{S.decisionUi.hintLead}</strong> {decision.hint}</div>}
       </div>
       <aside className={selected ? "decision-sidecar min-w-0" : "decision-sidecar desktop-evidence min-w-0"}>
-        {selected && choice ? <FeedbackCard decision={decision} choice={choice} showWhy={showWhy} showStamp={stamped} /> : card ? <EvidenceView card={card} /> : null}
+        {selected && choice ? <FeedbackCard decision={decision} choice={choice} showWhy={showWhy} showStamp={stamped} caseId={def.id} /> : card ? <EvidenceView card={card} /> : null}
       </aside>
     </div>
     {selected && <Actions>
@@ -231,11 +245,15 @@ function AnalystTag({ who }: { who: Analyst }) {
 }
 
 function EvidenceView({ card }: { card: EvidenceCard }) {
+  const hasCase04Visual = card.id.startsWith("E4-");
   const hasCase05Visual = card.id.startsWith("E5-");
   return <article className="evidence-card signature-evidence">
     <div className="evidence-meta"><FileSearch className="text-signal" size={20} /><span className="font-mono">{card.kicker}</span></div>
     <h2 className="mt-1 font-display text-lg font-black leading-tight lg:text-2xl">{card.title}</h2>
-    {hasCase05Visual ? <div className="case05-evidence-main">
+    {hasCase04Visual ? <div className="case04-evidence-main">
+      <Case04Visual evidenceId={card.id} />
+      <ul className="case04-observations">{card.lines.map((line, index) => <li key={line} className="case04-observation"><span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span><span className="min-w-0"><MarginaliaText text={line} /></span></li>)}</ul>
+    </div> : hasCase05Visual ? <div className="case05-evidence-main">
       <Case05Visual evidenceId={card.id} />
       <ul className="case05-observations">{card.lines.map((line, index) => <li key={line} className="case05-observation"><span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span><span className="min-w-0"><MarginaliaText text={line} /></span></li>)}</ul>
     </div> : <ul className="mt-2 grid gap-1.5 text-[12px] leading-snug lg:text-sm">{card.lines.map((line) => <li key={line} className="flex gap-2"><span className="mt-1.5 size-1.5 shrink-0 bg-signal" /><span className="min-w-0"><MarginaliaText text={line} /></span></li>)}</ul>}
@@ -244,7 +262,7 @@ function EvidenceView({ card }: { card: EvidenceCard }) {
   </article>;
 }
 
-function FeedbackCard({ decision, choice, showWhy, showStamp }: { decision: CaseDecision; choice: CaseChoice; showWhy: boolean; showStamp: boolean }) {
+function FeedbackCard({ decision, choice, showWhy, showStamp, caseId }: { decision: CaseDecision; choice: CaseChoice; showWhy: boolean; showStamp: boolean; caseId: string }) {
   return <article className={`feedback-card feedback-reveal verdict-board ${choice.correct ? "feedback-strong border-signal" : "feedback-caution border-warning"}`} aria-live="polite">
     <FolderStamp show={showStamp} />
     <div className="verdict-heading"><span className={`${choice.correct ? "stamp" : "stamp-warning"} verdict-stamp`}>{choice.correct ? S.feedback.strong : S.feedback.premature}</span></div>
@@ -253,6 +271,7 @@ function FeedbackCard({ decision, choice, showWhy, showStamp }: { decision: Case
     <Row title={S.feedback.evidence} text={decision.evidence} icon={<Search size={18} />} />
     <Row title={S.feedback.cannot} text={decision.cannot} icon={<TriangleAlert size={18} />} />
     <Row title={S.feedback.principle} text={decision.principle} icon={<ShieldCheck size={18} />} strong />
+    {caseId === "case04" && decision.id === "voice" && <Case04VerificationReveal playerVerified={choice.correct === true} />}
     {showWhy && <div className="analyst-note mt-4 border-t-2 border-dashed border-border pt-4"><h3 className="font-mono text-xs font-black uppercase text-signal">{S.feedback.whyTitle}</h3><p className="mt-2 text-sm leading-relaxed text-muted-foreground">{decision.why}</p></div>}
   </article>;
 }
