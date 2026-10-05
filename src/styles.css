@@ -918,7 +918,7 @@
 
 /* Keep the complete evidence sheet visible on common laptop-height screens. */
 @media (min-width: 640px) and (max-height: 760px) {
-  .decision-sidecar .evidence-card:has(.case05-figure) { padding: .65rem; }
+  .evidence-card:has(.case05-figure) { padding: .65rem; }
   .evidence-card:has(.case05-figure) .case05-evidence-main {
     grid-template-columns: minmax(0, 1.18fr) minmax(10rem, .82fr);
     align-items: center;
@@ -926,24 +926,18 @@
     margin-top: .4rem;
   }
   .evidence-card:has(.case05-figure) .case05-observations { margin-top: 0; }
-  .decision-sidecar .case05-figure,
-  .scene-evidence .case05-figure { margin-top: 0; }
-  .decision-sidecar .case05-figure img,
-  .decision-sidecar .case05-figure[data-aspect="tall"] img,
-  .scene-evidence .case05-figure img,
-  .scene-evidence .case05-figure[data-aspect="tall"] img {
+  .evidence-card:has(.case05-figure) .case05-figure { margin-top: 0; }
+  .evidence-card:has(.case05-figure) .case05-figure img,
+  .evidence-card:has(.case05-figure) .case05-figure[data-aspect="tall"] img {
     width: 100%;
-    height: min(31svh, 13rem);
+    height: min(27svh, 11rem);
     object-fit: contain;
   }
-  .decision-sidecar .case05-visual-controls { margin-top: .35rem; }
-  .decision-sidecar .case05-visual-controls > button,
-  .decision-sidecar .case05-segmented button { min-height: 2.25rem; }
-  .decision-sidecar .case05-observation,
-  .scene-evidence .case05-observation { gap: .4rem; font-size: .68rem; line-height: 1.25; }
-  .decision-sidecar .evidence-card > table { margin-top: .4rem; }
-  .scene-evidence .evidence-card:has(.case05-figure) { padding: .65rem; }
-  .scene-evidence .evidence-card:has(.case05-figure) > table { margin-top: .4rem; }
+  .evidence-card:has(.case05-figure) .case05-visual-controls { margin-top: .35rem; }
+  .evidence-card:has(.case05-figure) .case05-visual-controls > button,
+  .evidence-card:has(.case05-figure) .case05-segmented button { min-height: 2.25rem; }
+  .evidence-card:has(.case05-figure) .case05-observation { gap: .4rem; font-size: .68rem; line-height: 1.25; }
+  .evidence-card:has(.case05-figure) > table { margin-top: .4rem; }
 }
 
 @media (max-width: 639px) {
