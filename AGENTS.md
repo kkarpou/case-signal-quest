@@ -17,3 +17,4 @@
 - Author Cases 02–06 as typed CaseDef data with independent versioned localStorage keys; this keeps one runner consistent while isolating progress.
 - Derive glossary unlocked examples and Hub journey badges from a single completedCases set computed from stored progress; this keeps rewards in sync without duplicating progress state.
 - Present the HELEN briefing as a four-step in-world sequence; this keeps onboarding text large and readable without scrolling.
+- Render Case 05 statistical evidence through the supplied SVG figures plus adjacent HTML tables and accessible zoom/reveal controls; this preserves exact plotted data and methodological qualifications.

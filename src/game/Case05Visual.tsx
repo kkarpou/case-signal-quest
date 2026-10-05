@@ -62,13 +62,6 @@ export function Case05Visual({ evidenceId }: { evidenceId: string }) {
   const closeRef = useRef<HTMLButtonElement>(null);
   const openerRef = useRef<HTMLButtonElement>(null);
 
-  if (!isCase05VisualId(evidenceId)) return null;
-  const visual = visuals[evidenceId];
-  const isToggle = evidenceId === "E5-E";
-  const isReveal = evidenceId === "E5-A" || evidenceId === "E5-F";
-  const src = alternate && visual.revealSrc ? visual.revealSrc : visual.src;
-  const alt = alternate && visual.revealAlt ? visual.revealAlt : visual.alt;
-
   useEffect(() => {
     if (!expanded) return;
     const previousOverflow = document.body.style.overflow;
@@ -96,6 +89,13 @@ export function Case05Visual({ evidenceId }: { evidenceId: string }) {
       openerRef.current?.focus({ preventScroll: true });
     };
   }, [expanded]);
+
+  if (!isCase05VisualId(evidenceId)) return null;
+  const visual = visuals[evidenceId];
+  const isToggle = evidenceId === "E5-E";
+  const isReveal = evidenceId === "E5-A" || evidenceId === "E5-F";
+  const src = alternate && visual.revealSrc ? visual.revealSrc : visual.src;
+  const alt = alternate && visual.revealAlt ? visual.revealAlt : visual.alt;
 
   const controls = (
     <div className="case05-visual-controls">

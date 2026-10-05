@@ -28,8 +28,6 @@ export type EvidenceCard = {
   lines: string[];
   /** Προαιρετικός πίνακας με προσβάσιμα δεδομένα (ΥΠΟΘΕΣΗ 05). */
   table?: { head: string[]; rows: string[][] };
-  /** Προαιρετικό διάγραμμα ράβδων με ισοδύναμο πίνακα. */
-  chart?: { unit: string; baselineNote: string; bars: { label: string; value: number }[] };
   note?: string;
 };
 
