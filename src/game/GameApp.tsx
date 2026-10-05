@@ -437,9 +437,9 @@ function BriefingDialog({ open, onClose }: { open: boolean; onClose: () => void 
     };
     document.addEventListener("keydown", onKeyDown, true);
     return () => { document.removeEventListener("keydown", onKeyDown, true); opener?.focus?.(); };
-  }, [open, onClose, steps.length]);
+  }, [open, onClose]);
   if (!open) return null;
-  const currentStep = steps[step];
+  const currentStep = steps[step] ?? { title: B.welcomeTitle, kind: "welcome" as const };
   return (
     <div className="glossary-overlay fixed inset-0 z-50 flex items-start justify-center overflow-y-auto p-3 sm:p-4" onPointerDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
       <div ref={panelRef} role="dialog" aria-modal="true" aria-labelledby="briefing-step-title" aria-describedby="briefing-step-content" className="briefing-memo relative my-auto flex min-h-[31rem] w-full max-w-xl flex-col p-4 sm:min-h-[30rem] sm:max-w-3xl sm:p-6">
