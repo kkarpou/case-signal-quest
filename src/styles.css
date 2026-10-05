@@ -912,10 +912,27 @@
   .case05-figure[data-aspect="tall"] img { max-height: 34rem; }
 }
 
+/* Keep the complete evidence sheet visible on common laptop-height screens. */
+@media (min-width: 640px) and (max-height: 760px) {
+  .decision-sidecar .evidence-card:has(.case05-figure) { padding: .65rem; }
+  .decision-sidecar .case05-figure { margin-top: .35rem; }
+  .decision-sidecar .case05-figure img,
+  .decision-sidecar .case05-figure[data-aspect="tall"] img {
+    width: 100%;
+    height: min(34svh, 15rem);
+    object-fit: contain;
+  }
+  .decision-sidecar .case05-visual-controls { margin-top: .35rem; }
+  .decision-sidecar .case05-visual-controls > button,
+  .decision-sidecar .case05-segmented button { min-height: 2.25rem; }
+  .decision-sidecar .evidence-card > ul { margin-top: .35rem; gap: .2rem; font-size: .7rem; }
+  .decision-sidecar .evidence-card > table { margin-top: .4rem; }
+}
+
 @media (max-width: 639px) {
   .mobile-evidence .evidence-card:has(.case05-figure) { max-height: none; overflow: visible; }
-  .case05-figure { max-height: 19rem; overflow-y: auto; }
-  .case05-figure img { min-width: 19rem; }
+  .mobile-evidence .case05-figure { max-height: 12rem; overflow: hidden; }
+  .mobile-evidence .case05-figure img { width: 100%; height: 12rem; object-fit: contain; }
   .case05-visual-controls { display: grid; grid-template-columns: 1fr; }
   .case05-visual-controls > button,
   .case05-segmented { width: 100%; }
