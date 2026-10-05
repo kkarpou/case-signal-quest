@@ -235,8 +235,10 @@ function EvidenceView({ card }: { card: EvidenceCard }) {
   return <article className="evidence-card signature-evidence">
     <div className="evidence-meta"><FileSearch className="text-signal" size={20} /><span className="font-mono">{card.kicker}</span></div>
     <h2 className="mt-1 font-display text-lg font-black leading-tight lg:text-2xl">{card.title}</h2>
-    {hasCase05Visual && <Case05Visual evidenceId={card.id} />}
-    <ul className="mt-2 grid gap-1.5 text-[12px] leading-snug lg:text-sm">{card.lines.map((line) => <li key={line} className="flex gap-2"><span className="mt-1.5 size-1.5 shrink-0 bg-signal" /><span className="min-w-0"><MarginaliaText text={line} /></span></li>)}</ul>
+    {hasCase05Visual ? <div className="case05-evidence-main">
+      <Case05Visual evidenceId={card.id} />
+      <ul className="case05-observations">{card.lines.map((line, index) => <li key={line} className="case05-observation"><span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span><span className="min-w-0"><MarginaliaText text={line} /></span></li>)}</ul>
+    </div> : <ul className="mt-2 grid gap-1.5 text-[12px] leading-snug lg:text-sm">{card.lines.map((line) => <li key={line} className="flex gap-2"><span className="mt-1.5 size-1.5 shrink-0 bg-signal" /><span className="min-w-0"><MarginaliaText text={line} /></span></li>)}</ul>}
     {card.table && <table className="mt-3 w-full border-collapse text-[11px] lg:text-xs"><thead><tr>{card.table.head.map((head) => <th key={head} className="border border-border bg-muted p-1 text-left font-black uppercase">{head}</th>)}</tr></thead><tbody>{card.table.rows.map((row, i) => <tr key={i}>{row.map((cell, j) => <td key={j} className="border border-border p-1 font-semibold">{cell}</td>)}</tr>)}</tbody></table>}
     {card.note && <p className="mt-2 text-[10px] font-semibold uppercase text-muted-foreground"><MarginaliaText text={card.note} /></p>}
   </article>;

@@ -113,11 +113,13 @@ export function Case05Visual({ evidenceId }: { evidenceId: string }) {
   );
 
   return <>
-    <figure className="case05-figure" data-aspect={visual.aspect}>
-      <img src={src} alt={alt} width={800} height={visual.aspect === "tall" ? 1080 : 900} />
-      <figcaption className="sr-only">{alt}</figcaption>
-    </figure>
-    {controls}
+    <div className="case05-visual-block">
+      <figure className="case05-figure" data-aspect={visual.aspect}>
+        <img src={src} alt={alt} width={800} height={visual.aspect === "tall" ? 1080 : 900} />
+        <figcaption className="sr-only">{alt}</figcaption>
+      </figure>
+      {controls}
+    </div>
     {expanded && <div className="case05-visual-overlay" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setExpanded(false); }}>
       <section className="case05-visual-dialog" role="dialog" aria-modal="true" aria-labelledby={`case05-visual-title-${evidenceId}`}>
         <header className="case05-visual-dialog-head">
