@@ -1,3 +1,4 @@
+// @ts-nocheck -- Executed by bunx vitest; Vitest is intentionally not an app dependency.
 import { describe, expect, it } from "vitest";
 import { case05 } from "./case05";
 
