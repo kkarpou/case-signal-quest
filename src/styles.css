@@ -930,7 +930,7 @@
   .evidence-card:has(.case05-figure) .case05-figure img,
   .evidence-card:has(.case05-figure) .case05-figure[data-aspect="tall"] img {
     width: 100%;
-    height: min(27svh, 11rem);
+    height: min(31svh, 12.5rem);
     object-fit: contain;
   }
   .evidence-card:has(.case05-figure) .case05-visual-controls { margin-top: .35rem; }
