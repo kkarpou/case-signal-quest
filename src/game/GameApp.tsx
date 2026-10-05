@@ -408,14 +408,25 @@ function ResetMemoDialog({ file, onCancel, onConfirm }: { file: string | null; o
 function BriefingDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   const B = S.app.briefing;
   const panelRef = useRef<HTMLDivElement>(null);
-  const confirmRef = useRef<HTMLButtonElement>(null);
+  const primaryRef = useRef<HTMLButtonElement>(null);
+  const [step, setStep] = useState(0);
+  const steps = [
+    { title: B.welcomeTitle, kind: "welcome" as const },
+    { title: B.missionTitle, kind: "list" as const, items: B.mission },
+    { title: B.rulesTitle, kind: "list" as const, items: B.rules },
+    { title: B.uiTitle, kind: "list" as const, items: B.ui },
+  ];
+  const lastStep = step === steps.length - 1;
   useEffect(() => {
     if (!open) return;
+    setStep(0);
     const opener = document.activeElement as HTMLElement | null;
-    confirmRef.current?.focus({ preventScroll: true });
+    requestAnimationFrame(() => primaryRef.current?.focus({ preventScroll: true }));
     panelRef.current?.parentElement?.scrollTo({ top: 0 });
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") { event.stopPropagation(); onClose(); return; }
+      if (event.key === "ArrowRight") { event.preventDefault(); setStep((current) => Math.min(current + 1, steps.length - 1)); return; }
+      if (event.key === "ArrowLeft") { event.preventDefault(); setStep((current) => Math.max(current - 1, 0)); return; }
       if (event.key !== "Tab") return;
       const nodes = panelRef.current?.querySelectorAll<HTMLElement>("button");
       if (!nodes || nodes.length === 0) return;
@@ -426,23 +437,17 @@ function BriefingDialog({ open, onClose }: { open: boolean; onClose: () => void 
     };
     document.addEventListener("keydown", onKeyDown, true);
     return () => { document.removeEventListener("keydown", onKeyDown, true); opener?.focus?.(); };
-  }, [open, onClose]);
+  }, [open, onClose, steps.length]);
   if (!open) return null;
-  const block = (title: string, items: readonly string[]) => (
-    <section className="mt-2">
-      <h3 className="font-mono text-[11px] font-black uppercase tracking-wide text-signal">{title}</h3>
-      <ul className="mt-0.5 grid gap-0.5 sm:grid-cols-2 sm:gap-x-4">
-        {items.map((item) => (
-          <li key={item} className="briefing-item pl-4 text-[13px] font-semibold leading-snug">{item}</li>
-        ))}
-      </ul>
-    </section>
-  );
+  const currentStep = steps[step];
   return (
     <div className="glossary-overlay fixed inset-0 z-50 flex items-start justify-center overflow-y-auto p-3 sm:p-4" onPointerDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
-      <div ref={panelRef} role="dialog" aria-modal="true" aria-labelledby="briefing-title" aria-describedby="briefing-lead" className="briefing-memo relative my-auto w-full max-w-xl p-3 sm:max-w-3xl sm:p-5">
+      <div ref={panelRef} role="dialog" aria-modal="true" aria-labelledby="briefing-step-title" aria-describedby="briefing-step-content" className="briefing-memo relative my-auto flex min-h-[31rem] w-full max-w-xl flex-col p-4 sm:min-h-[30rem] sm:max-w-3xl sm:p-6">
         <span className="briefing-stamp" aria-hidden="true">{B.stamp}</span>
-        <p className="desk-memo-label">{B.label}</p>
+        <div className="flex items-center justify-between gap-3">
+          <p className="desk-memo-label">{B.label}</p>
+          <p className="font-mono text-xs font-black text-signal">{B.progress(step + 1, steps.length)}</p>
+        </div>
         <div className="mt-1 grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3">
           <span className="briefing-photo block shrink-0 overflow-hidden border-2 border-border">
             <img src={teamLeadArt} alt={B.photoAlt} width={737} height={502} className="block size-full object-cover" style={{ objectPosition: "50% 25%" }} />
@@ -452,13 +457,26 @@ function BriefingDialog({ open, onClose }: { open: boolean; onClose: () => void 
             <span className="mt-1 block font-mono text-[11px] font-black uppercase text-signal">{B.from}</span>
           </span>
         </div>
-        <p id="briefing-lead" className="mt-2 text-sm font-semibold leading-snug">{B.lead}</p>
-        {block(B.missionTitle, B.mission)}
-        {block(B.rulesTitle, B.rules)}
-        {block(B.uiTitle, B.ui)}
-        <p className="mt-2 font-mono text-[11px] font-bold uppercase leading-snug text-muted-foreground">{B.note}</p>
-        <div className="mt-3">
-          <GameButton ref={confirmRef} className="w-full justify-center" onClick={onClose} icon={<Check size={18} />}>{B.confirm}</GameButton>
+        <section id="briefing-step-content" className="briefing-step flex flex-1 flex-col justify-center py-5" aria-live="polite">
+          <h3 id="briefing-step-title" className="font-display text-3xl font-black uppercase leading-none text-signal sm:text-4xl">{currentStep.title}</h3>
+          {currentStep.kind === "welcome" ? (
+            <>
+              <p className="mt-5 text-xl font-semibold leading-relaxed sm:text-2xl">{B.lead}</p>
+              <p className="mt-5 font-mono text-sm font-bold uppercase leading-relaxed text-muted-foreground sm:text-base">{B.note}</p>
+            </>
+          ) : (
+            <ul className="mt-5 grid gap-3 sm:grid-cols-2 sm:gap-4">
+              {currentStep.items.map((item) => (
+                <li key={item} className="briefing-item pl-6 text-lg font-semibold leading-snug sm:text-xl">{item}</li>
+              ))}
+            </ul>
+          )}
+        </section>
+        <div className="briefing-nav mt-auto flex items-center gap-2">
+          {step > 0 && <GameButton type="button" variant="secondary" onClick={() => setStep((current) => current - 1)} icon={<ArrowLeft size={18} />}>{B.back}</GameButton>}
+          <GameButton ref={primaryRef} className="ml-auto" onClick={lastStep ? onClose : () => setStep((current) => current + 1)} icon={lastStep ? <Check size={18} /> : <ArrowRight size={18} />}>
+            {lastStep ? B.confirm : B.next}
+          </GameButton>
         </div>
       </div>
     </div>

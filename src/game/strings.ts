@@ -38,6 +38,8 @@ export const el = {
     briefing: {
       open: "Άνοιγμα ενημέρωσης ένταξης",
       short: "BRIEFING",
+      progress: (current: number, total: number) => `ΒΗΜΑ ${current} ΑΠΟ ${total}`,
+      welcomeTitle: "ΚΑΛΩΣΟΡΙΣΕΣ",
       label: "ΣΗΜΕΙΩΜΑ ΕΝΤΑΞΗΣ · ΕΜΠΙΣΤΕΥΤΙΚΟ",
       title: "ΚΑΛΩΣΟΡΙΣΕΣ ΣΤΗ ΜΟΝΑΔΑ",
       from: "HELEN · UNIT LEAD",
@@ -66,6 +68,8 @@ export const el = {
       ],
       note: "Όλα τα πρόσωπα, οι ιστότοποι και τα περιστατικά είναι φανταστικά.",
       stamp: "ΠΡΩΤΟΚΟΛΛΟ ΜΟΝΑΔΑΣ",
+      back: "ΠΙΣΩ",
+      next: "ΕΠΟΜΕΝΟ",
       confirm: "ΚΑΤΑΝΟΗΤΟ · ΑΝΑΛΗΨΗ ΚΑΘΗΚΟΝΤΩΝ",
       close: "Κλείσιμο ενημέρωσης",
     },
