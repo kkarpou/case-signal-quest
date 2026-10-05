@@ -865,3 +865,62 @@
   .briefing-step { animation: none; }
 }
 
+/* ΥΠΟΘΕΣΗ 05 — ακριβή εκπαιδευτικά διαγράμματα σε χαρτί */
+.case05-figure {
+  margin-top: .65rem;
+  overflow: hidden;
+  border: 2px solid color-mix(in oklab, var(--paper-ink) 72%, transparent);
+  background: var(--paper);
+  box-shadow: 4px 4px 0 color-mix(in oklab, var(--signal) 26%, transparent);
+}
+.case05-figure img { display: block; width: 100%; height: auto; }
+.case05-visual-controls { display: flex; flex-wrap: wrap; align-items: stretch; gap: .4rem; margin-top: .55rem; }
+.case05-visual-controls > button,
+.case05-segmented button { min-height: 2.6rem; padding: .35rem .65rem; font-size: .68rem; }
+.case05-segmented { display: inline-flex; border: 2px solid var(--paper-ink); background: var(--paper); }
+.case05-segmented button { border: 0; background: transparent; color: var(--paper-ink); box-shadow: none; }
+.case05-segmented button + button { border-left: 1px solid var(--paper-ink); }
+.case05-segmented button[aria-pressed="true"] { background: var(--paper-ink); color: var(--paper); }
+.case05-visual-overlay {
+  position: fixed;
+  z-index: 90;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: .5rem;
+  background: color-mix(in oklab, var(--background) 88%, transparent);
+  backdrop-filter: blur(2px);
+}
+.case05-visual-dialog {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  width: min(64rem, 100%);
+  max-height: calc(100svh - 1rem);
+  overflow: hidden;
+  border: 3px solid var(--paper-ink);
+  background: var(--paper);
+  color: var(--paper-ink);
+  box-shadow: 10px 10px 0 color-mix(in oklab, var(--signal) 35%, transparent);
+}
+.case05-visual-dialog-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .6rem; border-bottom: 2px solid var(--paper-ink); }
+.case05-visual-dialog-head button { min-height: 2.75rem; padding: .4rem .7rem; }
+.case05-visual-dialog-scroll { overflow: auto; overscroll-behavior: contain; padding: .5rem; }
+.case05-visual-dialog-scroll img { display: block; width: 800px; max-width: none; height: auto; margin-inline: auto; background: var(--paper); }
+
+@media (min-width: 1024px) {
+  .case05-figure img { max-height: 31rem; object-fit: contain; }
+  .case05-figure[data-aspect="tall"] img { max-height: 34rem; }
+}
+
+@media (max-width: 639px) {
+  .mobile-evidence .evidence-card:has(.case05-figure) { max-height: none; overflow: visible; }
+  .case05-figure { max-height: 19rem; overflow-y: auto; }
+  .case05-figure img { min-width: 19rem; }
+  .case05-visual-controls { display: grid; grid-template-columns: 1fr; }
+  .case05-visual-controls > button,
+  .case05-segmented { width: 100%; }
+  .case05-segmented button { flex: 1; }
+  .case05-visual-dialog-scroll { padding: 0; }
+  .case05-visual-dialog-scroll img { width: 800px; }
+}
+
