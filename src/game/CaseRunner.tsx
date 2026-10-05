@@ -8,6 +8,7 @@ import teamLeoArt from "../assets/team-leo.jpg";
 import teamNoorArt from "../assets/team-noor.jpg";
 import { strings as S } from "./strings";
 import { FaxRibbon, FolderStamp, MarginaliaText } from "./organic";
+import { Case05Visual } from "./Case05Visual";
 import { skillLabels, type SkillKey } from "./game-data";
 import type { Analyst, CaseChoice, CaseDecision, CaseDef, EvidenceCard } from "./cases/types";
 
@@ -230,12 +231,13 @@ function AnalystTag({ who }: { who: Analyst }) {
 }
 
 function EvidenceView({ card }: { card: EvidenceCard }) {
+  const hasCase05Visual = card.id.startsWith("E5-");
   return <article className="evidence-card signature-evidence">
     <div className="evidence-meta"><FileSearch className="text-signal" size={20} /><span className="font-mono">{card.kicker}</span></div>
     <h2 className="mt-1 font-display text-lg font-black leading-tight lg:text-2xl">{card.title}</h2>
+    {hasCase05Visual && <Case05Visual evidenceId={card.id} />}
     <ul className="mt-2 grid gap-1.5 text-[12px] leading-snug lg:text-sm">{card.lines.map((line) => <li key={line} className="flex gap-2"><span className="mt-1.5 size-1.5 shrink-0 bg-signal" /><span className="min-w-0"><MarginaliaText text={line} /></span></li>)}</ul>
     {card.table && <table className="mt-3 w-full border-collapse text-[11px] lg:text-xs"><thead><tr>{card.table.head.map((head) => <th key={head} className="border border-border bg-muted p-1 text-left font-black uppercase">{head}</th>)}</tr></thead><tbody>{card.table.rows.map((row, i) => <tr key={i}>{row.map((cell, j) => <td key={j} className="border border-border p-1 font-semibold">{cell}</td>)}</tr>)}</tbody></table>}
-    {card.chart && <div className="mt-3 grid gap-1">{card.chart.bars.map((bar) => <div key={bar.label} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 text-[11px] font-bold"><span className="truncate">{bar.label}</span><span className="tabular-nums">{bar.value} {card.chart?.unit}</span><div className="col-span-2 h-2 border border-border bg-muted"><div className="h-full bg-signal" style={{ width: `${Math.min(100, bar.value)}%` }} /></div></div>)}<p className="mt-1 text-[10px] font-semibold text-muted-foreground">{card.chart.baselineNote}</p></div>}
     {card.note && <p className="mt-2 text-[10px] font-semibold uppercase text-muted-foreground"><MarginaliaText text={card.note} /></p>}
   </article>;
 }
