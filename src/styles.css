@@ -953,3 +953,47 @@
   .case05-visual-dialog-scroll img { width: 800px; }
 }
 
+
+/* ΥΠΟΘΕΣΗ 04 — οπτικές αναπαραστάσεις προσομοίωσης με μεταγραφές */
+.case04-evidence-main { display: grid; gap: .65rem; margin-top: .5rem; }
+.case04-visual-block { display: grid; gap: .45rem; }
+.case04-simulation-label { font-family: var(--font-mono); font-size: .66rem; font-weight: 900; text-transform: uppercase; letter-spacing: .04em; color: var(--warning); }
+.case04-visual-pair { display: grid; gap: .6rem; grid-template-columns: minmax(0, 9rem) minmax(0, 1fr); align-items: start; }
+.case04-figure { margin: 0; overflow: hidden; border: 2px solid color-mix(in oklab, var(--paper-ink) 72%, transparent); background: var(--paper); box-shadow: 4px 4px 0 color-mix(in oklab, var(--signal) 26%, transparent); }
+.case04-figure img { display: block; width: 100%; height: auto; }
+.case04-transcript { display: grid; gap: .45rem; min-width: 0; }
+.case04-transcript-block { border-left: 4px solid var(--paper-ink); background: var(--paper); color: var(--paper-ink); padding: .4rem .55rem; }
+.case04-transcript-block[data-tone="caption"] { border-left-color: var(--alert); }
+.case04-transcript-block[data-tone="verified"] { border-left-color: var(--signal); }
+.case04-transcript-block h3 { font-family: var(--font-mono); font-size: .62rem; font-weight: 900; text-transform: uppercase; opacity: .75; }
+.case04-transcript-block p { margin-top: .15rem; font-size: .8rem; line-height: 1.35; }
+.case04-caveat { font-size: .7rem; font-weight: 600; line-height: 1.35; color: var(--muted-foreground); }
+.case04-inert-link { font-family: var(--font-mono); text-decoration: line-through; opacity: .7; }
+.case04-source-sentence { margin-top: .2rem; min-height: 2.75rem; width: 100%; text-align: left; font-size: .82rem; font-weight: 700; padding: .35rem .5rem; border: 2px dashed var(--signal); background: transparent; color: inherit; }
+.case04-source-sentence[aria-pressed="true"] { background: color-mix(in oklab, var(--signal) 22%, transparent); border-style: solid; }
+.case04-source-sentence:focus-visible { outline: 4px solid var(--ring); outline-offset: 2px; }
+.case04-observations { display: grid; gap: .45rem; }
+.case04-observation { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: .55rem; font-size: .75rem; line-height: 1.35; }
+.case04-observation > span:first-child { font-family: var(--font-mono); font-size: .72rem; font-weight: 900; opacity: .45; }
+.case04-visual-controls { display: flex; flex-wrap: wrap; gap: .4rem; }
+.case04-visual-controls > button, .case04-segmented button { min-height: 2.75rem; padding: .35rem .65rem; font-size: .68rem; }
+.case04-segmented { display: inline-flex; border: 2px solid var(--paper-ink); background: var(--paper); }
+.case04-segmented button { border: 0; background: transparent; color: var(--paper-ink); box-shadow: none; }
+.case04-segmented button + button { border-left: 1px solid var(--paper-ink); }
+.case04-segmented button[aria-pressed="true"] { background: var(--paper-ink); color: var(--paper); }
+.case04-visual-overlay { position: fixed; z-index: 90; inset: 0; display: grid; place-items: center; padding: .5rem; background: color-mix(in oklab, var(--background) 88%, transparent); backdrop-filter: blur(2px); }
+.case04-visual-dialog { display: grid; grid-template-rows: auto minmax(0, 1fr); width: min(64rem, 100%); max-height: calc(100svh - 1rem); overflow: hidden; border: 3px solid var(--paper-ink); background: var(--paper); color: var(--paper-ink); box-shadow: 10px 10px 0 color-mix(in oklab, var(--signal) 35%, transparent); }
+.case04-visual-dialog-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .6rem; border-bottom: 2px solid var(--paper-ink); }
+.case04-visual-dialog-head button { min-height: 2.75rem; padding: .4rem .7rem; }
+.case04-visual-dialog-scroll { overflow: auto; overscroll-behavior: contain; padding: .6rem; display: grid; gap: .6rem; }
+.case04-visual-dialog-scroll .case04-visual-pair { grid-template-columns: 1fr; }
+.case04-visual-dialog-scroll .case04-figure img { width: min(100%, 640px); margin-inline: auto; }
+.case04-verification { margin-top: 1rem; border-top: 2px dashed var(--border); padding-top: .8rem; }
+.case04-verification-grid { margin-top: .6rem; display: grid; grid-template-columns: minmax(0, 7rem) minmax(0, 1fr); gap: .6rem; align-items: start; }
+.case04-verification-grid img { width: 100%; height: auto; border: 2px solid var(--paper-ink); background: var(--paper); }
+.case04-verification-grid h3 { font-family: var(--font-mono); font-size: .7rem; font-weight: 900; text-transform: uppercase; color: var(--signal); }
+.case04-verification-grid p { margin-top: .25rem; font-size: .8rem; line-height: 1.35; }
+@media (min-width: 1024px) {
+  .case04-visual-pair { grid-template-columns: minmax(0, 13rem) minmax(0, 1fr); }
+  .case04-visual-dialog-scroll .case04-visual-pair { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+}
