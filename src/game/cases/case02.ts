@@ -1,5 +1,6 @@
 // ΥΠΟΘΕΣΗ 02 — THE ECHO. Όλα τα πρόσωπα, οι λογαριασμοί και τα δεδομένα είναι φανταστικά.
 import type { CaseDef } from "./types";
+import { residentAccounts, unresolvedPosts } from "./account-fixture";
 
 export const case02: CaseDef = {
   id: "case02",
@@ -47,6 +48,11 @@ export const case02: CaseDef = {
         "5 λογαριασμοί δεν έχουν καμία επαληθεύσιμη σύνδεση — ούτε θετική ούτε αρνητική.",
         "Οι 5 δεν είναι «ύποπτοι». Είναι αταξινόμητοι.",
       ],
+      table: { head: ["ΑΝΩΝΥΜΑ IDs", "ΚΑΤΑΓΡΑΦΗ ΣΤΟ E2-C"], rows: [
+        [residentAccounts.join(" · "), "18: δημόσια συμμετοχή στο κάλεσμα"],
+        ...unresolvedPosts.map((p) => [p.account + " / " + p.post, "Αταξινόμητος · χωρίς επαληθευμένη προέλευση"]),
+      ] },
+      note: "Τα IDs είναι συνταγμένες ανώνυμες ετικέτες εκπαιδευτικής προσομοίωσης, όχι πραγματικά ανακτημένα δεδομένα.",
     },
     {
       id: "E2-D",
