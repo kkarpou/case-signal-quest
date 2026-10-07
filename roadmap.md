@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] ΥΠΟΘΕΣΗ 06: έξι οπτικά τεκμήρια, κοινά IDs 18/5, ισορροπημένες αποφάσεις, αποθηκευμένη σύνθεση ανακοίνωσης και έλεγχοι
 - [x] Establish design system, illustrated assets, and shared game components
 - [x] Build Season Hub with resume/reset and six case cards
 - [x] Implement all 16 Case 01 acts, decisions, feedback, hints, and revisions
