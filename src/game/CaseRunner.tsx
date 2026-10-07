@@ -10,6 +10,9 @@ import { strings as S } from "./strings";
 import { FaxRibbon, FolderStamp, MarginaliaText } from "./organic";
 import { Case04VerificationReveal, Case04Visual } from "./Case04Visual";
 import { Case05Visual } from "./Case05Visual";
+import { Case06Visual } from "./Case06Visual";
+import { Case06Report } from "./Case06Report";
+import { canFinishReport, normalizeReport, type ReportDraft } from "./cases/case06-report";
 import { skillLabels, type SkillKey } from "./game-data";
 import type { Analyst, CaseChoice, CaseDecision, CaseDef, EvidenceCard } from "./cases/types";
 
@@ -24,6 +27,7 @@ export type CaseProgress = {
   revisedDecisions: string[];
   skillScores: Record<SkillKey, number>;
   completed: boolean;
+  reportDraft?: ReportDraft;
 };
 
 export const initialProgress: CaseProgress = {
@@ -38,7 +42,8 @@ export function loadProgress(storageKey: string): CaseProgress {
   try {
     const raw = window.localStorage.getItem(storageKey);
     if (!raw) return initialProgress;
-    return { ...initialProgress, ...JSON.parse(raw) };
+    const parsed = JSON.parse(raw);
+    return { ...initialProgress, ...parsed, reportDraft: normalizeReport(parsed?.reportDraft) };
   } catch {
     return initialProgress;
   }
@@ -46,7 +51,7 @@ export function loadProgress(storageKey: string): CaseProgress {
 
 function clamp(value: number) { return Math.max(0, Math.min(100, value)); }
 
-function deriveSkillScores(def: CaseDef, decisions: Record<string, string>) {
+export function deriveSkillScores(def: CaseDef, decisions: Record<string, string>) {
   const scores = { ...initialProgress.skillScores };
   for (const scene of def.scenes) {
     if (scene.kind !== "decision") continue;
@@ -70,7 +75,8 @@ export function CaseRunner({ def, progress, onProgress, onHub }: {
   const choiceRegionRef = useRef<HTMLDivElement>(null);
 
   const index = Math.min(progress.currentScene, def.scenes.length - 1);
-  const scene = def.scenes[index]!;
+  const scene = def.scenes[index] ?? def.scenes[0];
+  if (!scene) throw new Error("Empty case definition");
   const decisionId = scene.kind === "decision" ? scene.decision.id : null;
 
   useEffect(() => {
@@ -94,7 +100,10 @@ export function CaseRunner({ def, progress, onProgress, onHub }: {
     return () => window.clearTimeout(timer);
   }, [selected, index]);
 
-  const next = () => onProgress({ ...progress, currentScene: Math.min(def.scenes.length - 1, index + 1), completed: progress.completed || index >= def.scenes.length - 2 });
+  const next = () => {
+    if (def.id === "case06" && scene.kind === "report" && !progress.completed && !canFinishReport(progress.reportDraft)) return;
+    onProgress({ ...progress, currentScene: Math.min(def.scenes.length - 1, index + 1), completed: progress.completed || (def.id === "case06" ? scene.kind === "report" : index >= def.scenes.length - 2) });
+  };
 
   const choose = (decision: CaseDecision, choiceId: string) => {
     const choice = decision.choices.find((item) => item.id === choiceId);
@@ -113,6 +122,7 @@ export function CaseRunner({ def, progress, onProgress, onHub }: {
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
+      if (event.defaultPrevented || (event.target instanceof HTMLElement && event.target.closest("[role='dialog'], .case06-visual, .case06-composer"))) return;
       if (event.key === "Escape") { if (selected) { setSelected(null); setRevising(true); } else onHub(); }
       if (event.key.toLowerCase() === "h" && scene.kind === "decision" && !selected) { event.preventDefault(); setShowHint((value) => !value); }
       if (["ArrowDown", "ArrowUp", "ArrowLeft", "ArrowRight"].includes(event.key) && scene.kind === "decision" && !selected) {
@@ -163,6 +173,10 @@ export function CaseRunner({ def, progress, onProgress, onHub }: {
   }
 
   if (scene.kind === "report") {
+    if (def.id === "case06") return <Frame label={`${def.number} · ΑΝΑΦΟΡΑ`}>
+      <Case06Report draft={normalizeReport(progress.reportDraft)} completed={progress.completed} onChange={(reportDraft) => onProgress({ ...progress, reportDraft })} onFinish={next} />
+      {(progress.completed || progress.reportDraft?.checked) && <section className="case06-reviewed"><h2 className="font-display text-xl">{def.report.verdict}</h2><ul>{def.report.lines.map((line) => <li key={line}>{line}</li>)}</ul><ul>{def.report.teamSummary.map((row) => <li key={row.who}><strong>{row.who}:</strong> {row.text}</li>)}</ul></section>}
+    </Frame>;
     const entries = Object.entries(progress.skillScores) as [SkillKey, number][];
     return <Frame label={`${def.number} · ΑΝΑΦΟΡΑ`}>
       <article className="report-layout dossier-report closed-dossier mt-2">
@@ -250,7 +264,7 @@ function EvidenceView({ card }: { card: EvidenceCard }) {
   return <article className="evidence-card signature-evidence">
     <div className="evidence-meta"><FileSearch className="text-signal" size={20} /><span className="font-mono">{card.kicker}</span></div>
     <h2 className="mt-1 font-display text-lg font-black leading-tight lg:text-2xl">{card.title}</h2>
-    {hasCase04Visual ? <div className="case04-evidence-main">
+    {card.id.startsWith("E6-") ? <Case06Visual key={card.id} evidenceId={card.id} /> : hasCase04Visual ? <div className="case04-evidence-main">
       <Case04Visual evidenceId={card.id} />
       <ul className="case04-observations">{card.lines.map((line, index) => <li key={line} className="case04-observation"><span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span><span className="min-w-0"><MarginaliaText text={line} /></span></li>)}</ul>
     </div> : hasCase05Visual ? <div className="case05-evidence-main">
