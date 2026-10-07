@@ -151,7 +151,7 @@ export function CaseRunner({ def, progress, onProgress, onHub }: {
   if (scene.kind === "evidence") {
     const card = def.evidence.find((item) => item.id === scene.evidenceId);
     return <Frame label={scene.kicker} ribbon={fax ? <FaxRibbon message={fax} active /> : null}>
-      <div className="mt-2 grid gap-4 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+      <div className={def.id === "case06" ? "mt-2 mx-auto grid max-w-4xl gap-4" : "mt-2 grid gap-4 lg:grid-cols-[0.9fr_1.1fr] lg:items-center"}>
         <div><h1 className="font-display text-2xl font-black uppercase leading-none sm:text-4xl">{card?.title}</h1><p className="marker-copy mt-2 text-sm font-semibold sm:text-base"><MarginaliaText text={scene.intro} /></p></div>
         {card && <EvidenceView card={card} />}
       </div>

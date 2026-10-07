@@ -1,0 +1,26 @@
+import assert from 'node:assert/strict';
+import { case06 } from '../src/game/cases/case06.ts';
+import { residentAccounts, unresolvedAccounts, unresolvedPosts } from '../src/game/cases/account-fixture.ts';
+import { checkReport, editReport, normalizeReport, canFinishReport, reportSentences } from '../src/game/cases/case06-report.ts';
+const decisions=case06.scenes.filter(s=>s.kind==='decision').map(s=>s.decision);
+assert.deepEqual(decisions.map(d=>d.id),['invoice','hosting','contract','five','foreign','privacy']);
+assert.equal(case06.storageKey,'the-signal-files-case-06-v1');
+assert.equal(case06.scenes.length,16);
+assert.deepEqual(decisions.map(d=>d.choices.findIndex(c=>c.correct)),[0,1,2,0,1,2]);
+for(const d of decisions){assert.equal(d.choices.filter(c=>c.correct).length,1);assert.deepEqual(d.choices.map(c=>c.id).sort(),['bounded','dismiss','leap']);}
+assert.equal(new Set([...residentAccounts,...unresolvedAccounts]).size,23);
+assert.equal(residentAccounts.length,18);assert.equal(unresolvedPosts.length,5);
+assert.deepEqual(unresolvedPosts.map(p=>p.account),unresolvedAccounts);
+assert.equal(checkReport([]).empty,true);assert.equal(canFinishReport({selected:[],checked:true}),false);
+const supported=reportSentences.filter(s=>s.supported).map(s=>s.id);
+assert.equal(checkReport(supported).accurate,true);
+for(const id of supported) assert.equal(checkReport(supported.filter(x=>x!==id)).accurate,false);
+for(const s of reportSentences.filter(s=>!s.supported))assert.equal(checkReport([...supported,s.id]).unsupported.length,1);
+assert.equal(editReport(supported).checked,false);
+assert.deepEqual(normalizeReport(JSON.parse(JSON.stringify({selected:supported,checked:true}))),{selected:supported,checked:true});
+assert.deepEqual(normalizeReport({selected:['invalid'],checked:true}),{selected:[],checked:false});
+assert.equal(canFinishReport({selected:supported,checked:true}),true);
+assert.equal(canFinishReport(editReport(supported)),false);
+assert(decisions.find(d=>d.id==='privacy').choices.find(c=>c.correct).delta.response>0);
+assert(decisions.find(d=>d.id==='hosting').choices.find(c=>c.correct).delta.network>0);
+console.log('PASS Case06: stable progress, six varied decisions, 18/5 mapping, report missing/unsupported/empty/revision/persistence gates, relevant skill deltas.');

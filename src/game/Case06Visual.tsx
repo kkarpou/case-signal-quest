@@ -1,4 +1,6 @@
 import { useEffect, useId, useRef, useState } from "react";
+import "./case06.css";
+import { createPortal } from "react-dom";
 import { Maximize2, X } from "lucide-react";
 import { GameButton } from "../components/GameButton";
 import { briefIdentifier, clientName, companyName, residentAccounts, unresolvedAccounts, unresolvedPosts } from "./cases/account-fixture";
@@ -52,6 +54,6 @@ export function Case06Visual({ evidenceId }: { evidenceId: string }) {
   return <div className="case06-visual" data-evidence={evidenceId}>
     {sheet()}
     <GameButton ref={opener} variant="secondary" icon={<Maximize2 size={18} />} onClick={() => setExpanded(true)} aria-label={`Μεγέθυνση ${evidenceId}`}>Μεγέθυνση</GameButton>
-    {expanded && <div className="case06-overlay" onMouseDown={(e) => { if (e.currentTarget === e.target) setExpanded(false); }}><section className="case06-dialog" role="dialog" aria-modal="true" aria-labelledby={titleId}><header><h2 id={titleId}>ΤΕΚΜΗΡΙΟ {evidenceId}</h2><GameButton ref={close} variant="secondary" icon={<X size={18} />} aria-label="Κλείσιμο μεγέθυνσης" onClick={() => setExpanded(false)}>Κλείσιμο</GameButton></header><div className="case06-dialog-scroll" tabIndex={0}>{sheet()}</div></section></div>}
+    {expanded && createPortal(<div className="case06-overlay" onMouseDown={(e) => { if (e.currentTarget === e.target) setExpanded(false); }}><section className="case06-dialog" role="dialog" aria-modal="true" aria-labelledby={titleId}><header><h2 id={titleId}>ΤΕΚΜΗΡΙΟ {evidenceId}</h2><GameButton ref={close} variant="secondary" icon={<X size={18} />} aria-label="Κλείσιμο μεγέθυνσης" onClick={() => setExpanded(false)}>Κλείσιμο</GameButton></header><div className="case06-dialog-scroll" tabIndex={0}>{sheet()}</div></section></div>, document.body)}
   </div>;
 }
