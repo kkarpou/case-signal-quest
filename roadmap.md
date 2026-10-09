@@ -1,4 +1,5 @@
 # Roadmap
+- [x] Τελική αναφορά ΥΠΟΘΕΣΗΣ 01: συμπαγής τίτλος και διάταξη χωρίς κύλιση στα 1100×639, 1280×720 και 390×844
 - [ ] ΥΠΟΘΕΣΗ 06: έξι οπτικά τεκμήρια, κοινά IDs 18/5, ισορροπημένες αποφάσεις, αποθηκευμένη σύνθεση ανακοίνωσης και έλεγχοι
 - [x] Establish design system, illustrated assets, and shared game components
 - [x] Build Season Hub with resume/reset and six case cards

@@ -997,3 +997,29 @@
   .case04-visual-pair { grid-template-columns: minmax(0, 13rem) minmax(0, 1fr); }
   .case04-visual-dialog-scroll .case04-visual-pair { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
 }
+
+/* Case 01 report: target the finding, not the decorative first-child spine. */
+.game-screen:has(> .closed-dossier) { padding-top: .65rem; padding-bottom: 4.75rem; }
+.closed-dossier .report-finding h1 { margin-top: .5rem; font-size: 1.75rem; line-height: 1.08; }
+.closed-dossier .report-team-summary li { font-size: .75rem; line-height: 1.2; }
+.closed-dossier .report-team-summary ul { gap: .35rem; }
+.closed-dossier .report-profile .score-bars > * + * { margin-top: .55rem; }
+.closed-dossier .report-profile .score-bars > div > div:first-child { margin-bottom: .25rem; font-size: .8125rem; }
+@media (min-width: 740px) {
+  .closed-dossier { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); grid-template-rows: auto 1fr; }
+  .closed-dossier .dossier-spine { grid-column: 1 / -1; }
+  .closed-dossier .report-finding { border-right: 2px solid var(--paper-ink); border-bottom: 0; }
+}
+@media (max-height: 750px) and (min-width: 740px) {
+  .closed-dossier .report-dialogue { display: none; }
+  .closed-dossier .final-assessment { margin-top: .6rem; }
+  .closed-dossier .report-profile .score-bars { margin-top: .6rem; }
+}
+@media (max-width: 739px) {
+  .closed-dossier .report-finding h1 { font-size: 1.25rem; }
+  .closed-dossier .report-finding > .stamp { display: none; }
+  .closed-dossier .report-dialogue { display: none; }
+  .closed-dossier .report-team-summary li { grid-template-columns: 6rem minmax(0, 1fr); }
+  .closed-dossier .report-profile .score-bars > * + * { margin-top: .35rem; }
+  .closed-dossier .report-profile .skill-sheet { padding: .2rem !important; }
+}
