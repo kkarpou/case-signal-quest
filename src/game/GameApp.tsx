@@ -9,6 +9,8 @@ import teamLeoArt from "../assets/team-leo.jpg";
 import teamNoorArt from "../assets/team-noor.jpg";
 import { strings as S } from "./strings";
 import { decisionByAct, decisions, skillLabels, type Decision, type SkillKey } from "./game-data";
+import { EndSessionDialog } from "./EndSessionDialog";
+import { SESSION_KEY, readSessionLog, startPlaySession, finishPlaySession, type SessionLog, type SessionCheckpoint } from "./play-sessions";
 import { CaseRunner, initialProgress, loadProgress, type CaseProgress } from "./CaseRunner";
 import { FaxOnMount, FolderStamp, GlossaryLinkContext, MarginaliaText } from "./organic";
 import { case02 } from "./cases/case02";
@@ -91,6 +93,13 @@ export function GameApp() {
   const [pendingReset, setPendingReset] = useState<{ file: string; confirm: () => void } | null>(null);
   const [briefingOpen, setBriefingOpen] = useState(false);
 
+  const [sessionLog, setSessionLog] = useState<SessionLog>({ version: 1, sessions: [] });
+  const [sessionOpen, setSessionOpen] = useState(false);
+  const [sessionFinished, setSessionFinished] = useState(false);
+  const [sessionError, setSessionError] = useState<string | null>(null);
+  const sessionButtonRef = useRef<HTMLButtonElement>(null);
+  const activeSession = sessionLog.sessions.at(-1)?.endedAt === null;
+
   const choiceRegionRef = useRef<HTMLDivElement>(null);
   const openGlossary = useCallback(() => setGlossaryOpen(true), []);
 
@@ -103,6 +112,8 @@ export function GameApp() {
     if (storedTheme === "light") setTheme("light");
     setCaseProgress(Object.fromEntries(playableCases.map((c) => [c.id, loadProgress(c.storageKey)])));
     if (!window.localStorage.getItem(BRIEFING_KEY)) setBriefingOpen(true);
+    try { setSessionLog(readSessionLog(window.localStorage)); }
+    catch { setSessionError("Δεν ήταν δυνατή η ανάγνωση των συνεδριών. Η υπάρχουσα καταγραφή δεν θα διαγραφεί."); }
     setHydrated(true);
   }, []);
 
@@ -135,7 +146,7 @@ export function GameApp() {
   useEffect(() => {
     if (view !== "case") return;
     const onKeyDown = (event: KeyboardEvent) => {
-      if (glossaryOpen) return;
+      if (event.defaultPrevented || sessionOpen || glossaryOpen || (event.target instanceof HTMLElement && event.target.closest("[role='dialog']"))) return;
       if (event.key.toLowerCase() === "h" && activeDecision && !selected) {
         event.preventDefault(); setShowHint((value) => !value);
       }
@@ -154,11 +165,11 @@ export function GameApp() {
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [view, activeDecision, selected, glossaryOpen]);
+  }, [view, activeDecision, selected, glossaryOpen, sessionOpen]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      if (memberOpen) return;
+      if (event.defaultPrevented || sessionOpen || memberOpen || (event.target instanceof HTMLElement && event.target.closest("[role='dialog']"))) return;
       if (event.key.toLowerCase() === "g" && !event.metaKey && !event.ctrlKey && !event.altKey) {
         event.preventDefault();
         setGlossaryOpen((value) => !value);
@@ -166,7 +177,7 @@ export function GameApp() {
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [memberOpen]);
+  }, [memberOpen, sessionOpen]);
 
   const choose = (decision: Decision, choiceId: string) => {
     const previous = state.decisions[decision.id];
@@ -207,7 +218,55 @@ export function GameApp() {
     });
   };
 
+  const beginSession = (checkpoint: SessionCheckpoint) => {
+    try {
+      const log = startPlaySession(readSessionLog(window.localStorage), checkpoint, crypto.randomUUID(), new Date().toISOString());
+      window.localStorage.setItem(SESSION_KEY, JSON.stringify(log));
+      setSessionLog(log);
+      setSessionError(null);
+    } catch {
+      // Playing remains possible even when local session storage is unavailable.
+      setSessionError("Δεν ήταν δυνατή η αποθήκευση της συνεδρίας. Έλεγξε αν ο browser επιτρέπει την τοπική αποθήκευση.");
+    }
+  };
+
+  const checkpoint: SessionCheckpoint | null = view === "case"
+    ? { caseId: "case01", sceneIndex: state.currentAct }
+    : view === "runner" && runnerDef ? { caseId: runnerDef.id, sceneIndex: runnerProgress.currentScene } : null;
+
+  useEffect(() => {
+    if (!hydrated || !checkpoint) return;
+    try {
+      const log = readSessionLog(window.localStorage);
+      const current = log.sessions.at(-1);
+      if (!current || current.endedAt !== null || (current.checkpoint.caseId === checkpoint.caseId && current.checkpoint.sceneIndex === checkpoint.sceneIndex)) return;
+      const updated: SessionLog = { version: 1, sessions: [...log.sessions.slice(0, -1), { ...current, checkpoint }] };
+      window.localStorage.setItem(SESSION_KEY, JSON.stringify(updated));
+      setSessionLog(updated);
+    } catch { setSessionError("Δεν ήταν δυνατή η αποθήκευση του σημείου διακοπής."); }
+  }, [hydrated, checkpoint?.caseId, checkpoint?.sceneIndex]);
+
+  const finishSession = () => {
+    try {
+      // Flush current game state before recording a successful session end.
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      if (view === "runner" && runnerDef) window.localStorage.setItem(runnerDef.storageKey, JSON.stringify(runnerProgress));
+      const log = readSessionLog(window.localStorage);
+      const current = log.sessions.at(-1);
+      if (!current) throw new Error("No session");
+      const finished = finishPlaySession(log, checkpoint ?? current.checkpoint, new Date().toISOString());
+      window.localStorage.setItem(SESSION_KEY, JSON.stringify(finished));
+      setSessionLog(finished);
+      setSessionError(null);
+      setSessionFinished(true);
+      setView("hub");
+    } catch {
+      setSessionError("Η αποθήκευση δεν ολοκληρώθηκε. Μην κλείσεις ακόμη την καρτέλα· δοκίμασε ξανά ή συνέχισε το παιχνίδι.");
+    }
+  };
+
   const openRunner = (def: CaseDef) => {
+    beginSession({ caseId: def.id, sceneIndex: loadProgress(def.storageKey).currentScene });
     setRunnerDef(def);
     setRunnerProgress(loadProgress(def.storageKey));
     setView("runner");
@@ -241,8 +300,8 @@ export function GameApp() {
 
   return (
     <GlossaryLinkContext.Provider value={openGlossary}>
-    <div className="h-svh overflow-hidden bg-background text-foreground">
-      <header className="case-masthead sticky top-0 z-40 border-b-2 border-border bg-background/95">
+    <div className="flex h-svh flex-col overflow-hidden bg-background text-foreground">
+      <header className="case-masthead sticky top-0 z-40 shrink-0 border-b-2 border-border bg-background/95">
         <div className="mx-auto grid min-h-16 max-w-7xl grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 sm:px-6">
           <button onClick={() => setView("hub")} className="min-w-0 text-left focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring" aria-label={S.app.backToHub}>
             <span className="masthead-brand block truncate font-display text-lg font-black uppercase sm:text-xl">{S.app.brand}</span>
@@ -267,13 +326,19 @@ export function GameApp() {
             </GameButton>
           </div>
         </div>
+        <div className="mx-auto flex max-w-7xl items-center justify-end gap-3 px-4 pb-2 sm:px-6">
+          {sessionError && <span role="status" className="min-w-0 text-xs text-destructive">{sessionError}</span>}
+          <GameButton ref={sessionButtonRef} variant="secondary" className="min-h-11 shrink-0 px-3 py-2 text-xs normal-case" disabled={!activeSession} aria-haspopup="dialog" aria-expanded={sessionOpen} onClick={() => { setSessionFinished(false); setSessionOpen(true); }}>
+            Ολοκλήρωση για σήμερα
+          </GameButton>
+        </div>
         {view === "case" && <div className="case-progress h-1.5 bg-muted"><div className="h-full bg-signal transition-all" style={{ width: `${((state.currentAct + 1) / TOTAL_ACTS) * 100}%` }} /></div>}
         {view === "runner" && runnerDef && <div className="case-progress h-1.5 bg-muted"><div className="h-full bg-signal transition-all" style={{ width: `${((Math.min(runnerProgress.currentScene, runnerDef.scenes.length - 1) + 1) / runnerDef.scenes.length) * 100}%` }} /></div>}
       </header>
 
-      <main className={view === "hub" ? "h-[calc(100svh-4rem)] overflow-hidden" : "h-[calc(100svh-4.25rem)] overflow-hidden"}>
+      <main className="min-h-0 flex-1 overflow-hidden">
         {view === "hub" ? (
-          <Hub state={state} onPlay={() => setView("case")} onReset={reset} onOpenMember={setMemberOpen} caseProgress={caseProgress} onPlayCase={openRunner} onResetCase={resetCase} completedCases={completedCases} />
+          <Hub state={state} onPlay={() => { beginSession({ caseId: "case01", sceneIndex: state.currentAct }); setView("case"); }} onReset={reset} onOpenMember={setMemberOpen} caseProgress={caseProgress} onPlayCase={openRunner} onResetCase={resetCase} completedCases={completedCases} />
         ) : view === "runner" && runnerDef ? (
           <CaseRunner def={runnerDef} progress={runnerProgress} onProgress={(nextProgress) => saveRunnerProgress(runnerDef, nextProgress)} onHub={() => setView("hub")} />
         ) : (
@@ -285,6 +350,7 @@ export function GameApp() {
           />
         )}
       </main>
+      <EndSessionDialog open={sessionOpen} finished={sessionFinished} error={sessionError} onFinish={finishSession} onClose={() => { setSessionOpen(false); requestAnimationFrame(() => { if (!sessionButtonRef.current?.disabled) sessionButtonRef.current?.focus(); else document.querySelector<HTMLButtonElement>(".case-masthead button")?.focus(); }); }} />
       <BriefingDialog open={briefingOpen} onClose={closeBriefing} />
       <Glossary open={glossaryOpen} onClose={() => setGlossaryOpen(false)} completedCases={completedCases} />
 
