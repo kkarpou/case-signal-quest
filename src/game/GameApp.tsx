@@ -9,6 +9,9 @@ import teamLeoArt from "../assets/team-leo.jpg";
 import teamNoorArt from "../assets/team-noor.jpg";
 import { strings as S } from "./strings";
 import { decisionByAct, decisions, skillLabels, type Decision, type SkillKey } from "./game-data";
+import { ExperienceCheckin } from "./ExperienceCheckin";
+import { ExperienceExport } from "./ExperienceExport";
+import { resetExperienceAttempt } from "./experience-data";
 import { EndSessionDialog } from "./EndSessionDialog";
 import { SESSION_KEY, readSessionLog, startPlaySession, finishPlaySession, type SessionLog, type SessionCheckpoint } from "./play-sessions";
 import { CaseRunner, initialProgress, loadProgress, type CaseProgress } from "./CaseRunner";
@@ -92,6 +95,10 @@ export function GameApp() {
   const [memberOpen, setMemberOpen] = useState<string | null>(null);
   const [pendingReset, setPendingReset] = useState<{ file: string; confirm: () => void } | null>(null);
   const [briefingOpen, setBriefingOpen] = useState(false);
+
+  const [checkin, setCheckin] = useState<{ caseId: string; continue: () => void } | null>(null);
+  const requestCheckin = (caseId: string, continuation: () => void) => setCheckin({ caseId, continue: continuation });
+  const finishCheckin = useCallback(() => { checkin?.continue(); setCheckin(null); }, [checkin]);
 
   const [sessionLog, setSessionLog] = useState<SessionLog>({ version: 1, sessions: [] });
   const [sessionOpen, setSessionOpen] = useState(false);
@@ -205,13 +212,16 @@ export function GameApp() {
   };
 
   const next = () => {
-    setState((current) => ({ ...current, currentAct: Math.min(TOTAL_ACTS - 1, current.currentAct + 1), completed: current.currentAct >= 14 || current.completed }));
+    const advance = () => setState((current) => ({ ...current, currentAct: Math.min(TOTAL_ACTS - 1, current.currentAct + 1), completed: current.currentAct >= 14 || current.completed }));
+    if (state.currentAct === 14 && !state.completed) requestCheckin("case01", advance);
+    else advance();
   };
 
   const reset = () => {
     setPendingReset({
       file: S.app.resetMemo.case01,
       confirm: () => {
+        try { resetExperienceAttempt("case01"); } catch { setSessionError("Δεν αποθηκεύτηκε ο νέος κωδικός προσπάθειας για την αξιολόγηση."); }
         window.localStorage.removeItem(STORAGE_KEY);
         setState(initialState); setView("hub");
       },
@@ -282,6 +292,7 @@ export function GameApp() {
     setPendingReset({
       file: `${def.number} — ${def.title}`,
       confirm: () => {
+        try { resetExperienceAttempt(def.id); } catch { setSessionError("Δεν αποθηκεύτηκε ο νέος κωδικός προσπάθειας για την αξιολόγηση."); }
         window.localStorage.removeItem(def.storageKey);
         setCaseProgress((prev) => ({ ...prev, [def.id]: initialProgress }));
         setRunnerProgress(initialProgress);
@@ -326,7 +337,8 @@ export function GameApp() {
             </GameButton>
           </div>
         </div>
-        <div className="mx-auto flex max-w-7xl items-center justify-end gap-3 px-4 pb-2 sm:px-6">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-end gap-2 px-4 pb-2 sm:px-6">
+          {view === "hub" && <ExperienceExport />}
           {sessionError && <span role="status" className="min-w-0 text-xs text-destructive">{sessionError}</span>}
           <GameButton ref={sessionButtonRef} variant="secondary" className="min-h-11 shrink-0 px-3 py-2 text-xs normal-case" disabled={!activeSession} aria-haspopup="dialog" aria-expanded={sessionOpen} onClick={() => { setSessionFinished(false); setSessionOpen(true); }}>
             Ολοκλήρωση για σήμερα
@@ -340,7 +352,7 @@ export function GameApp() {
         {view === "hub" ? (
           <Hub state={state} onPlay={() => { beginSession({ caseId: "case01", sceneIndex: state.currentAct }); setView("case"); }} onReset={reset} onOpenMember={setMemberOpen} caseProgress={caseProgress} onPlayCase={openRunner} onResetCase={resetCase} completedCases={completedCases} />
         ) : view === "runner" && runnerDef ? (
-          <CaseRunner def={runnerDef} progress={runnerProgress} onProgress={(nextProgress) => saveRunnerProgress(runnerDef, nextProgress)} onHub={() => setView("hub")} />
+          <CaseRunner onReportFinished={(continuation) => requestCheckin(runnerDef.id, continuation)} def={runnerDef} progress={runnerProgress} onProgress={(nextProgress) => saveRunnerProgress(runnerDef, nextProgress)} onHub={() => setView("hub")} />
         ) : (
           <CaseScreen
             state={state} {...(activeDecision ? { decision: activeDecision } : {})} selected={selected} showWhy={showWhy} showHint={showHint} revising={revising}
@@ -350,6 +362,7 @@ export function GameApp() {
           />
         )}
       </main>
+      {checkin && <ExperienceCheckin caseId={checkin.caseId} onDone={finishCheckin} />}
       <EndSessionDialog open={sessionOpen} finished={sessionFinished} error={sessionError} onFinish={finishSession} onClose={() => { setSessionOpen(false); requestAnimationFrame(() => { if (!sessionButtonRef.current?.disabled) sessionButtonRef.current?.focus(); else document.querySelector<HTMLButtonElement>(".case-masthead button")?.focus(); }); }} />
       <BriefingDialog open={briefingOpen} onClose={closeBriefing} />
       <Glossary open={glossaryOpen} onClose={() => setGlossaryOpen(false)} completedCases={completedCases} />

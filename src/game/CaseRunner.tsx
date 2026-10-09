@@ -65,7 +65,8 @@ export function deriveSkillScores(def: CaseDef, decisions: Record<string, string
   return scores;
 }
 
-export function CaseRunner({ def, progress, onProgress, onHub }: {
+export function CaseRunner({ def, progress, onProgress, onHub, onReportFinished }: {
+  onReportFinished: (continuation: () => void) => void;
   def: CaseDef; progress: CaseProgress; onProgress: (next: CaseProgress) => void; onHub: () => void;
 }) {
   const [selected, setSelected] = useState<string | null>(null);
@@ -102,7 +103,9 @@ export function CaseRunner({ def, progress, onProgress, onHub }: {
 
   const next = () => {
     if (def.id === "case06" && scene.kind === "report" && !progress.completed && !canFinishReport(progress.reportDraft)) return;
-    onProgress({ ...progress, currentScene: Math.min(def.scenes.length - 1, index + 1), completed: progress.completed || (def.id === "case06" ? scene.kind === "report" : index >= def.scenes.length - 2) });
+    const advance = () => onProgress({ ...progress, currentScene: Math.min(def.scenes.length - 1, index + 1), completed: progress.completed || (def.id === "case06" ? scene.kind === "report" : index >= def.scenes.length - 2) });
+    if (scene.kind === "report" && !progress.completed) onReportFinished(advance);
+    else advance();
   };
 
   const choose = (decision: CaseDecision, choiceId: string) => {
