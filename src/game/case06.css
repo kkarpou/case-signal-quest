@@ -40,8 +40,8 @@
 .case06-composer { max-width: 52rem; margin: 1rem auto; }
 .case06-sentence-list { display: grid; gap: .6rem; margin: 1rem 0; }
 .case06-sentence-list label { display: flex; align-items: flex-start; gap: .75rem; padding: .9rem; border: 2px solid var(--border); background: var(--card); color: var(--card-foreground); cursor: pointer; line-height: 1.5; }
-.case06-sentence-list label:has(input:checked) { border-color: var(--signal); background: var(--accent); }
-.case06-sentence-list input { width: 1.25rem; height: 1.25rem; flex-shrink: 0; margin-top: .15rem; accent-color: #176b70; }
+.case06-sentence-list label:has(input:checked) { border-color: var(--signal); background: color-mix(in oklab, var(--signal) 22%, var(--card)); box-shadow: inset 6px 0 0 var(--signal), 0 0 0 2px var(--signal); font-weight: 600; }
+.case06-sentence-list input { width: 1.25rem; height: 1.25rem; flex-shrink: 0; margin-top: .15rem; accent-color: var(--signal); color-scheme: light; }
 .case06-sentence-list label:focus-within { outline: 3px solid var(--ring); outline-offset: 2px; }
 .case06-composer > button { margin: .4rem .5rem .4rem 0; }
 .case06-draft-note, .case06-reviewed { padding: 1rem; margin: 1rem 0; border-left: 4px solid var(--signal); background: var(--card); color: var(--card-foreground); line-height: 1.55; }
