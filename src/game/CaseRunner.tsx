@@ -9,6 +9,8 @@ import teamNoorArt from "../assets/team-noor.jpg";
 import { strings as S } from "./strings";
 import { FaxRibbon, FolderStamp, MarginaliaText } from "./organic";
 import { Case04VerificationReveal, Case04Visual } from "./Case04Visual";
+import { TeamConversation } from "./TeamConversation";
+import { getTeamExchange } from "./cases/team-conversations";
 import { Case05EvidenceBoard } from "./Case05EvidenceBoard";
 import { Case06Epilogue } from "./Case06Epilogue";
 import { normalizeBoard, type EvidenceBoardDraft } from "./cases/case05-board";
@@ -163,6 +165,7 @@ export function CaseRunner({ def, progress, onProgress, onHub, onReportFinished 
         <div><h1 className="font-display text-2xl font-black uppercase leading-none sm:text-4xl">{card?.title}</h1><p className="marker-copy mt-2 text-sm font-semibold sm:text-base"><MarginaliaText text={scene.intro} /></p></div>
         {card && <EvidenceView card={card} />}
       </div>
+      <TeamConversation conversation={getTeamExchange(def.id, scene.evidenceId)} />
       <Actions><GameButton onClick={next} icon={<ArrowRight size={18} />}>{S.decisionUi.next}</GameButton></Actions>
     </Frame>;
   }
