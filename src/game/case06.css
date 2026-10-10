@@ -59,3 +59,11 @@
 }
 
 @media (min-width: 768px) { .case06-groups { grid-template-columns: 1fr 1fr; } }
+/* Compact composer so the statement fits a laptop screen. */
+.case06-composer { margin: .4rem auto; max-width: 64rem; }
+.case06-composer h1 { font-weight: 900; }
+@media (min-width: 900px) {
+  .case06-sentence-list { grid-template-columns: 1fr 1fr; gap: .5rem; margin: .7rem 0; }
+  .case06-sentence-list label { padding: .6rem .75rem; line-height: 1.35; }
+  .case06-composer > p { margin-top: .4rem; }
+}

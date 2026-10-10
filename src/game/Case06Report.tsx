@@ -1,3 +1,4 @@
+import "./case06.css";
 import { GameButton } from "../components/GameButton";
 import { canFinishReport, checkReport, editReport, reportSentences, type ReportDraft } from "./cases/case06-report";
 
