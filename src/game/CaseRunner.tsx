@@ -9,6 +9,9 @@ import teamNoorArt from "../assets/team-noor.jpg";
 import { strings as S } from "./strings";
 import { FaxRibbon, FolderStamp, MarginaliaText } from "./organic";
 import { Case04VerificationReveal, Case04Visual } from "./Case04Visual";
+import { Case05EvidenceBoard } from "./Case05EvidenceBoard";
+import { Case06Epilogue } from "./Case06Epilogue";
+import { normalizeBoard, type EvidenceBoardDraft } from "./cases/case05-board";
 import { Case05Visual } from "./Case05Visual";
 import { Case06Visual } from "./Case06Visual";
 import { Case06Report } from "./Case06Report";
@@ -28,6 +31,7 @@ export type CaseProgress = {
   skillScores: Record<SkillKey, number>;
   completed: boolean;
   reportDraft?: ReportDraft;
+  evidenceBoard?: EvidenceBoardDraft;
 };
 
 export const initialProgress: CaseProgress = {
@@ -43,7 +47,7 @@ export function loadProgress(storageKey: string): CaseProgress {
     const raw = window.localStorage.getItem(storageKey);
     if (!raw) return initialProgress;
     const parsed = JSON.parse(raw);
-    return { ...initialProgress, ...parsed, reportDraft: normalizeReport(parsed?.reportDraft) };
+    return { ...initialProgress, ...parsed, reportDraft: normalizeReport(parsed?.reportDraft), evidenceBoard: normalizeBoard(parsed?.evidenceBoard) };
   } catch {
     return initialProgress;
   }
@@ -102,6 +106,7 @@ export function CaseRunner({ def, progress, onProgress, onHub, onReportFinished 
   }, [selected, index]);
 
   const next = () => {
+    if (def.id === "case05" && scene.kind === "checkpoint" && !normalizeBoard(progress.evidenceBoard).checked) return;
     if (def.id === "case06" && scene.kind === "report" && !progress.completed && !canFinishReport(progress.reportDraft)) return;
     const advance = () => onProgress({ ...progress, currentScene: Math.min(def.scenes.length - 1, index + 1), completed: progress.completed || (def.id === "case06" ? scene.kind === "report" : index >= def.scenes.length - 2) });
     if (scene.kind === "report" && !progress.completed) onReportFinished(advance);
@@ -125,7 +130,7 @@ export function CaseRunner({ def, progress, onProgress, onHub, onReportFinished 
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.defaultPrevented || (event.target instanceof HTMLElement && event.target.closest("[role='dialog'], .case06-visual, .case06-composer"))) return;
+      if (event.defaultPrevented || (event.target instanceof HTMLElement && event.target.closest("[role='dialog'], .case06-visual, .case06-composer, .evidence-workbench"))) return;
       if (event.key === "Escape") { if (selected) { setSelected(null); setRevising(true); } else onHub(); }
       if (event.key.toLowerCase() === "h" && scene.kind === "decision" && !selected) { event.preventDefault(); setShowHint((value) => !value); }
       if (["ArrowDown", "ArrowUp", "ArrowLeft", "ArrowRight"].includes(event.key) && scene.kind === "decision" && !selected) {
@@ -163,6 +168,11 @@ export function CaseRunner({ def, progress, onProgress, onHub, onReportFinished 
   }
 
   if (scene.kind === "checkpoint") {
+    if (def.id === "case05") return <Frame label="ΥΠΟΘΕΣΗ 05 · ΠΙΝΑΚΑΣ ΤΕΚΜΗΡΙΩΝ">
+      <Case05EvidenceBoard draft={normalizeBoard(progress.evidenceBoard)} evidence={def.evidence} onChange={(evidenceBoard) => onProgress({ ...progress, evidenceBoard })} />
+      <Actions><GameButton disabled={!normalizeBoard(progress.evidenceBoard).checked} onClick={next} icon={<ArrowRight size={18} />}>Συνέχεια στην αναφορά</GameButton></Actions>
+    </Frame>;
+
     const columns = [
       { title: S.checkpoint.known.title, items: scene.known, tone: "border-signal" },
       { title: S.checkpoint.suspected.title, items: scene.suspected, tone: "border-warning" },
@@ -205,6 +215,11 @@ export function CaseRunner({ def, progress, onProgress, onHub, onReportFinished 
   }
 
   if (scene.kind === "handoff") {
+    if (def.id === "case06") return <Frame label="SEASON 01 · Η ΚΟΙΝΟΤΗΤΑ ΜΕΤΑ ΤΗΝ ΑΝΑΦΟΡΑ">
+      <Case06Epilogue selected={normalizeReport(progress.reportDraft).selected} />
+      <Actions><GameButton variant="secondary" onClick={onHub} icon={<ArrowLeft size={18} />}>{S.cliffhanger.action}</GameButton></Actions>
+    </Frame>;
+
     return <Frame label={scene.kicker}>
       <div className="mx-auto mt-3 grid max-w-5xl gap-4 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
         <div className="incoming-board border-2 border-alert bg-card p-3 shadow-editorial lg:p-5">
